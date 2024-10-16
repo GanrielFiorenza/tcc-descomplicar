@@ -62,19 +62,15 @@ const CustomReports = () => {
                 <BarChart data={reportData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis 
-                    dataKey="month" 
-                    allowDecimals={false}
-                    allowDataOverflow={false}
-                    allowDuplicatedCategory={true}
-                    interval="preserveStartEnd"
-                    tickLine={true}
-                    axisLine={true}
+                    dataKey="month"
+                    tick={{}} // Use an empty object as a default prop
+                    tickLine={{}} // Use an empty object as a default prop
+                    axisLine={{}} // Use an empty object as a default prop
                   />
                   <YAxis
-                    allowDecimals={false}
-                    allowDataOverflow={false}
-                    tickLine={true}
-                    axisLine={true}
+                    tick={{}} // Use an empty object as a default prop
+                    tickLine={{}} // Use an empty object as a default prop
+                    axisLine={{}} // Use an empty object as a default prop
                   />
                   <Tooltip />
                   <Legend />
