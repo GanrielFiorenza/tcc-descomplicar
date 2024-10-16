@@ -57,7 +57,7 @@ const MaintenanceHistory = () => {
                 <SelectValue placeholder="Tipo de Serviço" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todos</SelectItem>
+                <SelectItem value="all">Todos</SelectItem>
                 <SelectItem value="Oil Change">Troca de Óleo</SelectItem>
                 <SelectItem value="Brake Replacement">Troca de Freios</SelectItem>
                 <SelectItem value="Tire Rotation">Rodízio de Pneus</SelectItem>
