@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, LayoutDashboard, Car, Tool } from 'lucide-react';
+import { ChevronLeft, ChevronRight, LayoutDashboard, Car, Wrench } from 'lucide-react';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -24,7 +24,7 @@ const Sidebar = () => {
           {isOpen && <span className="ml-4">Veículos</span>}
         </Link>
         <Link to="/maintenance" className="flex items-center p-4 hover:bg-gray-700">
-          <Tool className="h-5 w-5" />
+          <Wrench className="h-5 w-5" />
           {isOpen && <span className="ml-4">Manutenções</span>}
         </Link>
       </nav>
