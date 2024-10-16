@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import VehicleRegistration from "./pages/VehicleRegistration";
 import MaintenanceHistory from "./pages/MaintenanceHistory";
 import ExpenseControl from "./pages/ExpenseControl";
+import CustomReports from "./pages/CustomReports";
 import Sidebar from "./components/Sidebar";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
               <Route path="/vehicles" element={<VehicleRegistration />} />
               <Route path="/maintenance" element={<MaintenanceHistory />} />
               <Route path="/expenses" element={<ExpenseControl />} />
+              <Route path="/reports" element={<CustomReports />} />
             </Routes>
           </main>
         </div>
