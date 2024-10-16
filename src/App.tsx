@@ -6,6 +6,7 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import VehicleRegistration from "./pages/VehicleRegistration";
 import MaintenanceHistory from "./pages/MaintenanceHistory";
+import ExpenseControl from "./pages/ExpenseControl";
 import Sidebar from "./components/Sidebar";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/vehicles" element={<VehicleRegistration />} />
               <Route path="/maintenance" element={<MaintenanceHistory />} />
+              <Route path="/expenses" element={<ExpenseControl />} />
             </Routes>
           </main>
         </div>
