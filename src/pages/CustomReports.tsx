@@ -5,10 +5,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { FileText, Download, Printer, ChartBar } from 'lucide-react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import * as XLSX from 'xlsx';
+import { useToast } from "@/hooks/use-toast";
 
 const CustomReports = () => {
   const [reportType, setReportType] = useState('');
   const [reportData, setReportData] = useState<any[]>([]);
+  const { toast } = useToast();
 
   const generateReport = () => {
     // Simulação de geração de relatório
@@ -23,9 +28,29 @@ const CustomReports = () => {
     setReportData(mockData);
   };
 
-  const exportReport = (format: 'pdf' | 'excel') => {
-    // Simulação de exportação
-    console.log(`Exportando relatório em formato ${format}`);
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Relatório Financeiro", 14, 15);
+    doc.autoTable({
+      head: [['Mês', 'Despesas', 'Receitas']],
+      body: reportData.map(item => [item.month, `R$ ${item.expenses}`, `R$ ${item.income}`]),
+    });
+    doc.save("relatorio_financeiro.pdf");
+    toast({
+      title: "PDF Exportado",
+      description: "O relatório foi exportado com sucesso para PDF.",
+    });
+  };
+
+  const exportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(reportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Relatório");
+    XLSX.writeFile(wb, "relatorio_financeiro.xlsx");
+    toast({
+      title: "Excel Exportado",
+      description: "O relatório foi exportado com sucesso para Excel.",
+    });
   };
 
   return (
@@ -99,11 +124,11 @@ const CustomReports = () => {
                 </TableBody>
               </Table>
               <div className="flex justify-end space-x-2">
-                <Button onClick={() => exportReport('pdf')} variant="outline">
+                <Button onClick={exportToPDF} variant="outline">
                   <Download className="mr-2 h-4 w-4" />
                   Exportar PDF
                 </Button>
-                <Button onClick={() => exportReport('excel')} variant="outline">
+                <Button onClick={exportToExcel} variant="outline">
                   <Download className="mr-2 h-4 w-4" />
                   Exportar Excel
                 </Button>
