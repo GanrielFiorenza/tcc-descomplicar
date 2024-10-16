@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import VehicleRegistration from "./pages/VehicleRegistration";
+import MaintenanceHistory from "./pages/MaintenanceHistory";
 import Sidebar from "./components/Sidebar";
 
 const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/vehicles" element={<VehicleRegistration />} />
+              <Route path="/maintenance" element={<MaintenanceHistory />} />
             </Routes>
           </main>
         </div>
