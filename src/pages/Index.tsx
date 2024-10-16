@@ -3,9 +3,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { LogIn, UserPlus, Mail, Lock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const showToast = (message: string) => {
     setToastMessage(message);
@@ -14,7 +18,11 @@ const Index = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    showToast("Funcionalidade de login será implementada em breve.");
+    if (email === 'gabriel@exemplo.com' && password === 'gabi123') {
+      navigate('/dashboard');
+    } else {
+      showToast("Credenciais inválidas. Tente novamente.");
+    }
   }
 
   const handleGoogleLogin = () => {
@@ -34,14 +42,27 @@ const Index = () => {
               <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input id="email" placeholder="seu@email.com" type="email" className="pl-10" />
+                <Input 
+                  id="email" 
+                  placeholder="seu@email.com" 
+                  type="email" 
+                  className="pl-10" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
             </div>
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Senha</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input id="password" type="password" className="pl-10" />
+                <Input 
+                  id="password" 
+                  type="password" 
+                  className="pl-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
             </div>
             <Button type="submit" className="w-full">
