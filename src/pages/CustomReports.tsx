@@ -61,8 +61,21 @@ const CustomReports = () => {
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={reportData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
+                  <XAxis 
+                    dataKey="month" 
+                    allowDecimals={false}
+                    allowDataOverflow={false}
+                    allowDuplicatedCategory={true}
+                    interval="preserveStartEnd"
+                    tickLine={true}
+                    axisLine={true}
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    allowDataOverflow={false}
+                    tickLine={true}
+                    axisLine={true}
+                  />
                   <Tooltip />
                   <Legend />
                   <Bar dataKey="expenses" fill="#8884d8" />
