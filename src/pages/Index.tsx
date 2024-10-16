@@ -1,30 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { LogIn, UserPlus, Mail, Lock } from 'lucide-react';
-import { useToast } from "@/components/ui/use-toast"
 
 const Index = () => {
-  const { toast } = useToast()
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Login",
-      description: "Funcionalidade de login será implementada em breve.",
-    })
+    showToast("Funcionalidade de login será implementada em breve.");
   }
 
   const handleGoogleLogin = () => {
-    toast({
-      title: "Login com Google",
-      description: "Funcionalidade de login com Google será implementada em breve.",
-    })
+    showToast("Funcionalidade de login com Google será implementada em breve.");
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 relative">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">Bem-vindo ao Gerenciador de Veículos</CardTitle>
@@ -79,6 +77,11 @@ const Index = () => {
           </Button>
         </CardFooter>
       </Card>
+      {toastMessage && (
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded shadow-lg">
+          {toastMessage}
+        </div>
+      )}
     </div>
   );
 };
