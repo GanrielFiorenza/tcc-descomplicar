@@ -63,14 +63,14 @@ const CustomReports = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis 
                     dataKey="month"
-                    tick={{}} // Use an empty object as a default prop
-                    tickLine={{}} // Use an empty object as a default prop
-                    axisLine={{}} // Use an empty object as a default prop
+                    tick={{ fontSize: 12 }}
+                    tickLine={{ stroke: '#666' }}
+                    axisLine={{ stroke: '#666' }}
                   />
                   <YAxis
-                    tick={{}} // Use an empty object as a default prop
-                    tickLine={{}} // Use an empty object as a default prop
-                    axisLine={{}} // Use an empty object as a default prop
+                    tick={{ fontSize: 12 }}
+                    tickLine={{ stroke: '#666' }}
+                    axisLine={{ stroke: '#666' }}
                   />
                   <Tooltip />
                   <Legend />
