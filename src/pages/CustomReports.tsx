@@ -66,11 +66,13 @@ const CustomReports = () => {
                     tick={{ fontSize: 12 }}
                     tickLine={{ stroke: '#666' }}
                     axisLine={{ stroke: '#666' }}
+                    padding={{ left: 0, right: 0 }}
                   />
                   <YAxis
                     tick={{ fontSize: 12 }}
                     tickLine={{ stroke: '#666' }}
                     axisLine={{ stroke: '#666' }}
+                    width={60}
                   />
                   <Tooltip />
                   <Legend />
