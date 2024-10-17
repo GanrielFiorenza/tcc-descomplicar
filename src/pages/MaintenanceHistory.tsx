@@ -58,6 +58,16 @@ const MaintenanceHistory: React.FC = () => {
     });
   };
 
+  const handleEditMaintenance = (editedMaintenance: Maintenance) => {
+    setMaintenances(maintenances.map(maintenance => 
+      maintenance.id === editedMaintenance.id ? editedMaintenance : maintenance
+    ));
+    toast({
+      title: "Manutenção Atualizada",
+      description: "O registro de manutenção foi atualizado com sucesso.",
+    });
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6 flex items-center">
@@ -118,7 +128,11 @@ const MaintenanceHistory: React.FC = () => {
           <CardTitle>Manutenções Realizadas</CardTitle>
         </CardHeader>
         <CardContent>
-          <MaintenanceTable maintenances={filteredMaintenances} onDelete={handleDeleteMaintenance} />
+          <MaintenanceTable 
+            maintenances={filteredMaintenances} 
+            onDelete={handleDeleteMaintenance}
+            onEdit={handleEditMaintenance}
+          />
         </CardContent>
       </Card>
     </div>
