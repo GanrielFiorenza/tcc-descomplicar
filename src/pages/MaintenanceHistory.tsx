@@ -24,13 +24,13 @@ const MaintenanceHistory = () => {
   ]);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('');
+  const [filterType, setFilterType] = useState('all');
   const { toast } = useToast();
 
   const filteredMaintenances = maintenances.filter(maintenance =>
     (maintenance.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
      maintenance.observations.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (filterType === '' || maintenance.serviceType === filterType)
+    (filterType === 'all' || maintenance.serviceType === filterType)
   );
 
   const handleAddMaintenance = () => {
@@ -77,7 +77,7 @@ const MaintenanceHistory = () => {
                 <SelectValue placeholder="Tipo de Serviço" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todos</SelectItem>
+                <SelectItem value="all">Todos</SelectItem>
                 <SelectItem value="Oil Change">Troca de Óleo</SelectItem>
                 <SelectItem value="Brake Replacement">Troca de Freios</SelectItem>
                 <SelectItem value="Tire Rotation">Rodízio de Pneus</SelectItem>
