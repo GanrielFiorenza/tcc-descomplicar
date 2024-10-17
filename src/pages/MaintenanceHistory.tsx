@@ -14,6 +14,13 @@ import { Textarea } from "@/components/ui/textarea";
 import MaintenanceTable from '../components/MaintenanceTable';
 import { Maintenance } from '../types/maintenance';
 
+const serviceTypeOptions = [
+  { value: 'Oil Change', label: 'Troca de Óleo' },
+  { value: 'Brake Replacement', label: 'Troca de Freios' },
+  { value: 'Tire Rotation', label: 'Rodízio de Pneus' },
+  // Adicione mais opções conforme necessário
+];
+
 const MaintenanceHistory: React.FC = () => {
   const [maintenances, setMaintenances] = useState<Maintenance[]>([
     { id: 1, vehicleId: 1, date: '2023-01-15', serviceType: 'Oil Change', cost: 50, observations: 'Regular maintenance' },
@@ -132,9 +139,9 @@ const MaintenanceHistory: React.FC = () => {
                         <SelectValue placeholder="Tipo de Serviço" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Oil Change">Troca de Óleo</SelectItem>
-                        <SelectItem value="Brake Replacement">Troca de Freios</SelectItem>
-                        <SelectItem value="Tire Rotation">Rodízio de Pneus</SelectItem>
+                        {serviceTypeOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -190,9 +197,9 @@ const MaintenanceHistory: React.FC = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos</SelectItem>
-                <SelectItem value="Oil Change">Troca de Óleo</SelectItem>
-                <SelectItem value="Brake Replacement">Troca de Freios</SelectItem>
-                <SelectItem value="Tire Rotation">Rodízio de Pneus</SelectItem>
+                {serviceTypeOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

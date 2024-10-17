@@ -9,6 +9,13 @@ interface MaintenanceTableProps {
   onDelete: (id: number) => void;
 }
 
+const serviceTypeTranslations: { [key: string]: string } = {
+  'Oil Change': 'Troca de Óleo',
+  'Brake Replacement': 'Troca de Freios',
+  'Tire Rotation': 'Rodízio de Pneus',
+  // Adicione mais traduções conforme necessário
+};
+
 const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDelete }) => {
   return (
     <Table>
@@ -30,11 +37,11 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
             </TableCell>
             <TableCell>
               <Wrench className="inline mr-2" size={16} />
-              {maintenance.serviceType}
+              {serviceTypeTranslations[maintenance.serviceType] || maintenance.serviceType}
             </TableCell>
             <TableCell className={maintenance.cost > 100 ? "text-red-500" : "text-green-500"}>
               <DollarSign className="inline mr-2" size={16} />
-              ${maintenance.cost}
+              R$ {maintenance.cost.toFixed(2)}
             </TableCell>
             <TableCell>{maintenance.observations}</TableCell>
             <TableCell>
