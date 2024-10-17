@@ -77,7 +77,6 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
           {errors.date && <TooltipContent>{errors.date}</TooltipContent>}
         </Tooltip>
       </TooltipProvider>
-      {errors.date && <AlertCircle className="text-red-500" size={16} />}
 
       <TooltipProvider>
         <Tooltip>
@@ -101,7 +100,6 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
           {errors.serviceType && <TooltipContent>{errors.serviceType}</TooltipContent>}
         </Tooltip>
       </TooltipProvider>
-      {errors.serviceType && <AlertCircle className="text-red-500" size={16} />}
 
       <TooltipProvider>
         <Tooltip>
@@ -117,7 +115,6 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
           {errors.cost && <TooltipContent>{errors.cost}</TooltipContent>}
         </Tooltip>
       </TooltipProvider>
-      {errors.cost && <AlertCircle className="text-red-500" size={16} />}
 
       <TooltipProvider>
         <Tooltip>
@@ -132,7 +129,6 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
           {errors.observations && <TooltipContent>{errors.observations}</TooltipContent>}
         </Tooltip>
       </TooltipProvider>
-      {errors.observations && <AlertCircle className="text-red-500" size={16} />}
 
       <Button
         variant="outline"
