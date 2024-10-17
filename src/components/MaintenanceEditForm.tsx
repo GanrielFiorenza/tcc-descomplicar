@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Check, X, CalendarIcon, AlertCircle } from 'lucide-react';
+import { Check, X, CalendarIcon } from 'lucide-react';
 import { format } from "date-fns";
 import { Maintenance } from '../types/maintenance';
 import { useToast } from "@/hooks/use-toast";
