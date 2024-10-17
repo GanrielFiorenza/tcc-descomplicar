@@ -4,8 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Calendar, DollarSign, Wrench, Search, Filter, PlusCircle } from 'lucide-react';
+import { Calendar as CalendarIcon, DollarSign, Wrench, Search, Filter, PlusCircle, X, Save } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Maintenance {
   id: number;
@@ -27,6 +33,14 @@ const MaintenanceHistory = () => {
   const [filterType, setFilterType] = useState('all');
   const { toast } = useToast();
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newMaintenance, setNewMaintenance] = useState<Partial<Maintenance>>({
+    date: '',
+    serviceType: '',
+    cost: 0,
+    observations: '',
+  });
+
   const filteredMaintenances = maintenances.filter(maintenance =>
     (maintenance.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
      maintenance.observations.toLowerCase().includes(searchTerm.toLowerCase())) &&
@@ -34,11 +48,30 @@ const MaintenanceHistory = () => {
   );
 
   const handleAddMaintenance = () => {
-    // This is where you'd typically open a modal or navigate to a new page to add a maintenance record
-    toast({
-      title: "Add New Maintenance",
-      description: "Feature to add new maintenance record coming soon!",
-    });
+    if (newMaintenance.date && newMaintenance.serviceType && newMaintenance.cost) {
+      setMaintenances([...maintenances, {
+        id: maintenances.length + 1,
+        vehicleId: 1, // Assuming a default vehicle ID
+        ...newMaintenance as Maintenance
+      }]);
+      setIsModalOpen(false);
+      setNewMaintenance({
+        date: '',
+        serviceType: '',
+        cost: 0,
+        observations: '',
+      });
+      toast({
+        title: "Manutenção Adicionada",
+        description: "O registro de manutenção foi adicionado com sucesso.",
+      });
+    } else {
+      toast({
+        title: "Erro",
+        description: "Por favor, preencha todos os campos obrigatórios.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -55,10 +88,87 @@ const MaintenanceHistory = () => {
               <Filter className="mr-2" />
               Filtros
             </div>
-            <Button onClick={handleAddMaintenance} className="bg-green-500 hover:bg-green-600">
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Adicionar Manutenção
-            </Button>
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-green-500 hover:bg-green-600">
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Adicionar Manutenção
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Adicionar Nova Manutenção</DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <CalendarIcon className="h-4 w-4" />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[280px] justify-start text-left font-normal",
+                            !newMaintenance.date && "text-muted-foreground"
+                          )}
+                        >
+                          {newMaintenance.date ? format(new Date(newMaintenance.date), "PPP") : <span>Selecione a data</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={newMaintenance.date ? new Date(newMaintenance.date) : undefined}
+                          onSelect={(date) => setNewMaintenance({...newMaintenance, date: date ? format(date, 'yyyy-MM-dd') : ''})}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Wrench className="h-4 w-4" />
+                    <Select onValueChange={(value) => setNewMaintenance({...newMaintenance, serviceType: value})}>
+                      <SelectTrigger className="w-[280px]">
+                        <SelectValue placeholder="Tipo de Serviço" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Oil Change">Troca de Óleo</SelectItem>
+                        <SelectItem value="Brake Replacement">Troca de Freios</SelectItem>
+                        <SelectItem value="Tire Rotation">Rodízio de Pneus</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <DollarSign className="h-4 w-4" />
+                    <Input
+                      type="number"
+                      placeholder="Custo"
+                      className="w-[280px]"
+                      value={newMaintenance.cost}
+                      onChange={(e) => setNewMaintenance({...newMaintenance, cost: parseFloat(e.target.value)})}
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Search className="h-4 w-4" />
+                    <Textarea
+                      placeholder="Observações"
+                      className="w-[280px]"
+                      value={newMaintenance.observations}
+                      onChange={(e) => setNewMaintenance({...newMaintenance, observations: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                    <X className="mr-2 h-4 w-4" />
+                    Cancelar
+                  </Button>
+                  <Button onClick={handleAddMaintenance} className="bg-green-500 hover:bg-green-600">
+                    <Save className="mr-2 h-4 w-4" />
+                    Salvar
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -105,7 +215,7 @@ const MaintenanceHistory = () => {
               {filteredMaintenances.map((maintenance) => (
                 <TableRow key={maintenance.id}>
                   <TableCell>
-                    <Calendar className="inline mr-2" size={16} />
+                    <CalendarIcon className="inline mr-2" size={16} />
                     {maintenance.date}
                   </TableCell>
                   <TableCell>
