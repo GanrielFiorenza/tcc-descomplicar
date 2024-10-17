@@ -14,7 +14,7 @@ const serviceTypeOptions = [
   { value: 'oil_change', label: 'Troca de Óleo' },
   { value: 'brake_replacement', label: 'Troca de Freios' },
   { value: 'tire_rotation', label: 'Rodízio de Pneus' },
-  // Adicione mais opções conforme necessário
+  { value: 'other', label: 'Outro' },
 ];
 
 const MaintenanceHistory: React.FC = () => {
