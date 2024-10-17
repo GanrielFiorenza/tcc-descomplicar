@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon, DollarSign, Wrench, Search, Filter, PlusCircle, X, Save } from 'lucide-react';
+import { CalendarIcon, DollarSign, Wrench, Search, Filter, PlusCircle, X, Save } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Calendar } from "@/components/ui/calendar";
@@ -12,17 +11,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
+import MaintenanceTable from '../components/MaintenanceTable';
+import { Maintenance } from '../types/maintenance';
 
-interface Maintenance {
-  id: number;
-  vehicleId: number;
-  date: string;
-  serviceType: string;
-  cost: number;
-  observations: string;
-}
-
-const MaintenanceHistory = () => {
+const MaintenanceHistory: React.FC = () => {
   const [maintenances, setMaintenances] = useState<Maintenance[]>([
     { id: 1, vehicleId: 1, date: '2023-01-15', serviceType: 'Oil Change', cost: 50, observations: 'Regular maintenance' },
     { id: 2, vehicleId: 2, date: '2023-02-20', serviceType: 'Brake Replacement', cost: 200, observations: 'Front brakes replaced' },
@@ -74,6 +66,14 @@ const MaintenanceHistory = () => {
     }
   };
 
+  const handleDeleteMaintenance = (id: number) => {
+    setMaintenances(maintenances.filter(maintenance => maintenance.id !== id));
+    toast({
+      title: "Manutenção Excluída",
+      description: "O registro de manutenção foi excluído com sucesso.",
+    });
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6 flex items-center">
@@ -99,6 +99,7 @@ const MaintenanceHistory = () => {
                 <DialogHeader>
                   <DialogTitle>Adicionar Nova Manutenção</DialogTitle>
                 </DialogHeader>
+                <div className="grid gap-4 py-4">
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <CalendarIcon className="h-4 w-4" />
@@ -157,6 +158,7 @@ const MaintenanceHistory = () => {
                     />
                   </div>
                 </div>
+                </div>
                 <div className="flex justify-end space-x-2">
                   <Button variant="outline" onClick={() => setIsModalOpen(false)}>
                     <X className="mr-2 h-4 w-4" />
@@ -202,35 +204,7 @@ const MaintenanceHistory = () => {
           <CardTitle>Manutenções Realizadas</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Data</TableHead>
-                <TableHead>Tipo de Serviço</TableHead>
-                <TableHead>Custo</TableHead>
-                <TableHead>Observações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredMaintenances.map((maintenance) => (
-                <TableRow key={maintenance.id}>
-                  <TableCell>
-                    <CalendarIcon className="inline mr-2" size={16} />
-                    {maintenance.date}
-                  </TableCell>
-                  <TableCell>
-                    <Wrench className="inline mr-2" size={16} />
-                    {maintenance.serviceType}
-                  </TableCell>
-                  <TableCell className={maintenance.cost > 100 ? "text-red-500" : "text-green-500"}>
-                    <DollarSign className="inline mr-2" size={16} />
-                    ${maintenance.cost}
-                  </TableCell>
-                  <TableCell>{maintenance.observations}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <MaintenanceTable maintenances={filteredMaintenances} onDelete={handleDeleteMaintenance} />
         </CardContent>
       </Card>
     </div>
