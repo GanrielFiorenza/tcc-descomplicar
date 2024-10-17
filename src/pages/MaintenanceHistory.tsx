@@ -3,29 +3,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon, DollarSign, Wrench, Search, Filter, PlusCircle, X, Save } from 'lucide-react';
+import { Filter, PlusCircle, Search } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
 import MaintenanceTable from '../components/MaintenanceTable';
+import { MaintenanceForm } from '../components/MaintenanceForm';
 import { Maintenance } from '../types/maintenance';
 
 const serviceTypeOptions = [
-  { value: 'Oil Change', label: 'Troca de Óleo' },
-  { value: 'Brake Replacement', label: 'Troca de Freios' },
-  { value: 'Tire Rotation', label: 'Rodízio de Pneus' },
+  { value: 'oil_change', label: 'Troca de Óleo' },
+  { value: 'brake_replacement', label: 'Troca de Freios' },
+  { value: 'tire_rotation', label: 'Rodízio de Pneus' },
   // Adicione mais opções conforme necessário
 ];
 
 const MaintenanceHistory: React.FC = () => {
   const [maintenances, setMaintenances] = useState<Maintenance[]>([
-    { id: 1, vehicleId: 1, date: '2023-01-15', serviceType: 'Oil Change', cost: 50, observations: 'Regular maintenance' },
-    { id: 2, vehicleId: 2, date: '2023-02-20', serviceType: 'Brake Replacement', cost: 200, observations: 'Front brakes replaced' },
-    { id: 3, vehicleId: 1, date: '2023-03-10', serviceType: 'Tire Rotation', cost: 30, observations: 'Routine service' },
+    { id: 1, vehicleId: 1, date: '2023-01-15', serviceType: 'oil_change', cost: 50, observations: 'Regular maintenance' },
+    { id: 2, vehicleId: 2, date: '2023-02-20', serviceType: 'brake_replacement', cost: 200, observations: 'Front brakes replaced' },
+    { id: 3, vehicleId: 1, date: '2023-03-10', serviceType: 'tire_rotation', cost: 30, observations: 'Routine service' },
   ]);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -33,12 +29,6 @@ const MaintenanceHistory: React.FC = () => {
   const { toast } = useToast();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newMaintenance, setNewMaintenance] = useState<Partial<Maintenance>>({
-    date: '',
-    serviceType: '',
-    cost: 0,
-    observations: '',
-  });
 
   const filteredMaintenances = maintenances.filter(maintenance =>
     (maintenance.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -46,31 +36,17 @@ const MaintenanceHistory: React.FC = () => {
     (filterType === 'all' || maintenance.serviceType === filterType)
   );
 
-  const handleAddMaintenance = () => {
-    if (newMaintenance.date && newMaintenance.serviceType && newMaintenance.cost) {
-      setMaintenances([...maintenances, {
-        id: maintenances.length + 1,
-        vehicleId: 1, // Assuming a default vehicle ID
-        ...newMaintenance as Maintenance
-      }]);
-      setIsModalOpen(false);
-      setNewMaintenance({
-        date: '',
-        serviceType: '',
-        cost: 0,
-        observations: '',
-      });
-      toast({
-        title: "Manutenção Adicionada",
-        description: "O registro de manutenção foi adicionado com sucesso.",
-      });
-    } else {
-      toast({
-        title: "Erro",
-        description: "Por favor, preencha todos os campos obrigatórios.",
-        variant: "destructive",
-      });
-    }
+  const handleAddMaintenance = (newMaintenance: Omit<Maintenance, 'id' | 'vehicleId'>) => {
+    setMaintenances([...maintenances, {
+      id: maintenances.length + 1,
+      vehicleId: 1, // Assuming a default vehicle ID
+      ...newMaintenance
+    }]);
+    setIsModalOpen(false);
+    toast({
+      title: "Manutenção Adicionada",
+      description: "O registro de manutenção foi adicionado com sucesso.",
+    });
   };
 
   const handleDeleteMaintenance = (id: number) => {
@@ -84,7 +60,7 @@ const MaintenanceHistory: React.FC = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6 flex items-center">
-        <Wrench className="mr-2" />
+        <Filter className="mr-2" />
         Histórico de Manutenção
       </h1>
       
@@ -106,76 +82,7 @@ const MaintenanceHistory: React.FC = () => {
                 <DialogHeader>
                   <DialogTitle>Adicionar Nova Manutenção</DialogTitle>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <CalendarIcon className="h-4 w-4" />
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[280px] justify-start text-left font-normal",
-                            !newMaintenance.date && "text-muted-foreground"
-                          )}
-                        >
-                          {newMaintenance.date ? format(new Date(newMaintenance.date), "PPP") : <span>Selecione a data</span>}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={newMaintenance.date ? new Date(newMaintenance.date) : undefined}
-                          onSelect={(date) => setNewMaintenance({...newMaintenance, date: date ? format(date, 'yyyy-MM-dd') : ''})}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Wrench className="h-4 w-4" />
-                    <Select onValueChange={(value) => setNewMaintenance({...newMaintenance, serviceType: value})}>
-                      <SelectTrigger className="w-[280px]">
-                        <SelectValue placeholder="Tipo de Serviço" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {serviceTypeOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <DollarSign className="h-4 w-4" />
-                    <Input
-                      type="number"
-                      placeholder="Custo"
-                      className="w-[280px]"
-                      value={newMaintenance.cost}
-                      onChange={(e) => setNewMaintenance({...newMaintenance, cost: parseFloat(e.target.value)})}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Search className="h-4 w-4" />
-                    <Textarea
-                      placeholder="Observações"
-                      className="w-[280px]"
-                      value={newMaintenance.observations}
-                      onChange={(e) => setNewMaintenance({...newMaintenance, observations: e.target.value})}
-                    />
-                  </div>
-                </div>
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <Button variant="outline" onClick={() => setIsModalOpen(false)}>
-                    <X className="mr-2 h-4 w-4" />
-                    Cancelar
-                  </Button>
-                  <Button onClick={handleAddMaintenance} className="bg-green-500 hover:bg-green-600">
-                    <Save className="mr-2 h-4 w-4" />
-                    Salvar
-                  </Button>
-                </div>
+                <MaintenanceForm onSubmit={handleAddMaintenance} onCancel={() => setIsModalOpen(false)} />
               </DialogContent>
             </Dialog>
           </CardTitle>

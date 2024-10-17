@@ -10,9 +10,9 @@ interface MaintenanceTableProps {
 }
 
 const serviceTypeTranslations: { [key: string]: string } = {
-  'Oil Change': 'Troca de Óleo',
-  'Brake Replacement': 'Troca de Freios',
-  'Tire Rotation': 'Rodízio de Pneus',
+  'oil_change': 'Troca de Óleo',
+  'brake_replacement': 'Troca de Freios',
+  'tire_rotation': 'Rodízio de Pneus',
   // Adicione mais traduções conforme necessário
 };
 
