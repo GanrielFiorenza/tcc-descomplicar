@@ -8,6 +8,7 @@ import VehicleRegistration from "./pages/VehicleRegistration";
 import MaintenanceHistory from "./pages/MaintenanceHistory";
 import ExpenseControl from "./pages/ExpenseControl";
 import CustomReports from "./pages/CustomReports";
+import Settings from "./pages/Settings";
 import Sidebar from "./components/Sidebar";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
               <Route path="/maintenance" element={<MaintenanceHistory />} />
               <Route path="/expenses" element={<ExpenseControl />} />
               <Route path="/reports" element={<CustomReports />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </main>
         </div>
