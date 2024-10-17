@@ -61,11 +61,11 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Data</TableHead>
-          <TableHead>Tipo de Serviço</TableHead>
-          <TableHead>Custo</TableHead>
-          <TableHead>Observações</TableHead>
-          <TableHead>Ações</TableHead>
+          <TableHead className="w-[120px]">Data</TableHead>
+          <TableHead className="w-[180px]">Tipo de Serviço</TableHead>
+          <TableHead className="w-[100px]">Custo</TableHead>
+          <TableHead className="w-[200px]">Observações</TableHead>
+          <TableHead className="w-[100px]">Ações</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -81,20 +81,20 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
               </TableCell>
             ) : (
               <>
-                <TableCell>
+                <TableCell className="w-[120px]">
                   <CalendarIcon className="inline mr-2" size={16} />
-                  {maintenance.date}
+                  {new Date(maintenance.date).toLocaleDateString()}
                 </TableCell>
-                <TableCell>
+                <TableCell className="w-[180px]">
                   <Wrench className="inline mr-2" size={16} />
                   {serviceTypeTranslations[maintenance.serviceType] || maintenance.serviceType}
                 </TableCell>
-                <TableCell className={maintenance.cost > 100 ? "text-red-500" : "text-green-500"}>
+                <TableCell className={`w-[100px] ${maintenance.cost > 100 ? "text-red-500" : "text-green-500"}`}>
                   <DollarSign className="inline mr-2" size={16} />
                   R$ {maintenance.cost.toFixed(2)}
                 </TableCell>
-                <TableCell>{maintenance.observations}</TableCell>
-                <TableCell>
+                <TableCell className="w-[200px]">{maintenance.observations}</TableCell>
+                <TableCell className="w-[100px]">
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
