@@ -32,6 +32,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
     if (!editedMaintenance.date) newErrors.date = "Data é obrigatória";
     if (!editedMaintenance.serviceType) newErrors.serviceType = "Tipo de serviço é obrigatório";
     if (!editedMaintenance.cost || editedMaintenance.cost <= 0) newErrors.cost = "Custo deve ser um valor positivo";
+    if (!editedMaintenance.observations.trim()) newErrors.observations = "Observações são obrigatórias";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -40,88 +41,83 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
     if (validateForm()) {
       onSave(editedMaintenance);
     } else {
+      const errorMessages = Object.values(errors).join(', ');
       toast({
         title: "Erro de validação",
-        description: "Por favor, corrija os campos destacados.",
+        description: `Por favor, corrija os seguintes erros: ${errorMessages}`,
         variant: "destructive",
       });
     }
   };
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center space-x-2">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className={errors.date ? "border-red-500" : ""}>
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {editedMaintenance.date || "Selecione a data"}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={editedMaintenance.date ? new Date(editedMaintenance.date) : undefined}
-              onSelect={(date) => setEditedMaintenance({...editedMaintenance, date: date ? format(date, 'yyyy-MM-dd') : ''})}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-        {errors.date && <AlertCircle className="text-red-500" size={16} />}
-      </div>
+    <div className="flex items-center space-x-2">
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" className={errors.date ? "border-red-500" : ""}>
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {editedMaintenance.date || "Selecione a data"}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0">
+          <Calendar
+            mode="single"
+            selected={editedMaintenance.date ? new Date(editedMaintenance.date) : undefined}
+            onSelect={(date) => setEditedMaintenance({...editedMaintenance, date: date ? format(date, 'yyyy-MM-dd') : ''})}
+            initialFocus
+          />
+        </PopoverContent>
+      </Popover>
+      {errors.date && <AlertCircle className="text-red-500" size={16} />}
 
-      <div className="flex items-center space-x-2">
-        <Select 
-          value={editedMaintenance.serviceType}
-          onValueChange={(value) => setEditedMaintenance({...editedMaintenance, serviceType: value})}
-        >
-          <SelectTrigger className={`w-full ${errors.serviceType ? "border-red-500" : ""}`}>
-            <SelectValue placeholder="Tipo de Serviço" />
-          </SelectTrigger>
-          <SelectContent>
-            {serviceTypeOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {errors.serviceType && <AlertCircle className="text-red-500" size={16} />}
-      </div>
+      <Select 
+        value={editedMaintenance.serviceType}
+        onValueChange={(value) => setEditedMaintenance({...editedMaintenance, serviceType: value})}
+      >
+        <SelectTrigger className={`w-[180px] ${errors.serviceType ? "border-red-500" : ""}`}>
+          <SelectValue placeholder="Tipo de Serviço" />
+        </SelectTrigger>
+        <SelectContent>
+          {serviceTypeOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      {errors.serviceType && <AlertCircle className="text-red-500" size={16} />}
 
-      <div className="flex items-center space-x-2">
-        <Input
-          type="number"
-          value={editedMaintenance.cost}
-          onChange={(e) => setEditedMaintenance({...editedMaintenance, cost: parseFloat(e.target.value) || 0})}
-          className={`w-full ${errors.cost ? "border-red-500" : ""}`}
-          placeholder="Custo"
-        />
-        {errors.cost && <AlertCircle className="text-red-500" size={16} />}
-      </div>
+      <Input
+        type="number"
+        value={editedMaintenance.cost}
+        onChange={(e) => setEditedMaintenance({...editedMaintenance, cost: parseFloat(e.target.value) || 0})}
+        className={`w-[100px] ${errors.cost ? "border-red-500" : ""}`}
+        placeholder="Custo"
+      />
+      {errors.cost && <AlertCircle className="text-red-500" size={16} />}
 
       <Input
         value={editedMaintenance.observations}
         onChange={(e) => setEditedMaintenance({...editedMaintenance, observations: e.target.value})}
         placeholder="Observações"
+        className={`w-[200px] ${errors.observations ? "border-red-500" : ""}`}
       />
+      {errors.observations && <AlertCircle className="text-red-500" size={16} />}
 
-      <div className="flex justify-end space-x-2 mt-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleSave}
-          className="bg-green-500 text-white hover:bg-green-600"
-        >
-          <Check className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onCancel}
-          className="bg-red-500 text-white hover:bg-red-600"
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handleSave}
+        className="bg-green-500 text-white hover:bg-green-600"
+      >
+        <Check className="h-4 w-4" />
+      </Button>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onCancel}
+        className="bg-red-500 text-white hover:bg-red-600"
+      >
+        <X className="h-4 w-4" />
+      </Button>
     </div>
   );
 };
