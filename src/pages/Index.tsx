@@ -5,7 +5,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { LogIn, UserPlus, Mail, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const Index = () => {
+interface IndexProps {
+  onLogin: () => void;
+}
+
+const Index: React.FC<IndexProps> = ({ onLogin }) => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,6 +23,7 @@ const Index = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (email === 'gabriel@exemplo.com' && password === 'gabi123') {
+      onLogin();
       navigate('/dashboard');
     } else {
       showToast("Credenciais inválidas. Tente novamente.");
