@@ -71,42 +71,30 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
       <TableBody>
         {maintenances.map((maintenance) => (
           <TableRow key={maintenance.id}>
-            <TableCell>
-              {editingMaintenance?.id === maintenance.id ? (
+            {editingMaintenance?.id === maintenance.id ? (
+              <TableCell colSpan={5}>
                 <MaintenanceEditForm
                   maintenance={editingMaintenance}
                   onSave={handleSaveEdit}
                   onCancel={handleCancelEdit}
                 />
-              ) : (
-                <>
+              </TableCell>
+            ) : (
+              <>
+                <TableCell>
                   <CalendarIcon className="inline mr-2" size={16} />
                   {maintenance.date}
-                </>
-              )}
-            </TableCell>
-            <TableCell>
-              {editingMaintenance?.id !== maintenance.id && (
-                <>
+                </TableCell>
+                <TableCell>
                   <Wrench className="inline mr-2" size={16} />
                   {serviceTypeTranslations[maintenance.serviceType] || maintenance.serviceType}
-                </>
-              )}
-            </TableCell>
-            <TableCell className={maintenance.cost > 100 ? "text-red-500" : "text-green-500"}>
-              {editingMaintenance?.id !== maintenance.id && (
-                <>
+                </TableCell>
+                <TableCell className={maintenance.cost > 100 ? "text-red-500" : "text-green-500"}>
                   <DollarSign className="inline mr-2" size={16} />
                   R$ {maintenance.cost.toFixed(2)}
-                </>
-              )}
-            </TableCell>
-            <TableCell>
-              {editingMaintenance?.id !== maintenance.id && maintenance.observations}
-            </TableCell>
-            <TableCell>
-              {editingMaintenance?.id !== maintenance.id && (
-                <>
+                </TableCell>
+                <TableCell>{maintenance.observations}</TableCell>
+                <TableCell>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
@@ -149,9 +137,9 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
-                </>
-              )}
-            </TableCell>
+                </TableCell>
+              </>
+            )}
           </TableRow>
         ))}
       </TableBody>
