@@ -33,25 +33,35 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
   const { toast } = useToast();
 
   const handleSubmit = () => {
+    // Check for empty fields
     if (!newMaintenance.date || !newMaintenance.serviceType || !newMaintenance.cost) {
       toast({
-        title: "Campos vazios",
+        title: "Campos em branco",
         description: "Por favor, preencha todos os campos obrigatórios.",
         variant: "destructive",
       });
       return;
     }
 
+    // Check for invalid cost
     if (typeof newMaintenance.cost !== 'number' || newMaintenance.cost <= 0) {
       toast({
-        title: "Dado inválido",
+        title: "Custo inválido",
         description: "O custo deve ser um número positivo.",
         variant: "destructive",
       });
       return;
     }
 
+    // If all checks pass, submit the form
     onSubmit(newMaintenance as Omit<Maintenance, 'id' | 'vehicleId'>);
+    
+    // Show success toast
+    toast({
+      title: "Manutenção adicionada",
+      description: "A nova manutenção foi registrada com sucesso.",
+      variant: "default",
+    });
   };
 
   return (
