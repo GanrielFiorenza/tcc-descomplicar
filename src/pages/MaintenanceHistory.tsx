@@ -11,6 +11,7 @@ import { MaintenanceForm } from '../components/MaintenanceForm';
 import { Maintenance } from '../types/maintenance';
 
 const serviceTypeOptions = [
+  { value: 'all', label: 'Todos' },
   { value: 'oil_change', label: 'Troca de Óleo' },
   { value: 'brake_replacement', label: 'Troca de Freios' },
   { value: 'tire_rotation', label: 'Rodízio de Pneus' },
@@ -103,7 +104,6 @@ const MaintenanceHistory: React.FC = () => {
                 <SelectValue placeholder="Tipo de Serviço" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos</SelectItem>
                 {serviceTypeOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
                 ))}
