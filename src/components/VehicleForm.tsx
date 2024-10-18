@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Check, X } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface Vehicle {
@@ -12,12 +12,6 @@ interface Vehicle {
   year: string;
   mileage: string;
   plate: string;
-}
-
-interface VehicleFormProps {
-  vehicle: Vehicle;
-  onSave: (vehicle: Vehicle) => void;
-  onCancel: () => void;
 }
 
 export const VehicleForm: React.FC<VehicleFormProps> = ({ vehicle, onSave, onCancel }) => {
@@ -49,11 +43,11 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({ vehicle, onSave, onCan
     setEditedVehicle({ ...editedVehicle, [name]: value });
   };
 
-  const renderInput = (field: keyof Vehicle, placeholder: string, type: string = 'text') => (
+  const renderInput = (field: keyof Vehicle, placeholder: string, type: string = 'text', className: string) => (
     <TooltipProvider>
       <Tooltip open={!!errors[field]}>
         <TooltipTrigger asChild>
-          <div className="relative">
+          <div className={className}>
             <Input
               type={type}
               name={field}
@@ -73,13 +67,13 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({ vehicle, onSave, onCan
   );
 
   return (
-    <div className={vehicle.id === 0 ? "space-y-4" : "flex items-center space-x-2"}>
-      {renderInput('brand', 'Marca')}
-      {renderInput('model', 'Modelo')}
+    <div className="grid grid-cols-12 gap-2 items-center">
+      {renderInput('brand', 'Marca', 'text', 'col-span-2')}
+      {renderInput('model', 'Modelo', 'text', 'col-span-2')}
       <TooltipProvider>
         <Tooltip open={!!errors.year}>
           <TooltipTrigger asChild>
-            <div className="relative w-24">
+            <div className="col-span-2">
               <Select
                 value={editedVehicle.year}
                 onValueChange={(value) => setEditedVehicle({...editedVehicle, year: value})}
@@ -101,18 +95,26 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({ vehicle, onSave, onCan
           {errors.year && <TooltipContent>{errors.year}</TooltipContent>}
         </Tooltip>
       </TooltipProvider>
-      {renderInput('mileage', 'Quilometragem')}
-      {renderInput('plate', 'Placa')}
-      {vehicle.id === 0 && (
-        <div className="flex space-x-2 w-full mt-4">
-          <Button onClick={handleSave} className="bg-green-500 text-white hover:bg-green-600 flex-grow">
-            Salvar
-          </Button>
-          <Button onClick={onCancel} className="bg-red-500 text-white hover:bg-red-600 flex-grow">
-            Cancelar
-          </Button>
-        </div>
-      )}
+      {renderInput('mileage', 'Quilometragem', 'text', 'col-span-2')}
+      {renderInput('plate', 'Placa', 'text', 'col-span-2')}
+      <div className="col-span-2 flex space-x-1">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleSave}
+          className="bg-green-500 text-white hover:bg-green-600 px-2 flex-grow"
+        >
+          <Check className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onCancel}
+          className="bg-red-500 text-white hover:bg-red-600 px-2 flex-grow"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 };

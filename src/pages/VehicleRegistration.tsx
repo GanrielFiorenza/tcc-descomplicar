@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Pencil, Trash2, Plus, Save } from 'lucide-react';
+import { Pencil, Trash2, Plus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { VehicleForm } from '@/components/VehicleForm';
@@ -71,7 +71,6 @@ const VehicleRegistration = () => {
             />
           </DialogContent>
         </Dialog>
-      </div>
 
       <Card>
         <CardHeader>
@@ -92,43 +91,22 @@ const VehicleRegistration = () => {
             <TableBody>
               {vehicles.map((vehicle) => (
                 <TableRow key={vehicle.id}>
-                  <TableCell>
-                    {editingVehicle?.id === vehicle.id ? (
+                  {editingVehicle?.id === vehicle.id ? (
+                    <TableCell colSpan={6}>
                       <VehicleForm
                         vehicle={editingVehicle}
                         onSave={handleEditVehicle}
                         onCancel={() => setEditingVehicle(null)}
                       />
-                    ) : (
-                      vehicle.brand
-                    )}
-                  </TableCell>
-                  <TableCell>{editingVehicle?.id !== vehicle.id && vehicle.model}</TableCell>
-                  <TableCell>{editingVehicle?.id !== vehicle.id && vehicle.year}</TableCell>
-                  <TableCell>{editingVehicle?.id !== vehicle.id && vehicle.mileage}</TableCell>
-                  <TableCell>{editingVehicle?.id !== vehicle.id && vehicle.plate}</TableCell>
-                  <TableCell>
-                    {editingVehicle?.id === vehicle.id ? (
-                      <>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleEditVehicle(editingVehicle)}
-                          className="mr-2"
-                        >
-                          <Save className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setEditingVehicle(null)}
-                          className="text-red-500"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </>
-                    ) : (
-                      <>
+                    </TableCell>
+                  ) : (
+                    <>
+                      <TableCell>{vehicle.brand}</TableCell>
+                      <TableCell>{vehicle.model}</TableCell>
+                      <TableCell>{vehicle.year}</TableCell>
+                      <TableCell>{vehicle.mileage}</TableCell>
+                      <TableCell>{vehicle.plate}</TableCell>
+                      <TableCell>
                         <Button
                           variant="outline"
                           size="sm"
@@ -145,9 +123,9 @@ const VehicleRegistration = () => {
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
-                      </>
-                    )}
-                  </TableCell>
+                      </TableCell>
+                    </>
+                  )}
                 </TableRow>
               ))}
             </TableBody>
