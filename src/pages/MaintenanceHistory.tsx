@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Filter, PlusCircle, Search } from 'lucide-react';
+import { PlusCircle, Search } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import MaintenanceTable from '../components/MaintenanceTable';
@@ -70,8 +70,7 @@ const MaintenanceHistory: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 flex items-center">
-        <Filter className="mr-2" />
+      <h1 className="text-3xl font-bold mb-6">
         Histórico de Manutenção
       </h1>
       
@@ -79,7 +78,6 @@ const MaintenanceHistory: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center">
-              <Filter className="mr-2" />
               Filtros
             </div>
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
