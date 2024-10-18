@@ -104,6 +104,7 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
                         type="date"
                         value={editedValues.date}
                         onChange={(e) => handleInputChange('date', e.target.value)}
+                        className="w-32 h-8 text-sm"
                       />
                     </TableCell>
                     <TableCell>
@@ -111,6 +112,7 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
                         type="text"
                         value={editedValues.vehicleId}
                         onChange={(e) => handleInputChange('vehicleId', e.target.value)}
+                        className="w-32 h-8 text-sm"
                       />
                     </TableCell>
                     <TableCell>
@@ -118,6 +120,7 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
                         type="text"
                         value={editedValues.category}
                         onChange={(e) => handleInputChange('category', e.target.value)}
+                        className="w-32 h-8 text-sm"
                       />
                     </TableCell>
                     <TableCell>
@@ -125,6 +128,7 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
                         type="number"
                         value={editedValues.amount}
                         onChange={(e) => handleInputChange('amount', e.target.value)}
+                        className="w-24 h-8 text-sm"
                       />
                     </TableCell>
                     <TableCell>
@@ -132,6 +136,7 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
                         type="text"
                         value={editedValues.description}
                         onChange={(e) => handleInputChange('description', e.target.value)}
+                        className="w-40 h-8 text-sm"
                       />
                     </TableCell>
                     <TableCell>
