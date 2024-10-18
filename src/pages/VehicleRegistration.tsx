@@ -71,6 +71,7 @@ const VehicleRegistration = () => {
             />
           </DialogContent>
         </Dialog>
+      </div>
 
       <Card>
         <CardHeader>
