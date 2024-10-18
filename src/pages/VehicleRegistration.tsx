@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Pencil, Trash2, Plus, Car } from 'lucide-react';
+import { Pencil, Trash2, Plus, Check, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
@@ -31,29 +31,39 @@ const VehicleRegistration = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setNewVehicle(prev => ({ ...prev, [name]: value }));
+    if (editingId !== null) {
+      setVehicles(vehicles.map(v => v.id === editingId ? { ...v, [name]: value } : v));
+    } else {
+      setNewVehicle(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingId !== null) {
-      setVehicles(vehicles.map(v => v.id === editingId ? { ...newVehicle, id: editingId } : v));
+      setVehicles(vehicles.map(v => v.id === editingId ? { ...v, ...newVehicle } : v));
       setEditingId(null);
+      toast({
+        title: "Veículo Atualizado",
+        description: "O veículo foi atualizado com sucesso.",
+      });
     } else {
       setVehicles([...vehicles, { ...newVehicle, id: Date.now() }]);
+      toast({
+        title: "Veículo Adicionado",
+        description: "Um novo veículo foi adicionado com sucesso.",
+      });
     }
     setNewVehicle({ brand: '', model: '', year: '', mileage: '', plate: '' });
     setIsModalOpen(false);
-    toast({
-      title: editingId !== null ? "Veículo Atualizado" : "Veículo Adicionado",
-      description: editingId !== null ? "O veículo foi atualizado com sucesso." : "Um novo veículo foi adicionado com sucesso.",
-    });
   };
 
   const handleEdit = (vehicle: Vehicle) => {
-    setNewVehicle(vehicle);
     setEditingId(vehicle.id);
-    setIsModalOpen(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
   };
 
   const handleDelete = (id: number) => {
@@ -78,7 +88,7 @@ const VehicleRegistration = () => {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{editingId !== null ? 'Editar Veículo' : 'Adicionar Novo Veículo'}</DialogTitle>
+              <DialogTitle>Adicionar Novo Veículo</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
@@ -118,7 +128,7 @@ const VehicleRegistration = () => {
               />
               <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600">
                 <Plus className="mr-2 h-4 w-4" />
-                {editingId !== null ? 'Atualizar Veículo' : 'Adicionar Veículo'}
+                Adicionar Veículo
               </Button>
             </form>
           </DialogContent>
@@ -144,19 +154,88 @@ const VehicleRegistration = () => {
             <TableBody>
               {vehicles.map((vehicle) => (
                 <TableRow key={vehicle.id}>
-                  <TableCell>{vehicle.brand}</TableCell>
-                  <TableCell>{vehicle.model}</TableCell>
-                  <TableCell>{vehicle.year}</TableCell>
-                  <TableCell>{vehicle.mileage}</TableCell>
-                  <TableCell>{vehicle.plate}</TableCell>
-                  <TableCell>
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(vehicle)} className="mr-2">
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="icon" onClick={() => handleDelete(vehicle.id)} className="text-red-500">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
+                  {editingId === vehicle.id ? (
+                    <>
+                      <TableCell>
+                        <Input
+                          name="brand"
+                          value={vehicle.brand}
+                          onChange={handleInputChange}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          name="model"
+                          value={vehicle.model}
+                          onChange={handleInputChange}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          name="year"
+                          value={vehicle.year}
+                          onChange={handleInputChange}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          name="mileage"
+                          value={vehicle.mileage}
+                          onChange={handleInputChange}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          name="plate"
+                          value={vehicle.plate}
+                          onChange={handleInputChange}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleSubmit}
+                          className="mr-2"
+                        >
+                          <Check className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleCancelEdit}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </>
+                  ) : (
+                    <>
+                      <TableCell>{vehicle.brand}</TableCell>
+                      <TableCell>{vehicle.model}</TableCell>
+                      <TableCell>{vehicle.year}</TableCell>
+                      <TableCell>{vehicle.mileage}</TableCell>
+                      <TableCell>{vehicle.plate}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEdit(vehicle)}
+                          className="mr-2"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(vehicle.id)}
+                          className="text-red-500"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </>
+                  )}
                 </TableRow>
               ))}
             </TableBody>
