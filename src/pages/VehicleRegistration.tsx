@@ -13,7 +13,7 @@ interface Vehicle {
   model: string;
   year: string;
   mileage: string;
-  vin: string;
+  plate: string;
 }
 
 const VehicleRegistration = () => {
@@ -23,7 +23,7 @@ const VehicleRegistration = () => {
     model: '',
     year: '',
     mileage: '',
-    vin: '',
+    plate: '',
   });
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,7 +42,7 @@ const VehicleRegistration = () => {
     } else {
       setVehicles([...vehicles, { ...newVehicle, id: Date.now() }]);
     }
-    setNewVehicle({ brand: '', model: '', year: '', mileage: '', vin: '' });
+    setNewVehicle({ brand: '', model: '', year: '', mileage: '', plate: '' });
     setIsModalOpen(false);
     toast({
       title: editingId !== null ? "Veículo Atualizado" : "Veículo Adicionado",
@@ -110,9 +110,9 @@ const VehicleRegistration = () => {
                 required
               />
               <Input
-                placeholder="VIN"
-                name="vin"
-                value={newVehicle.vin}
+                placeholder="Placa"
+                name="plate"
+                value={newVehicle.plate}
                 onChange={handleInputChange}
                 required
               />
@@ -137,7 +137,7 @@ const VehicleRegistration = () => {
                 <TableHead>Modelo</TableHead>
                 <TableHead>Ano</TableHead>
                 <TableHead>Quilometragem</TableHead>
-                <TableHead>VIN</TableHead>
+                <TableHead>Placa</TableHead>
                 <TableHead>Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -148,7 +148,7 @@ const VehicleRegistration = () => {
                   <TableCell>{vehicle.model}</TableCell>
                   <TableCell>{vehicle.year}</TableCell>
                   <TableCell>{vehicle.mileage}</TableCell>
-                  <TableCell>{vehicle.vin}</TableCell>
+                  <TableCell>{vehicle.plate}</TableCell>
                   <TableCell>
                     <Button variant="outline" size="icon" onClick={() => handleEdit(vehicle)} className="mr-2">
                       <Pencil className="h-4 w-4" />
