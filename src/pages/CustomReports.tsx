@@ -11,7 +11,7 @@ import * as XLSX from 'xlsx';
 import { useToast } from "@/hooks/use-toast";
 
 const CustomReports = () => {
-  const [reportType, setReportType] = useState('');
+  const [reportType, setReportType] = useState('financial');
   const [reportData, setReportData] = useState<any[]>([]);
   const { toast } = useToast();
 
@@ -53,6 +53,57 @@ const CustomReports = () => {
     });
   };
 
+  const getChartData = () => {
+    switch (reportType) {
+      case 'expenses':
+        return reportData.map(item => ({ month: item.month, expenses: item.expenses }));
+      case 'income':
+        return reportData.map(item => ({ month: item.month, income: item.income }));
+      default:
+        return reportData;
+    }
+  };
+
+  const renderChart = () => {
+    const data = getChartData();
+    return (
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="month" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          {reportType === 'financial' || reportType === 'expenses' ? <Bar dataKey="expenses" fill="#8884d8" /> : null}
+          {reportType === 'financial' || reportType === 'income' ? <Bar dataKey="income" fill="#82ca9d" /> : null}
+        </BarChart>
+      </ResponsiveContainer>
+    );
+  };
+
+  const renderTable = () => {
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Mês</TableHead>
+            {reportType === 'financial' || reportType === 'expenses' ? <TableHead>Despesas</TableHead> : null}
+            {reportType === 'financial' || reportType === 'income' ? <TableHead>Receitas</TableHead> : null}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {reportData.map((item, index) => (
+            <TableRow key={index}>
+              <TableCell>{item.month}</TableCell>
+              {reportType === 'financial' || reportType === 'expenses' ? <TableCell className="text-red-500">R$ {item.expenses}</TableCell> : null}
+              {reportType === 'financial' || reportType === 'income' ? <TableCell className="text-green-500">R$ {item.income}</TableCell> : null}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    );
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6 flex items-center">
@@ -69,7 +120,7 @@ const CustomReports = () => {
         </CardHeader>
         <CardContent>
           <div className="flex space-x-4 mb-4">
-            <Select onValueChange={setReportType}>
+            <Select value={reportType} onValueChange={setReportType}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Tipo de Relatório" />
               </SelectTrigger>
@@ -83,46 +134,8 @@ const CustomReports = () => {
           </div>
           {reportData.length > 0 && (
             <div className="space-y-4">
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={reportData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="month"
-                    tick={{ fontSize: 12 }}
-                    tickLine={{ stroke: '#666' }}
-                    axisLine={{ stroke: '#666' }}
-                    padding={{ left: 0, right: 0 }}
-                  />
-                  <YAxis
-                    tick={{ fontSize: 12 }}
-                    tickLine={{ stroke: '#666' }}
-                    axisLine={{ stroke: '#666' }}
-                    width={60}
-                  />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="expenses" fill="#8884d8" />
-                  <Bar dataKey="income" fill="#82ca9d" />
-                </BarChart>
-              </ResponsiveContainer>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Mês</TableHead>
-                    <TableHead>Despesas</TableHead>
-                    <TableHead>Receitas</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {reportData.map((item, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{item.month}</TableCell>
-                      <TableCell className="text-red-500">R$ {item.expenses}</TableCell>
-                      <TableCell className="text-green-500">R$ {item.income}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              {renderChart()}
+              {renderTable()}
               <div className="flex justify-end space-x-2">
                 <Button onClick={exportToPDF} variant="outline">
                   <Download className="mr-2 h-4 w-4" />
