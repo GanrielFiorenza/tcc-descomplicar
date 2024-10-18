@@ -55,7 +55,7 @@ const VehicleRegistration = () => {
         <h1 className="text-3xl font-bold">Registro de Veículos</h1>
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-500 hover:bg-blue-600">
+            <Button className="bg-blue-700 hover:bg-blue-800">
               <Plus className="mr-2 h-4 w-4" />
               Novo Veículo
             </Button>
