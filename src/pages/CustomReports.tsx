@@ -70,17 +70,6 @@ const CustomReports = () => {
     });
   };
 
-  const getChartData = () => {
-    switch (reportType) {
-      case 'expenses':
-        return reportData.map(item => ({ month: item.month, expenses: item.expenses }));
-      case 'income':
-        return reportData.map(item => ({ month: item.month, income: item.income }));
-      default:
-        return reportData;
-    }
-  };
-
   const renderChart = () => {
     return (
       <ResponsiveContainer width="100%" height={300}>
