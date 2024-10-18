@@ -50,6 +50,25 @@ const ExpenseControl = () => {
     });
   };
 
+  const handleEditExpense = (editedExpense: Expense) => {
+    setExpenses(expenses.map(expense => 
+      expense.id === editedExpense.id ? editedExpense : expense
+    ));
+    toast({
+      title: "Despesa atualizada",
+      description: "A despesa foi atualizada com sucesso.",
+    });
+  };
+
+  const handleDeleteExpense = (expenseId: number) => {
+    setExpenses(expenses.filter(expense => expense.id !== expenseId));
+    toast({
+      title: "Despesa removida",
+      description: "A despesa foi removida com sucesso.",
+      variant: "destructive",
+    });
+  };
+
   const filteredExpenses = selectedVehicle
     ? expenses.filter(expense => expense.vehicleId === selectedVehicle)
     : expenses;
@@ -92,7 +111,12 @@ const ExpenseControl = () => {
       
       <ExpenseChart chartData={chartData} />
       
-      <ExpenseTable expenses={filteredExpenses} vehicles={vehicles} />
+      <ExpenseTable
+        expenses={filteredExpenses}
+        vehicles={vehicles}
+        onEdit={handleEditExpense}
+        onDelete={handleDeleteExpense}
+      />
     </div>
   );
 };
