@@ -50,11 +50,11 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
     }
   };
 
-  const renderInput = (field: keyof Maintenance, placeholder: string, type: string = 'text', width: string) => (
+  const renderInput = (field: keyof Maintenance, placeholder: string, type: string = 'text', className: string) => (
     <TooltipProvider>
       <Tooltip open={!!errors[field]}>
         <TooltipTrigger asChild>
-          <div className={`relative ${width}`}>
+          <div className={className}>
             <Input
               type={type}
               value={editedMaintenance[field]}
@@ -73,7 +73,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
   );
 
   return (
-    <div className="flex items-center space-x-1">
+    <div className="flex items-center space-x-2">
       <TooltipProvider>
         <Tooltip open={!!errors.date}>
           <TooltipTrigger asChild>
@@ -103,7 +103,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
       <TooltipProvider>
         <Tooltip open={!!errors.serviceType}>
           <TooltipTrigger asChild>
-            <div className="w-[180px] ml-1">
+            <div className="w-[180px]">
               <Select 
                 value={editedMaintenance.serviceType}
                 onValueChange={(value) => setEditedMaintenance({...editedMaintenance, serviceType: value})}
@@ -123,10 +123,10 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
         </Tooltip>
       </TooltipProvider>
 
-      {renderInput('cost', 'Custo', 'number', 'w-[100px] ml-1')}
-      {renderInput('observations', 'Observações', 'text', 'w-[200px] ml-1')}
+      {renderInput('cost', 'Custo', 'number', 'w-[100px]')}
+      {renderInput('observations', 'Observações', 'text', 'w-[200px]')}
 
-      <div className="flex space-x-1 ml-1">
+      <div className="flex space-x-1">
         <Button
           variant="outline"
           size="sm"
@@ -136,7 +136,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
           <Check className="h-4 w-4" />
         </Button>
         <Button
-          variant="outline"
+          variant-outline
           size="sm"
           onClick={onCancel}
           className="bg-red-500 text-white hover:bg-red-600 px-2"
