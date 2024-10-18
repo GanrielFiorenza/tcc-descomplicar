@@ -27,20 +27,28 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, ve
   };
 
   const validateForm = () => {
-    if (!newExpense.vehicleId || !newExpense.date || !newExpense.category || !newExpense.amount) {
-      toast({
-        title: "Erro de validação",
-        description: "Por favor, preencha todos os campos obrigatórios.",
-        variant: "destructive",
-      });
-      return false;
-    }
+    const errors: string[] = [];
+
+    if (!newExpense.vehicleId) errors.push("Selecione um veículo");
+    if (!newExpense.date) errors.push("Selecione uma data");
+    if (!newExpense.category) errors.push("Selecione uma categoria");
+    if (!newExpense.amount) errors.push("Insira um valor para a despesa");
 
     const amount = parseFloat(newExpense.amount);
     if (isNaN(amount) || amount <= 0) {
+      errors.push("Insira um valor válido para a despesa (maior que zero)");
+    }
+
+    if (errors.length > 0) {
       toast({
         title: "Erro de validação",
-        description: "Por favor, insira um valor válido para a despesa.",
+        description: (
+          <ul className="list-disc pl-4">
+            {errors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
+        ),
         variant: "destructive",
       });
       return false;
