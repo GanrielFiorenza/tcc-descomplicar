@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, DollarSign, FileText, Tag } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 interface ExpenseFormProps {
   onSubmit: (expense: any) => void;
@@ -19,43 +20,42 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, ve
     amount: '',
     description: '',
   });
+  const [errors, setErrors] = useState({
+    vehicleId: '',
+    category: '',
+    date: '',
+    amount: '',
+    description: '',
+  });
   const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewExpense(prev => ({ ...prev, [name]: value }));
+    setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const validateForm = () => {
-    const errors: string[] = [];
+    const newErrors = {
+      vehicleId: !newExpense.vehicleId ? "Selecione um veículo" : "",
+      category: !newExpense.category ? "Selecione uma categoria" : "",
+      date: !newExpense.date ? "Selecione uma data" : "",
+      amount: !newExpense.amount ? "Insira um valor para a despesa" : "",
+      description: !newExpense.description.trim() ? "Insira uma descrição para a despesa" : "",
+    };
 
-    if (!newExpense.vehicleId) errors.push("Selecione um veículo");
-    if (!newExpense.date) errors.push("Selecione uma data");
-    if (!newExpense.category) errors.push("Selecione uma categoria");
-    if (!newExpense.amount) errors.push("Insira um valor para a despesa");
-    if (!newExpense.description.trim()) errors.push("Insira uma descrição para a despesa");
+    setErrors(newErrors);
 
-    const amount = parseFloat(newExpense.amount);
-    if (isNaN(amount) || amount <= 0) {
-      errors.push("Insira um valor válido para a despesa (maior que zero)");
-    }
-
-    if (errors.length > 0) {
+    const hasErrors = Object.values(newErrors).some(error => error !== "");
+    if (hasErrors) {
       toast({
         title: "Erro de validação",
-        description: (
-          <ul className="list-disc pl-4">
-            {errors.map((error, index) => (
-              <li key={index}>{error}</li>
-            ))}
-          </ul>
-        ),
+        description: "Por favor, corrija os campos destacados.",
         variant: "destructive",
       });
-      return false;
     }
 
-    return true;
+    return !hasErrors;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -77,13 +77,16 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, ve
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="flex items-center space-x-2">
-        <Tag className="text-blue-500" />
+      <div className="space-y-2">
+        <Label htmlFor="vehicleId">Veículo</Label>
         <Select
           value={newExpense.vehicleId}
-          onValueChange={(value) => setNewExpense(prev => ({ ...prev, vehicleId: value }))}
+          onValueChange={(value) => {
+            setNewExpense(prev => ({ ...prev, vehicleId: value }));
+            setErrors(prev => ({ ...prev, vehicleId: '' }));
+          }}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className={`w-full ${errors.vehicleId ? 'border-red-500' : ''}`}>
             <SelectValue placeholder="Selecione o veículo" />
           </SelectTrigger>
           <SelectContent>
@@ -92,26 +95,31 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, ve
             ))}
           </SelectContent>
         </Select>
+        {errors.vehicleId && <p className="text-red-500 text-sm">{errors.vehicleId}</p>}
       </div>
       
-      <div className="flex items-center space-x-2">
-        <Calendar className="text-green-500" />
+      <div className="space-y-2">
+        <Label htmlFor="date">Data</Label>
         <Input
           type="date"
           name="date"
           value={newExpense.date}
           onChange={handleInputChange}
-          required
+          className={errors.date ? 'border-red-500' : ''}
         />
+        {errors.date && <p className="text-red-500 text-sm">{errors.date}</p>}
       </div>
       
-      <div className="flex items-center space-x-2">
-        <FileText className="text-yellow-500" />
+      <div className="space-y-2">
+        <Label htmlFor="category">Categoria</Label>
         <Select
           value={newExpense.category}
-          onValueChange={(value) => setNewExpense(prev => ({ ...prev, category: value }))}
+          onValueChange={(value) => {
+            setNewExpense(prev => ({ ...prev, category: value }));
+            setErrors(prev => ({ ...prev, category: '' }));
+          }}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger className={`w-full ${errors.category ? 'border-red-500' : ''}`}>
             <SelectValue placeholder="Categoria" />
           </SelectTrigger>
           <SelectContent>
@@ -121,31 +129,32 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, ve
             <SelectItem value="Impostos">Impostos</SelectItem>
           </SelectContent>
         </Select>
+        {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
       </div>
       
-      <div className="flex items-center space-x-2">
-        <DollarSign className="text-red-500" />
+      <div className="space-y-2">
+        <Label htmlFor="amount">Valor</Label>
         <Input
           type="number"
           name="amount"
-          placeholder="Valor"
           value={newExpense.amount}
           onChange={handleInputChange}
-          required
           step="0.01"
           min="0.01"
+          className={errors.amount ? 'border-red-500' : ''}
         />
+        {errors.amount && <p className="text-red-500 text-sm">{errors.amount}</p>}
       </div>
       
-      <div className="flex items-center space-x-2">
-        <FileText className="text-purple-500" />
+      <div className="space-y-2">
+        <Label htmlFor="description">Descrição</Label>
         <Input
           name="description"
-          placeholder="Descrição"
           value={newExpense.description}
           onChange={handleInputChange}
-          required
+          className={errors.description ? 'border-red-500' : ''}
         />
+        {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
       </div>
       
       <div className="flex justify-end space-x-2">
