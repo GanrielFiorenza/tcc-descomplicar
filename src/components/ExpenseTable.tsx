@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Fuel, Wrench, FileText, DollarSign, Pencil, Trash2, X, Check } from 'lucide-react';
+import { Fuel, Wrench, FileText, DollarSign, Pencil, Trash2 } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,6 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ExpenseEditRow } from './ExpenseEditRow';
 
 interface ExpenseTableProps {
   expenses: any[];
@@ -26,6 +26,8 @@ interface ExpenseTableProps {
 export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, onEdit, onDelete }) => {
   const [editingExpense, setEditingExpense] = useState<number | null>(null);
   const [editedValues, setEditedValues] = useState<any>({});
+
+  const categories = ['Combustível', 'Peças', 'Serviços', 'Impostos', 'Outros'];
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -98,56 +100,14 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
             {expenses.map((expense) => (
               <TableRow key={expense.id}>
                 {editingExpense === expense.id ? (
-                  <>
-                    <TableCell>
-                      <Input
-                        type="date"
-                        value={editedValues.date}
-                        onChange={(e) => handleInputChange('date', e.target.value)}
-                        className="w-32 h-8 text-sm"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="text"
-                        value={editedValues.vehicleId}
-                        onChange={(e) => handleInputChange('vehicleId', e.target.value)}
-                        className="w-32 h-8 text-sm"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="text"
-                        value={editedValues.category}
-                        onChange={(e) => handleInputChange('category', e.target.value)}
-                        className="w-32 h-8 text-sm"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        value={editedValues.amount}
-                        onChange={(e) => handleInputChange('amount', e.target.value)}
-                        className="w-24 h-8 text-sm"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="text"
-                        value={editedValues.description}
-                        onChange={(e) => handleInputChange('description', e.target.value)}
-                        className="w-40 h-8 text-sm"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Button variant="ghost" size="sm" onClick={handleSaveEdit}>
-                        <Check className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={handleCancelEdit}>
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </>
+                  <ExpenseEditRow
+                    editedValues={editedValues}
+                    handleInputChange={handleInputChange}
+                    handleSaveEdit={handleSaveEdit}
+                    handleCancelEdit={handleCancelEdit}
+                    vehicles={vehicles}
+                    categories={categories}
+                  />
                 ) : (
                   <>
                     <TableCell>{expense.date}</TableCell>
