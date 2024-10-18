@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 const CustomReports = () => {
   const [reportType, setReportType] = useState('financial');
   const [reportData, setReportData] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
   const { toast } = useToast();
 
   const generateReport = () => {
@@ -26,6 +27,22 @@ const CustomReports = () => {
       { month: 'Jun', expenses: 2390, income: 3800 },
     ];
     setReportData(mockData);
+    applyFilter(mockData);
+  };
+
+  const applyFilter = (data: any[]) => {
+    let filtered;
+    switch (reportType) {
+      case 'expenses':
+        filtered = data.map(item => ({ month: item.month, expenses: item.expenses }));
+        break;
+      case 'income':
+        filtered = data.map(item => ({ month: item.month, income: item.income }));
+        break;
+      default:
+        filtered = data;
+    }
+    setFilteredData(filtered);
   };
 
   const exportToPDF = () => {
@@ -65,17 +82,16 @@ const CustomReports = () => {
   };
 
   const renderChart = () => {
-    const data = getChartData();
     return (
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
+        <BarChart data={filteredData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" />
           <YAxis />
           <Tooltip />
           <Legend />
-          {reportType === 'financial' || reportType === 'expenses' ? <Bar dataKey="expenses" fill="#8884d8" /> : null}
-          {reportType === 'financial' || reportType === 'income' ? <Bar dataKey="income" fill="#82ca9d" /> : null}
+          {(reportType === 'financial' || reportType === 'expenses') && <Bar dataKey="expenses" fill="#8884d8" />}
+          {(reportType === 'financial' || reportType === 'income') && <Bar dataKey="income" fill="#82ca9d" />}
         </BarChart>
       </ResponsiveContainer>
     );
@@ -87,16 +103,16 @@ const CustomReports = () => {
         <TableHeader>
           <TableRow>
             <TableHead>Mês</TableHead>
-            {reportType === 'financial' || reportType === 'expenses' ? <TableHead>Despesas</TableHead> : null}
-            {reportType === 'financial' || reportType === 'income' ? <TableHead>Receitas</TableHead> : null}
+            {(reportType === 'financial' || reportType === 'expenses') && <TableHead>Despesas</TableHead>}
+            {(reportType === 'financial' || reportType === 'income') && <TableHead>Receitas</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
-          {reportData.map((item, index) => (
+          {filteredData.map((item, index) => (
             <TableRow key={index}>
               <TableCell>{item.month}</TableCell>
-              {reportType === 'financial' || reportType === 'expenses' ? <TableCell className="text-red-500">R$ {item.expenses}</TableCell> : null}
-              {reportType === 'financial' || reportType === 'income' ? <TableCell className="text-green-500">R$ {item.income}</TableCell> : null}
+              {(reportType === 'financial' || reportType === 'expenses') && <TableCell className="text-red-500">R$ {item.expenses}</TableCell>}
+              {(reportType === 'financial' || reportType === 'income') && <TableCell className="text-green-500">R$ {item.income}</TableCell>}
             </TableRow>
           ))}
         </TableBody>
@@ -132,7 +148,7 @@ const CustomReports = () => {
             </Select>
             <Button onClick={generateReport}>Gerar Relatório</Button>
           </div>
-          {reportData.length > 0 && (
+          {filteredData.length > 0 && (
             <div className="space-y-4">
               {renderChart()}
               {renderTable()}
