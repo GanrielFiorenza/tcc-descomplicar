@@ -19,11 +19,23 @@ interface Expense {
 }
 
 const ExpenseControl = () => {
-  const [expenses, setExpenses] = useState<Expense[]>([]);
   const [vehicles] = useState([
     { id: 1, name: "Carro 1" },
     { id: 2, name: "Carro 2" },
+    { id: 3, name: "Carro 3" },
   ]);
+
+  // Mocked initial expenses
+  const initialExpenses: Expense[] = [
+    { id: 1, vehicleId: 1, date: '2024-03-01', category: 'Combustível', amount: 150.00, description: 'Abastecimento mensal' },
+    { id: 2, vehicleId: 1, date: '2024-03-05', category: 'Manutenção', amount: 300.00, description: 'Troca de óleo' },
+    { id: 3, vehicleId: 2, date: '2024-03-02', category: 'Combustível', amount: 120.00, description: 'Abastecimento semanal' },
+    { id: 4, vehicleId: 2, date: '2024-03-10', category: 'Peças', amount: 450.00, description: 'Substituição de pneus' },
+    { id: 5, vehicleId: 3, date: '2024-03-03', category: 'Impostos', amount: 200.00, description: 'IPVA' },
+    { id: 6, vehicleId: 3, date: '2024-03-15', category: 'Combustível', amount: 180.00, description: 'Abastecimento quinzenal' },
+  ];
+
+  const [expenses, setExpenses] = useState<Expense[]>(initialExpenses);
   const [selectedVehicle, setSelectedVehicle] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
