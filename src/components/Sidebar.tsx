@@ -44,14 +44,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
           {isOpen && <span className="ml-4">Configurações</span>}
         </Link>
       </nav>
-      <Button
-        variant="destructive"
-        className="m-4 sticky bottom-0"
-        onClick={onLogout}
-      >
-        <LogOut className="h-5 w-5 mr-2" />
-        {isOpen && "Sair"}
-      </Button>
+      {isOpen && (
+        <Button
+          variant="destructive"
+          className="m-4 sticky bottom-0"
+          onClick={onLogout}
+        >
+          <LogOut className="h-5 w-5 mr-2" />
+          Sair
+        </Button>
+      )}
     </div>
   );
 };
