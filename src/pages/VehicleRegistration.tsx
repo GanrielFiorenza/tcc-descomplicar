@@ -17,7 +17,14 @@ interface Vehicle {
 }
 
 const VehicleRegistration = () => {
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  // Dados mocados de 3 veículos
+  const initialVehicles: Vehicle[] = [
+    { id: 1, brand: "Toyota", model: "Corolla", year: "2022", mileage: "15000", plate: "ABC1234" },
+    { id: 2, brand: "Honda", model: "Civic", year: "2021", mileage: "22000", plate: "DEF5678" },
+    { id: 3, brand: "Ford", model: "Focus", year: "2020", mileage: "30000", plate: "GHI9012" },
+  ];
+
+  const [vehicles, setVehicles] = useState<Vehicle[]>(initialVehicles);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
