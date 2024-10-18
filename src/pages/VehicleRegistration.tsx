@@ -68,6 +68,7 @@ const VehicleRegistration = () => {
               vehicle={{ id: 0, brand: '', model: '', year: '', mileage: '', plate: '' }}
               onSave={handleAddVehicle}
               onCancel={() => setIsModalOpen(false)}
+              isNewVehicle={true}
             />
           </DialogContent>
         </Dialog>
@@ -98,6 +99,7 @@ const VehicleRegistration = () => {
                         vehicle={editingVehicle}
                         onSave={handleEditVehicle}
                         onCancel={() => setEditingVehicle(null)}
+                        isNewVehicle={false}
                       />
                     </TableCell>
                   ) : (
