@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Fuel, Wrench, FileText, DollarSign, Pencil, Trash2, X, Check } from 'lucide-react';
+import { Fuel, Wrench, FileText, DollarSign, Pencil, Trash2, X, Check, Calendar } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -100,12 +100,15 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
                 {editingExpense === expense.id ? (
                   <>
                     <TableCell>
-                      <Input
-                        type="date"
-                        value={editedValues.date}
-                        onChange={(e) => handleInputChange('date', e.target.value)}
-                        className="w-32 h-8 text-sm"
-                      />
+                      <div className="relative flex items-center">
+                        <Input
+                          type="date"
+                          value={editedValues.date}
+                          onChange={(e) => handleInputChange('date', e.target.value)}
+                          className="w-32 h-8 text-sm pr-8"
+                        />
+                        <Calendar className="absolute right-2 h-4 w-4 text-gray-400" />
+                      </div>
                     </TableCell>
                     <TableCell>
                       <Input
