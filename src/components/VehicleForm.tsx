@@ -73,7 +73,7 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({ vehicle, onSave, onCan
   );
 
   return (
-    <div className="grid grid-cols-12 gap-2 items-center">
+    <div className="space-y-4">
       {renderInput('brand', 'Marca')}
       {renderInput('model', 'Modelo')}
       <TooltipProvider>
@@ -103,21 +103,11 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({ vehicle, onSave, onCan
       </TooltipProvider>
       {renderInput('mileage', 'Quilometragem')}
       {renderInput('plate', 'Placa')}
-      <div className="col-span-2 flex space-x-1">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleSave}
-          className="bg-green-500 text-white hover:bg-green-600 px-2 flex-grow"
-        >
+      <div className="flex space-x-2">
+        <Button onClick={handleSave} className="bg-green-500 text-white hover:bg-green-600 flex-grow">
           Salvar
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onCancel}
-          className="bg-red-500 text-white hover:bg-red-600 px-2 flex-grow"
-        >
+        <Button onClick={onCancel} className="bg-red-500 text-white hover:bg-red-600 flex-grow">
           Cancelar
         </Button>
       </div>
