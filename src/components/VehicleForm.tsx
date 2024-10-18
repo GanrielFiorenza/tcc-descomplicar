@@ -73,13 +73,13 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({ vehicle, onSave, onCan
   );
 
   return (
-    <div className={vehicle.id === 0 ? "space-y-4" : "grid grid-cols-12 gap-2 items-center"}>
+    <div className={vehicle.id === 0 ? "space-y-4" : "flex flex-wrap gap-2"}>
       {renderInput('brand', 'Marca')}
       {renderInput('model', 'Modelo')}
       <TooltipProvider>
         <Tooltip open={!!errors.year}>
           <TooltipTrigger asChild>
-            <div className={`relative ${vehicle.id === 0 ? "" : "col-span-2"}`}>
+            <div className={`relative ${vehicle.id === 0 ? "w-full" : "w-24"}`}>
               <Select
                 value={editedVehicle.year}
                 onValueChange={(value) => setEditedVehicle({...editedVehicle, year: value})}
@@ -103,14 +103,16 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({ vehicle, onSave, onCan
       </TooltipProvider>
       {renderInput('mileage', 'Quilometragem')}
       {renderInput('plate', 'Placa')}
-      <div className={`${vehicle.id === 0 ? "flex space-x-2" : "col-span-12 flex space-x-2 mt-4"}`}>
-        <Button onClick={handleSave} className="bg-green-500 text-white hover:bg-green-600 flex-grow">
-          Salvar
-        </Button>
-        <Button onClick={onCancel} className="bg-red-500 text-white hover:bg-red-600 flex-grow">
-          Cancelar
-        </Button>
-      </div>
+      {vehicle.id === 0 && (
+        <div className="flex space-x-2 w-full">
+          <Button onClick={handleSave} className="bg-green-500 text-white hover:bg-green-600 flex-grow">
+            Salvar
+          </Button>
+          <Button onClick={onCancel} className="bg-red-500 text-white hover:bg-red-600 flex-grow">
+            Cancelar
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
