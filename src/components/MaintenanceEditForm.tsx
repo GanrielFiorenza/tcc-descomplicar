@@ -73,16 +73,16 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
   );
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-1">
       <TooltipProvider>
         <Tooltip open={!!errors.date}>
           <TooltipTrigger asChild>
-            <div className="w-[120px]">
+            <div className="w-[110px]">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" className={`w-full justify-start text-left font-normal ${errors.date ? "border-red-500" : ""}`}>
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {editedMaintenance.date ? format(new Date(editedMaintenance.date), 'dd/MM/yyyy') : "Selecione"}
+                    <CalendarIcon className="mr-1 h-4 w-4" />
+                    {editedMaintenance.date ? format(new Date(editedMaintenance.date), 'dd/MM/yy') : "Selecione"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -103,7 +103,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
       <TooltipProvider>
         <Tooltip open={!!errors.serviceType}>
           <TooltipTrigger asChild>
-            <div className="w-[180px]">
+            <div className="w-[170px]">
               <Select 
                 value={editedMaintenance.serviceType}
                 onValueChange={(value) => setEditedMaintenance({...editedMaintenance, serviceType: value})}
@@ -123,14 +123,14 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
         </Tooltip>
       </TooltipProvider>
 
-      {renderInput('cost', 'Custo', 'number', 'w-[100px]')}
-      {renderInput('observations', 'Observações', 'text', 'w-[200px]')}
+      {renderInput('cost', 'Custo', 'number', 'w-[90px]')}
+      {renderInput('observations', 'Observações', 'text', 'w-[190px]')}
 
       <Button
         variant="outline"
         size="sm"
         onClick={handleSave}
-        className="bg-green-500 text-white hover:bg-green-600"
+        className="bg-green-500 text-white hover:bg-green-600 px-2"
       >
         <Check className="h-4 w-4" />
       </Button>
@@ -138,7 +138,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
         variant="outline"
         size="sm"
         onClick={onCancel}
-        className="bg-red-500 text-white hover:bg-red-600"
+        className="bg-red-500 text-white hover:bg-red-600 px-2"
       >
         <X className="h-4 w-4" />
       </Button>
