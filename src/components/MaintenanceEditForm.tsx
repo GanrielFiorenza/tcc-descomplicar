@@ -73,11 +73,11 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
   );
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="grid grid-cols-12 gap-2 items-center">
       <TooltipProvider>
         <Tooltip open={!!errors.date}>
           <TooltipTrigger asChild>
-            <div className="w-[120px]">
+            <div className="col-span-2">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" className={`w-full justify-start text-left font-normal ${errors.date ? "border-red-500" : ""}`}>
@@ -103,7 +103,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
       <TooltipProvider>
         <Tooltip open={!!errors.serviceType}>
           <TooltipTrigger asChild>
-            <div className="w-[180px]">
+            <div className="col-span-3">
               <Select 
                 value={editedMaintenance.serviceType}
                 onValueChange={(value) => setEditedMaintenance({...editedMaintenance, serviceType: value})}
@@ -123,23 +123,23 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
         </Tooltip>
       </TooltipProvider>
 
-      {renderInput('cost', 'Custo', 'number', 'w-[100px]')}
-      {renderInput('observations', 'Observações', 'text', 'w-[200px]')}
+      {renderInput('cost', 'Custo', 'number', 'col-span-2')}
+      {renderInput('observations', 'Observações', 'text', 'col-span-3')}
 
-      <div className="flex space-x-1">
+      <div className="col-span-2 flex space-x-1">
         <Button
           variant="outline"
           size="sm"
           onClick={handleSave}
-          className="bg-green-500 text-white hover:bg-green-600 px-2"
+          className="bg-green-500 text-white hover:bg-green-600 px-2 flex-grow"
         >
           <Check className="h-4 w-4" />
         </Button>
         <Button
-          variant-outline
+          variant="outline"
           size="sm"
           onClick={onCancel}
-          className="bg-red-500 text-white hover:bg-red-600 px-2"
+          className="bg-red-500 text-white hover:bg-red-600 px-2 flex-grow"
         >
           <X className="h-4 w-4" />
         </Button>
