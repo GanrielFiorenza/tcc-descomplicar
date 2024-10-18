@@ -23,20 +23,20 @@ export const ExpenseEditRow: React.FC<ExpenseEditRowProps> = ({
 }) => {
   return (
     <>
-      <td className="p-0">
+      <td className="p-2 h-16">
         <Input
           type="date"
           value={editedValues.date}
           onChange={(e) => handleInputChange('date', e.target.value)}
-          className="w-full h-full border-none text-sm"
+          className="w-full h-full text-sm"
         />
       </td>
-      <td className="p-0">
+      <td className="p-2 h-16">
         <Select
           value={editedValues.vehicleId.toString()}
           onValueChange={(value) => handleInputChange('vehicleId', value)}
         >
-          <SelectTrigger className="w-full h-full border-none text-sm">
+          <SelectTrigger className="w-full h-full text-sm">
             <SelectValue placeholder="Veículo" />
           </SelectTrigger>
           <SelectContent>
@@ -48,12 +48,12 @@ export const ExpenseEditRow: React.FC<ExpenseEditRowProps> = ({
           </SelectContent>
         </Select>
       </td>
-      <td className="p-0">
+      <td className="p-2 h-16">
         <Select
           value={editedValues.category}
           onValueChange={(value) => handleInputChange('category', value)}
         >
-          <SelectTrigger className="w-full h-full border-none text-sm">
+          <SelectTrigger className="w-full h-full text-sm">
             <SelectValue placeholder="Categoria" />
           </SelectTrigger>
           <SelectContent>
@@ -65,23 +65,23 @@ export const ExpenseEditRow: React.FC<ExpenseEditRowProps> = ({
           </SelectContent>
         </Select>
       </td>
-      <td className="p-0">
+      <td className="p-2 h-16">
         <Input
           type="number"
           value={editedValues.amount}
           onChange={(e) => handleInputChange('amount', e.target.value)}
-          className="w-full h-full border-none text-sm"
+          className="w-full h-full text-sm"
         />
       </td>
-      <td className="p-0">
+      <td className="p-2 h-16">
         <Input
           type="text"
           value={editedValues.description}
           onChange={(e) => handleInputChange('description', e.target.value)}
-          className="w-full h-full border-none text-sm"
+          className="w-full h-full text-sm"
         />
       </td>
-      <td className="p-0">
+      <td className="p-2 h-16">
         <div className="flex h-full">
           <Button variant="ghost" size="sm" onClick={handleSaveEdit} className="flex-1 h-full">
             <Check className="h-4 w-4" />

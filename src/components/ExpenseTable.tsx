@@ -88,17 +88,17 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Data</TableHead>
+              <TableHead className="w-[100px]">Data</TableHead>
               <TableHead>Veículo</TableHead>
               <TableHead>Categoria</TableHead>
               <TableHead>Valor</TableHead>
               <TableHead>Descrição</TableHead>
-              <TableHead>Ações</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {expenses.map((expense) => (
-              <TableRow key={expense.id}>
+              <TableRow key={expense.id} className="h-16">
                 {editingExpense === expense.id ? (
                   <ExpenseEditRow
                     editedValues={editedValues}
@@ -110,17 +110,17 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
                   />
                 ) : (
                   <>
-                    <TableCell>{expense.date}</TableCell>
-                    <TableCell>{getVehicleName(expense.vehicleId)}</TableCell>
-                    <TableCell className="flex items-center">
+                    <TableCell className="p-2 h-16">{expense.date}</TableCell>
+                    <TableCell className="p-2 h-16">{getVehicleName(expense.vehicleId)}</TableCell>
+                    <TableCell className="p-2 h-16 flex items-center">
                       {getCategoryIcon(expense.category)}
                       <span className="ml-2">{expense.category}</span>
                     </TableCell>
-                    <TableCell className={parseFloat(expense.amount) > 1000 ? "text-red-500 font-bold" : ""}>
+                    <TableCell className={`p-2 h-16 ${parseFloat(expense.amount) > 1000 ? "text-red-500 font-bold" : ""}`}>
                       {formatAmount(expense.amount)}
                     </TableCell>
-                    <TableCell>{expense.description}</TableCell>
-                    <TableCell>
+                    <TableCell className="p-2 h-16">{expense.description}</TableCell>
+                    <TableCell className="p-2 h-16 text-right">
                       <Button variant="ghost" size="sm" onClick={() => handleEditClick(expense)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
