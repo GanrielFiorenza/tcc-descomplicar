@@ -11,8 +11,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className={`bg-gray-800 text-white h-screen ${isOpen ? 'w-64' : 'w-16'} transition-all duration-300 ease-in-out flex flex-col`}>
-      <div className="flex justify-between items-center p-4">
+    <div className={`bg-gray-800 text-white h-screen ${isOpen ? 'w-64' : 'w-16'} transition-all duration-300 ease-in-out flex flex-col fixed top-0 left-0 overflow-y-auto`}>
+      <div className="flex justify-between items-center p-4 sticky top-0 bg-gray-800 z-10">
         {isOpen && <h2 className="text-xl font-bold">Menu</h2>}
         <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <ChevronLeft /> : <ChevronRight />}
@@ -46,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
       </nav>
       <Button
         variant="destructive"
-        className="m-4"
+        className="m-4 sticky bottom-0"
         onClick={onLogout}
       >
         <LogOut className="h-5 w-5 mr-2" />

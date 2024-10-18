@@ -32,7 +32,7 @@ const App = () => {
         <BrowserRouter>
           <div className="flex">
             {isLoggedIn && <Sidebar onLogout={handleLogout} />}
-            <main className="flex-1">
+            <main className={`flex-1 ${isLoggedIn ? 'ml-16 lg:ml-64' : ''}`}>
               <Routes>
                 <Route path="/" element={<Index onLogin={handleLogin} />} />
                 <Route
