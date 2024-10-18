@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, DollarSign, FileText, Tag } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 interface ExpenseFormProps {
   onSubmit: (expense: any) => void;
@@ -15,24 +16,51 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, ve
     vehicleId: 0,
     date: '',
     category: '',
-    amount: 0,
+    amount: '',
     description: '',
   });
+  const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewExpense(prev => ({ ...prev, [name]: value }));
   };
 
+  const validateForm = () => {
+    if (!newExpense.vehicleId || !newExpense.date || !newExpense.category || !newExpense.amount) {
+      toast({
+        title: "Erro de validação",
+        description: "Por favor, preencha todos os campos obrigatórios.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    const amount = parseFloat(newExpense.amount);
+    if (isNaN(amount) || amount <= 0) {
+      toast({
+        title: "Erro de validação",
+        description: "Por favor, insira um valor válido para a despesa.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newExpense.vehicleId && newExpense.date && newExpense.category && newExpense.amount) {
-      onSubmit(newExpense);
+    if (validateForm()) {
+      onSubmit({
+        ...newExpense,
+        amount: parseFloat(newExpense.amount),
+      });
       setNewExpense({
         vehicleId: 0,
         date: '',
         category: '',
-        amount: 0,
+        amount: '',
         description: '',
       });
     }
@@ -89,6 +117,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, ve
           value={newExpense.amount}
           onChange={handleInputChange}
           required
+          step="0.01"
+          min="0.01"
         />
       </div>
       
