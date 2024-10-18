@@ -29,7 +29,7 @@ const ExpenseControl = () => {
   const { toast } = useToast();
 
   const handleAddExpense = (newExpense: Omit<Expense, 'id'>) => {
-    const expenseWithId = { ...newExpense, id: Date.now() };
+    const expenseWithId = { ...newExpense, id: Date.now(), vehicleId: Number(newExpense.vehicleId) };
     setExpenses([...expenses, expenseWithId]);
     setIsModalOpen(false);
     toast({
