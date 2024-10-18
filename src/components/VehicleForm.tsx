@@ -73,13 +73,13 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({ vehicle, onSave, onCan
   );
 
   return (
-    <div className={vehicle.id === 0 ? "space-y-4" : "flex flex-wrap gap-2"}>
+    <div className={vehicle.id === 0 ? "space-y-4" : "flex items-center space-x-2"}>
       {renderInput('brand', 'Marca')}
       {renderInput('model', 'Modelo')}
       <TooltipProvider>
         <Tooltip open={!!errors.year}>
           <TooltipTrigger asChild>
-            <div className={`relative ${vehicle.id === 0 ? "w-full" : "w-24"}`}>
+            <div className="relative w-24">
               <Select
                 value={editedVehicle.year}
                 onValueChange={(value) => setEditedVehicle({...editedVehicle, year: value})}
@@ -104,7 +104,7 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({ vehicle, onSave, onCan
       {renderInput('mileage', 'Quilometragem')}
       {renderInput('plate', 'Placa')}
       {vehicle.id === 0 && (
-        <div className="flex space-x-2 w-full">
+        <div className="flex space-x-2 w-full mt-4">
           <Button onClick={handleSave} className="bg-green-500 text-white hover:bg-green-600 flex-grow">
             Salvar
           </Button>

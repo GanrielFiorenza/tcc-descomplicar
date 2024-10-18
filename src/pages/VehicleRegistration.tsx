@@ -92,7 +92,17 @@ const VehicleRegistration = () => {
             <TableBody>
               {vehicles.map((vehicle) => (
                 <TableRow key={vehicle.id}>
-                  <TableCell>{editingVehicle?.id === vehicle.id ? <VehicleForm vehicle={editingVehicle} onSave={handleEditVehicle} onCancel={() => setEditingVehicle(null)} /> : vehicle.brand}</TableCell>
+                  <TableCell>
+                    {editingVehicle?.id === vehicle.id ? (
+                      <VehicleForm
+                        vehicle={editingVehicle}
+                        onSave={handleEditVehicle}
+                        onCancel={() => setEditingVehicle(null)}
+                      />
+                    ) : (
+                      vehicle.brand
+                    )}
+                  </TableCell>
                   <TableCell>{editingVehicle?.id !== vehicle.id && vehicle.model}</TableCell>
                   <TableCell>{editingVehicle?.id !== vehicle.id && vehicle.year}</TableCell>
                   <TableCell>{editingVehicle?.id !== vehicle.id && vehicle.mileage}</TableCell>
