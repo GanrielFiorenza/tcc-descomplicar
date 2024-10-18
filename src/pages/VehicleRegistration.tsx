@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Pencil, Trash2, Plus, Car } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface Vehicle {
   id: number;
@@ -24,6 +26,8 @@ const VehicleRegistration = () => {
     vin: '',
   });
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,72 +43,87 @@ const VehicleRegistration = () => {
       setVehicles([...vehicles, { ...newVehicle, id: Date.now() }]);
     }
     setNewVehicle({ brand: '', model: '', year: '', mileage: '', vin: '' });
+    setIsModalOpen(false);
+    toast({
+      title: editingId !== null ? "Veículo Atualizado" : "Veículo Adicionado",
+      description: editingId !== null ? "O veículo foi atualizado com sucesso." : "Um novo veículo foi adicionado com sucesso.",
+    });
   };
 
   const handleEdit = (vehicle: Vehicle) => {
     setNewVehicle(vehicle);
     setEditingId(vehicle.id);
+    setIsModalOpen(true);
   };
 
   const handleDelete = (id: number) => {
     setVehicles(vehicles.filter(v => v.id !== id));
+    toast({
+      title: "Veículo Removido",
+      description: "O veículo foi removido com sucesso.",
+      variant: "destructive",
+    });
   };
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Registro de Veículos</h1>
-      
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>
-            <Car className="inline-block mr-2" />
-            {editingId !== null ? 'Editar Veículo' : 'Adicionar Novo Veículo'}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              placeholder="Marca"
-              name="brand"
-              value={newVehicle.brand}
-              onChange={handleInputChange}
-              required
-            />
-            <Input
-              placeholder="Modelo"
-              name="model"
-              value={newVehicle.model}
-              onChange={handleInputChange}
-              required
-            />
-            <Input
-              placeholder="Ano"
-              name="year"
-              value={newVehicle.year}
-              onChange={handleInputChange}
-              required
-            />
-            <Input
-              placeholder="Quilometragem"
-              name="mileage"
-              value={newVehicle.mileage}
-              onChange={handleInputChange}
-              required
-            />
-            <Input
-              placeholder="VIN"
-              name="vin"
-              value={newVehicle.vin}
-              onChange={handleInputChange}
-              required
-            />
-            <Button type="submit" className="w-full">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Registro de Veículos</h1>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-green-500 hover:bg-green-600">
               <Plus className="mr-2 h-4 w-4" />
-              {editingId !== null ? 'Atualizar Veículo' : 'Adicionar Veículo'}
+              Novo Veículo
             </Button>
-          </form>
-        </CardContent>
-      </Card>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{editingId !== null ? 'Editar Veículo' : 'Adicionar Novo Veículo'}</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <Input
+                placeholder="Marca"
+                name="brand"
+                value={newVehicle.brand}
+                onChange={handleInputChange}
+                required
+              />
+              <Input
+                placeholder="Modelo"
+                name="model"
+                value={newVehicle.model}
+                onChange={handleInputChange}
+                required
+              />
+              <Input
+                placeholder="Ano"
+                name="year"
+                value={newVehicle.year}
+                onChange={handleInputChange}
+                required
+              />
+              <Input
+                placeholder="Quilometragem"
+                name="mileage"
+                value={newVehicle.mileage}
+                onChange={handleInputChange}
+                required
+              />
+              <Input
+                placeholder="VIN"
+                name="vin"
+                value={newVehicle.vin}
+                onChange={handleInputChange}
+                required
+              />
+              <Button type="submit" className="w-full bg-green-500 hover:bg-green-600">
+                <Plus className="mr-2 h-4 w-4" />
+                {editingId !== null ? 'Atualizar Veículo' : 'Adicionar Veículo'}
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
 
       <Card>
         <CardHeader>
