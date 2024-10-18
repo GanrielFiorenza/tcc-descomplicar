@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, LayoutDashboard, Car, Wrench, Wallet, FileText, Settings, LogOut } from 'lucide-react';
 
@@ -9,6 +9,16 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const location = useLocation();
+
+  const navItems = [
+    { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/vehicles', icon: Car, label: 'Veículos' },
+    { path: '/maintenance', icon: Wrench, label: 'Manutenções' },
+    { path: '/expenses', icon: Wallet, label: 'Despesas' },
+    { path: '/reports', icon: FileText, label: 'Relatórios' },
+    { path: '/settings', icon: Settings, label: 'Configurações' },
+  ];
 
   return (
     <div className={`bg-gray-800 text-white h-screen ${isOpen ? 'w-64' : 'w-16'} transition-all duration-300 ease-in-out flex flex-col fixed top-0 left-0 overflow-y-auto`}>
@@ -19,30 +29,18 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
         </Button>
       </div>
       <nav className="flex-grow">
-        <Link to="/dashboard" className="flex items-center p-4 hover:bg-gray-700">
-          <LayoutDashboard className="h-5 w-5" />
-          {isOpen && <span className="ml-4">Dashboard</span>}
-        </Link>
-        <Link to="/vehicles" className="flex items-center p-4 hover:bg-gray-700">
-          <Car className="h-5 w-5" />
-          {isOpen && <span className="ml-4">Veículos</span>}
-        </Link>
-        <Link to="/maintenance" className="flex items-center p-4 hover:bg-gray-700">
-          <Wrench className="h-5 w-5" />
-          {isOpen && <span className="ml-4">Manutenções</span>}
-        </Link>
-        <Link to="/expenses" className="flex items-center p-4 hover:bg-gray-700">
-          <Wallet className="h-5 w-5" />
-          {isOpen && <span className="ml-4">Despesas</span>}
-        </Link>
-        <Link to="/reports" className="flex items-center p-4 hover:bg-gray-700">
-          <FileText className="h-5 w-5" />
-          {isOpen && <span className="ml-4">Relatórios</span>}
-        </Link>
-        <Link to="/settings" className="flex items-center p-4 hover:bg-gray-700">
-          <Settings className="h-5 w-5" />
-          {isOpen && <span className="ml-4">Configurações</span>}
-        </Link>
+        {navItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`flex items-center p-4 hover:bg-gray-700 transition-colors ${
+              location.pathname === item.path ? 'bg-gray-900' : ''
+            }`}
+          >
+            <item.icon className="h-5 w-5" />
+            {isOpen && <span className="ml-4">{item.label}</span>}
+          </Link>
+        ))}
       </nav>
       {isOpen && (
         <Button
