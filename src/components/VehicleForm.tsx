@@ -14,6 +14,12 @@ interface Vehicle {
   plate: string;
 }
 
+interface VehicleFormProps {
+  vehicle: Vehicle;
+  onSave: (vehicle: Vehicle) => void;
+  onCancel: () => void;
+}
+
 export const VehicleForm: React.FC<VehicleFormProps> = ({ vehicle, onSave, onCancel }) => {
   const [editedVehicle, setEditedVehicle] = useState<Vehicle>(vehicle);
   const [errors, setErrors] = useState<{ [key in keyof Vehicle]?: string }>({});
