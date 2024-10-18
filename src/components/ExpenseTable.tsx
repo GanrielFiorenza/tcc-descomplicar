@@ -34,8 +34,8 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles }
     }
   };
 
-  const getVehicleName = (vehicleId: number) => {
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+  const getVehicleName = (vehicleId: number | string) => {
+    const vehicle = vehicles.find(v => v.id === Number(vehicleId));
     return vehicle ? vehicle.name : 'Veículo não encontrado';
   };
 
