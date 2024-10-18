@@ -13,7 +13,7 @@ interface ExpenseFormProps {
 
 export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, vehicles }) => {
   const [newExpense, setNewExpense] = useState({
-    vehicleId: 0,
+    vehicleId: '',
     date: '',
     category: '',
     amount: '',
@@ -33,6 +33,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, ve
     if (!newExpense.date) errors.push("Selecione uma data");
     if (!newExpense.category) errors.push("Selecione uma categoria");
     if (!newExpense.amount) errors.push("Insira um valor para a despesa");
+    if (!newExpense.description.trim()) errors.push("Insira uma descrição para a despesa");
 
     const amount = parseFloat(newExpense.amount);
     if (isNaN(amount) || amount <= 0) {
@@ -65,7 +66,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, ve
         amount: parseFloat(newExpense.amount),
       });
       setNewExpense({
-        vehicleId: 0,
+        vehicleId: '',
         date: '',
         category: '',
         amount: '',
@@ -78,7 +79,10 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, ve
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="flex items-center space-x-2">
         <Tag className="text-blue-500" />
-        <Select onValueChange={(value) => setNewExpense(prev => ({ ...prev, vehicleId: Number(value) }))}>
+        <Select
+          value={newExpense.vehicleId}
+          onValueChange={(value) => setNewExpense(prev => ({ ...prev, vehicleId: value }))}
+        >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Selecione o veículo" />
           </SelectTrigger>
@@ -103,7 +107,10 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, ve
       
       <div className="flex items-center space-x-2">
         <FileText className="text-yellow-500" />
-        <Select onValueChange={(value) => setNewExpense(prev => ({ ...prev, category: value }))}>
+        <Select
+          value={newExpense.category}
+          onValueChange={(value) => setNewExpense(prev => ({ ...prev, category: value }))}
+        >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Categoria" />
           </SelectTrigger>
@@ -137,6 +144,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, ve
           placeholder="Descrição"
           value={newExpense.description}
           onChange={handleInputChange}
+          required
         />
       </div>
       
