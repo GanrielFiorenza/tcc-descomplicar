@@ -23,20 +23,20 @@ export const ExpenseEditRow: React.FC<ExpenseEditRowProps> = ({
 }) => {
   return (
     <>
-      <td>
+      <td className="p-0">
         <Input
           type="date"
           value={editedValues.date}
           onChange={(e) => handleInputChange('date', e.target.value)}
-          className="w-28 h-8 text-sm"
+          className="w-full h-full border-none text-sm"
         />
       </td>
-      <td>
+      <td className="p-0">
         <Select
           value={editedValues.vehicleId.toString()}
           onValueChange={(value) => handleInputChange('vehicleId', value)}
         >
-          <SelectTrigger className="w-28 h-8 text-sm">
+          <SelectTrigger className="w-full h-full border-none text-sm">
             <SelectValue placeholder="Veículo" />
           </SelectTrigger>
           <SelectContent>
@@ -48,12 +48,12 @@ export const ExpenseEditRow: React.FC<ExpenseEditRowProps> = ({
           </SelectContent>
         </Select>
       </td>
-      <td>
+      <td className="p-0">
         <Select
           value={editedValues.category}
           onValueChange={(value) => handleInputChange('category', value)}
         >
-          <SelectTrigger className="w-28 h-8 text-sm">
+          <SelectTrigger className="w-full h-full border-none text-sm">
             <SelectValue placeholder="Categoria" />
           </SelectTrigger>
           <SelectContent>
@@ -65,29 +65,31 @@ export const ExpenseEditRow: React.FC<ExpenseEditRowProps> = ({
           </SelectContent>
         </Select>
       </td>
-      <td>
+      <td className="p-0">
         <Input
           type="number"
           value={editedValues.amount}
           onChange={(e) => handleInputChange('amount', e.target.value)}
-          className="w-24 h-8 text-sm"
+          className="w-full h-full border-none text-sm"
         />
       </td>
-      <td>
+      <td className="p-0">
         <Input
           type="text"
           value={editedValues.description}
           onChange={(e) => handleInputChange('description', e.target.value)}
-          className="w-40 h-8 text-sm"
+          className="w-full h-full border-none text-sm"
         />
       </td>
-      <td>
-        <Button variant="ghost" size="sm" onClick={handleSaveEdit}>
-          <Check className="h-4 w-4" />
-        </Button>
-        <Button variant="ghost" size="sm" onClick={handleCancelEdit}>
-          <X className="h-4 w-4" />
-        </Button>
+      <td className="p-0">
+        <div className="flex h-full">
+          <Button variant="ghost" size="sm" onClick={handleSaveEdit} className="flex-1 h-full">
+            <Check className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="sm" onClick={handleCancelEdit} className="flex-1 h-full">
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
       </td>
     </>
   );
