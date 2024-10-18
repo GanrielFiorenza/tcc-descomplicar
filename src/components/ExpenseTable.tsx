@@ -23,6 +23,17 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles }
     }
   };
 
+  const formatAmount = (amount: any) => {
+    if (typeof amount === 'number') {
+      return `R$ ${amount.toFixed(2)}`;
+    } else if (typeof amount === 'string') {
+      const numAmount = parseFloat(amount);
+      return isNaN(numAmount) ? 'Invalid Amount' : `R$ ${numAmount.toFixed(2)}`;
+    } else {
+      return 'Invalid Amount';
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -48,8 +59,8 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles }
                   {getCategoryIcon(expense.category)}
                   <span className="ml-2">{expense.category}</span>
                 </TableCell>
-                <TableCell className={expense.amount > 1000 ? "text-red-500 font-bold" : ""}>
-                  R$ {expense.amount.toFixed(2)}
+                <TableCell className={parseFloat(expense.amount) > 1000 ? "text-red-500 font-bold" : ""}>
+                  {formatAmount(expense.amount)}
                 </TableCell>
                 <TableCell>{expense.description}</TableCell>
               </TableRow>
