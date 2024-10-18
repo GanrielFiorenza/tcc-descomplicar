@@ -77,7 +77,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
       <TooltipProvider>
         <Tooltip open={!!errors.date}>
           <TooltipTrigger asChild>
-            <div className="w-[110px]">
+            <div className="w-[120px]">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" className={`w-full justify-start text-left font-normal ${errors.date ? "border-red-500" : ""}`}>
@@ -103,7 +103,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
       <TooltipProvider>
         <Tooltip open={!!errors.serviceType}>
           <TooltipTrigger asChild>
-            <div className="w-[170px]">
+            <div className="w-[180px] ml-1">
               <Select 
                 value={editedMaintenance.serviceType}
                 onValueChange={(value) => setEditedMaintenance({...editedMaintenance, serviceType: value})}
@@ -123,25 +123,27 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
         </Tooltip>
       </TooltipProvider>
 
-      {renderInput('cost', 'Custo', 'number', 'w-[90px]')}
-      {renderInput('observations', 'Observações', 'text', 'w-[190px]')}
+      {renderInput('cost', 'Custo', 'number', 'w-[100px] ml-1')}
+      {renderInput('observations', 'Observações', 'text', 'w-[200px] ml-1')}
 
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handleSave}
-        className="bg-green-500 text-white hover:bg-green-600 px-2"
-      >
-        <Check className="h-4 w-4" />
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={onCancel}
-        className="bg-red-500 text-white hover:bg-red-600 px-2"
-      >
-        <X className="h-4 w-4" />
-      </Button>
+      <div className="flex space-x-1 ml-1">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleSave}
+          className="bg-green-500 text-white hover:bg-green-600 px-2"
+        >
+          <Check className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onCancel}
+          className="bg-red-500 text-white hover:bg-red-600 px-2"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 };
