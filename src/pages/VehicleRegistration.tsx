@@ -18,7 +18,7 @@ interface Vehicle {
 
 const VehicleRegistration = () => {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
 
@@ -33,7 +33,7 @@ const VehicleRegistration = () => {
 
   const handleEditVehicle = (editedVehicle: Vehicle) => {
     setVehicles(vehicles.map(v => v.id === editedVehicle.id ? editedVehicle : v));
-    setEditingId(null);
+    setEditingVehicle(null);
     toast({
       title: "Veículo Atualizado",
       description: "O veículo foi atualizado com sucesso.",
@@ -92,12 +92,12 @@ const VehicleRegistration = () => {
             <TableBody>
               {vehicles.map((vehicle) => (
                 <TableRow key={vehicle.id}>
-                  {editingId === vehicle.id ? (
+                  {editingVehicle?.id === vehicle.id ? (
                     <TableCell colSpan={6}>
                       <VehicleForm
-                        vehicle={vehicle}
+                        vehicle={editingVehicle}
                         onSave={handleEditVehicle}
-                        onCancel={() => setEditingId(null)}
+                        onCancel={() => setEditingVehicle(null)}
                       />
                     </TableCell>
                   ) : (
@@ -111,7 +111,7 @@ const VehicleRegistration = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setEditingId(vehicle.id)}
+                          onClick={() => setEditingVehicle(vehicle)}
                           className="mr-2"
                         >
                           <Pencil className="h-4 w-4" />
