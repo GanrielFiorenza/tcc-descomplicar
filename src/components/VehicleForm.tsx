@@ -5,6 +5,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlertCircle } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+interface Vehicle {
+  id: number;
+  brand: string;
+  model: string;
+  year: string;
+  mileage: string;
+  plate: string;
+}
+
 interface VehicleFormProps {
   vehicle: Vehicle;
   onSave: (vehicle: Vehicle) => void;
@@ -13,13 +22,13 @@ interface VehicleFormProps {
 
 export const VehicleForm: React.FC<VehicleFormProps> = ({ vehicle, onSave, onCancel }) => {
   const [editedVehicle, setEditedVehicle] = useState<Vehicle>(vehicle);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<{ [key in keyof Vehicle]?: string }>({});
 
   const currentYear = new Date().getFullYear();
   const yearOptions = Array.from({ length: 50 }, (_, i) => currentYear - i);
 
   const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
+    const newErrors: { [key in keyof Vehicle]?: string } = {};
     if (!editedVehicle.brand.trim()) newErrors.brand = "Este campo não pode ficar vazio";
     if (!editedVehicle.model.trim()) newErrors.model = "Este campo não pode ficar vazio";
     if (!editedVehicle.year) newErrors.year = "Este campo não pode ficar vazio";
@@ -72,7 +81,7 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({ vehicle, onSave, onCan
           <TooltipTrigger asChild>
             <div className="relative">
               <Select
-                value={editedVehicle.year.toString()}
+                value={editedVehicle.year}
                 onValueChange={(value) => setEditedVehicle({...editedVehicle, year: value})}
               >
                 <SelectTrigger className={`w-full ${errors.year ? "border-red-500" : ""}`}>
