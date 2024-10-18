@@ -34,6 +34,11 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles }
     }
   };
 
+  const getVehicleName = (vehicleId: number) => {
+    const vehicle = vehicles.find(v => v.id === vehicleId);
+    return vehicle ? vehicle.name : 'Veículo não encontrado';
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -54,7 +59,7 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles }
             {expenses.map((expense) => (
               <TableRow key={expense.id}>
                 <TableCell>{expense.date}</TableCell>
-                <TableCell>{vehicles.find(v => v.id === expense.vehicleId)?.name}</TableCell>
+                <TableCell>{getVehicleName(expense.vehicleId)}</TableCell>
                 <TableCell className="flex items-center">
                   {getCategoryIcon(expense.category)}
                   <span className="ml-2">{expense.category}</span>
