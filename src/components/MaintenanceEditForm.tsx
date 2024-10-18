@@ -50,11 +50,11 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
     }
   };
 
-  const renderInput = (field: keyof Maintenance, placeholder: string, type: string = 'text') => (
+  const renderInput = (field: keyof Maintenance, placeholder: string, type: string = 'text', width: string) => (
     <TooltipProvider>
       <Tooltip open={!!errors[field]}>
         <TooltipTrigger asChild>
-          <div className="relative w-full">
+          <div className={`relative ${width}`}>
             <Input
               type={type}
               value={editedMaintenance[field]}
@@ -73,83 +73,75 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
   );
 
   return (
-    <div className="flex flex-col space-y-4">
-      <div className="flex items-center space-x-2">
-        <TooltipProvider>
-          <Tooltip open={!!errors.date}>
-            <TooltipTrigger asChild>
-              <div className="w-full">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className={`w-full justify-start text-left font-normal ${errors.date ? "border-red-500" : ""}`}>
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {editedMaintenance.date ? format(new Date(editedMaintenance.date), 'dd/MM/yyyy') : "Selecione a data"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={editedMaintenance.date ? new Date(editedMaintenance.date) : undefined}
-                      onSelect={(date) => setEditedMaintenance({...editedMaintenance, date: date ? format(date, 'yyyy-MM-dd') : ''})}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </TooltipTrigger>
-            {errors.date && <TooltipContent>{errors.date}</TooltipContent>}
-          </Tooltip>
-        </TooltipProvider>
-      </div>
+    <div className="flex items-center space-x-2">
+      <TooltipProvider>
+        <Tooltip open={!!errors.date}>
+          <TooltipTrigger asChild>
+            <div className="w-[120px]">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className={`w-full justify-start text-left font-normal ${errors.date ? "border-red-500" : ""}`}>
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {editedMaintenance.date ? format(new Date(editedMaintenance.date), 'dd/MM/yyyy') : "Selecione"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={editedMaintenance.date ? new Date(editedMaintenance.date) : undefined}
+                    onSelect={(date) => setEditedMaintenance({...editedMaintenance, date: date ? format(date, 'yyyy-MM-dd') : ''})}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          </TooltipTrigger>
+          {errors.date && <TooltipContent>{errors.date}</TooltipContent>}
+        </Tooltip>
+      </TooltipProvider>
 
-      <div className="w-full">
-        <TooltipProvider>
-          <Tooltip open={!!errors.serviceType}>
-            <TooltipTrigger asChild>
-              <div className="w-full">
-                <Select 
-                  value={editedMaintenance.serviceType}
-                  onValueChange={(value) => setEditedMaintenance({...editedMaintenance, serviceType: value})}
-                >
-                  <SelectTrigger className={`w-full ${errors.serviceType ? "border-red-500" : ""}`}>
-                    <SelectValue placeholder="Tipo de Serviço" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {serviceTypeOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </TooltipTrigger>
-            {errors.serviceType && <TooltipContent>{errors.serviceType}</TooltipContent>}
-          </Tooltip>
-        </TooltipProvider>
-      </div>
+      <TooltipProvider>
+        <Tooltip open={!!errors.serviceType}>
+          <TooltipTrigger asChild>
+            <div className="w-[180px]">
+              <Select 
+                value={editedMaintenance.serviceType}
+                onValueChange={(value) => setEditedMaintenance({...editedMaintenance, serviceType: value})}
+              >
+                <SelectTrigger className={`w-full ${errors.serviceType ? "border-red-500" : ""}`}>
+                  <SelectValue placeholder="Tipo de Serviço" />
+                </SelectTrigger>
+                <SelectContent>
+                  {serviceTypeOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </TooltipTrigger>
+          {errors.serviceType && <TooltipContent>{errors.serviceType}</TooltipContent>}
+        </Tooltip>
+      </TooltipProvider>
 
-      {renderInput('cost', 'Custo', 'number')}
-      {renderInput('observations', 'Observações')}
+      {renderInput('cost', 'Custo', 'number', 'w-[100px]')}
+      {renderInput('observations', 'Observações', 'text', 'w-[200px]')}
 
-      <div className="flex justify-end space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onCancel}
-          className="bg-red-500 text-white hover:bg-red-600"
-        >
-          <X className="h-4 w-4 mr-2" />
-          Cancelar
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleSave}
-          className="bg-green-500 text-white hover:bg-green-600"
-        >
-          <Check className="h-4 w-4 mr-2" />
-          Salvar
-        </Button>
-      </div>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handleSave}
+        className="bg-green-500 text-white hover:bg-green-600"
+      >
+        <Check className="h-4 w-4" />
+      </Button>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onCancel}
+        className="bg-red-500 text-white hover:bg-red-600"
+      >
+        <X className="h-4 w-4" />
+      </Button>
     </div>
   );
 };
