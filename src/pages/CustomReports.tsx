@@ -13,45 +13,51 @@ import { ReportTable } from '@/components/ReportTable';
 const CustomReports = () => {
   const [reportType, setReportType] = useState('general');
   const [reportData, setReportData] = useState<any[]>([]);
+  const [selectedReportType, setSelectedReportType] = useState('general');
   const { toast } = useToast();
 
+  const mockData = {
+    general: [
+      { month: 'Jan', maintenance: 4000, fuel: 1500, taxes: 500, description: 'Manutenção: Revisão completa do motor. Combustível: Abastecimento mensal. Impostos: Pagamento do IPVA.' },
+      { month: 'Fev', maintenance: 800, fuel: 3000, taxes: 200, description: 'Manutenção: Alinhamento e balanceamento. Combustível: Abastecimento quinzenal. Impostos: Taxa de licenciamento.' },
+      { month: 'Mar', maintenance: 1200, fuel: 1800, taxes: 2000, description: 'Manutenção: Troca de pastilhas de freio. Combustível: Abastecimento semanal. Impostos: Pagamento do IPVA atrasado.' },
+      { month: 'Abr', maintenance: 2780, fuel: 2000, taxes: 100, description: 'Manutenção: Troca dos quatro pneus. Combustível: Abastecimento mensal. Impostos: Taxa de renovação da CNH.' },
+      { month: 'Mai', maintenance: 900, fuel: 1890, taxes: 300, description: 'Manutenção: Troca de filtros e óleo. Combustível: Abastecimento quinzenal. Impostos: Multa de trânsito.' },
+      { month: 'Jun', maintenance: 1100, fuel: 2100, taxes: 2390, description: 'Manutenção: Revisão geral semestral. Combustível: Abastecimento semanal. Impostos: Pagamento do IPVA e licenciamento.' },
+    ],
+    maintenance: [
+      { month: 'Jan', amount: 1000, description: 'Troca de óleo e filtros', type: 'Manutenção' },
+      { month: 'Fev', amount: 800, description: 'Alinhamento e balanceamento', type: 'Manutenção' },
+      { month: 'Mar', amount: 1200, description: 'Troca de pastilhas de freio', type: 'Manutenção' },
+      { month: 'Abr', amount: 2780, description: 'Troca dos quatro pneus', type: 'Manutenção' },
+      { month: 'Mai', amount: 900, description: 'Revisão do sistema de arrefecimento', type: 'Manutenção' },
+      { month: 'Jun', amount: 1100, description: 'Revisão geral semestral', type: 'Manutenção' },
+    ],
+    fuel: [
+      { month: 'Jan', amount: 500, description: 'Abastecimento semanal - 1ª semana', type: 'Combustível' },
+      { month: 'Fev', amount: 550, description: 'Abastecimento semanal - 2ª semana', type: 'Combustível' },
+      { month: 'Mar', amount: 480, description: 'Abastecimento semanal - 3ª semana', type: 'Combustível' },
+      { month: 'Abr', amount: 520, description: 'Abastecimento semanal - 4ª semana', type: 'Combustível' },
+      { month: 'Mai', amount: 490, description: 'Abastecimento quinzenal - 1ª quinzena', type: 'Combustível' },
+      { month: 'Jun', amount: 510, description: 'Abastecimento quinzenal - 2ª quinzena', type: 'Combustível' },
+    ],
+    taxes: [
+      { month: 'Jan', amount: 1000, description: 'IPVA - Parcela 1', type: 'Impostos' },
+      { month: 'Fev', amount: 200, description: 'Licenciamento anual', type: 'Impostos' },
+      { month: 'Mar', amount: 150, description: 'Seguro obrigatório', type: 'Impostos' },
+      { month: 'Abr', amount: 100, description: 'Taxa de renovação da CNH', type: 'Impostos' },
+      { month: 'Mai', amount: 300, description: 'Multa de trânsito - Excesso de velocidade', type: 'Impostos' },
+      { month: 'Jun', amount: 80, description: 'Taxa de vistoria veicular', type: 'Impostos' },
+    ],
+  };
+
   const generateReport = () => {
-    // Simulação de geração de relatório com dados atualizados
-    const mockData = {
-      general: [
-        { month: 'Jan', maintenance: 4000, fuel: 1500, taxes: 500, description: 'Manutenção do motor, abastecimento e IPVA' },
-        { month: 'Fev', maintenance: 800, fuel: 3000, taxes: 200, description: 'Alinhamento, abastecimento mensal e licenciamento' },
-        { month: 'Mar', maintenance: 1200, fuel: 1800, taxes: 2000, description: 'Troca de pastilhas, abastecimento e IPVA' },
-        { month: 'Abr', maintenance: 2780, fuel: 2000, taxes: 100, description: 'Troca de pneus, abastecimento e taxa de renovação' },
-        { month: 'Mai', maintenance: 900, fuel: 1890, taxes: 300, description: 'Troca de filtros, abastecimento e multa' },
-        { month: 'Jun', maintenance: 1100, fuel: 2100, taxes: 2390, description: 'Revisão geral, abastecimento e licenciamento' },
-      ],
-      maintenance: [
-        { month: 'Jan', amount: 1000, description: 'Troca de óleo', type: 'Manutenção' },
-        { month: 'Fev', amount: 800, description: 'Alinhamento e balanceamento', type: 'Manutenção' },
-        { month: 'Mar', amount: 1200, description: 'Troca de pastilhas de freio', type: 'Manutenção' },
-        { month: 'Abr', amount: 2780, description: 'Troca de pneus', type: 'Manutenção' },
-        { month: 'Mai', amount: 900, description: 'Troca de filtros', type: 'Manutenção' },
-        { month: 'Jun', amount: 1100, description: 'Revisão geral', type: 'Manutenção' },
-      ],
-      fuel: [
-        { month: 'Jan', amount: 500, description: 'Abastecimento semanal', type: 'Combustível' },
-        { month: 'Fev', amount: 550, description: 'Abastecimento semanal', type: 'Combustível' },
-        { month: 'Mar', amount: 480, description: 'Abastecimento semanal', type: 'Combustível' },
-        { month: 'Abr', amount: 520, description: 'Abastecimento semanal', type: 'Combustível' },
-        { month: 'Mai', amount: 490, description: 'Abastecimento semanal', type: 'Combustível' },
-        { month: 'Jun', amount: 510, description: 'Abastecimento semanal', type: 'Combustível' },
-      ],
-      taxes: [
-        { month: 'Jan', amount: 1000, description: 'IPVA', type: 'Impostos' },
-        { month: 'Fev', amount: 200, description: 'Licenciamento', type: 'Impostos' },
-        { month: 'Mar', amount: 150, description: 'Seguro obrigatório', type: 'Impostos' },
-        { month: 'Abr', amount: 100, description: 'Taxa de renovação', type: 'Impostos' },
-        { month: 'Mai', amount: 300, description: 'Multa de trânsito', type: 'Impostos' },
-        { month: 'Jun', amount: 80, description: 'Taxa de vistoria', type: 'Impostos' },
-      ],
-    };
     setReportData(mockData[reportType as keyof typeof mockData]);
+    setSelectedReportType(reportType);
+    toast({
+      title: "Relatório Gerado",
+      description: `O relatório de ${getReportTitle()} foi gerado com sucesso.`,
+    });
   };
 
   const exportToPDF = () => {
@@ -121,8 +127,8 @@ const CustomReports = () => {
           {reportData.length > 0 && (
             <div className="space-y-4">
               <h2 className="text-2xl font-semibold">{getReportTitle()}</h2>
-              <ReportChart reportType={reportType} reportData={reportData} />
-              <ReportTable reportType={reportType} reportData={reportData} />
+              <ReportChart reportType={selectedReportType} reportData={reportData} />
+              <ReportTable reportType={selectedReportType} reportData={reportData} />
               <div className="flex justify-end space-x-2">
                 <Button onClick={exportToPDF} variant="outline">
                   <Download className="mr-2 h-4 w-4" />
