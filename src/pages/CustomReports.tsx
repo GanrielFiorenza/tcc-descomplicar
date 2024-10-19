@@ -16,23 +16,23 @@ const CustomReports = () => {
   const { toast } = useToast();
 
   const generateReport = () => {
-    // Simulação de geração de relatório
+    // Simulação de geração de relatório com dados atualizados
     const mockData = {
       general: [
-        { month: 'Jan', amount: 4000, description: 'Gastos gerais', type: 'Manutenção' },
-        { month: 'Fev', amount: 3000, description: 'Gastos gerais', type: 'Combustível' },
-        { month: 'Mar', amount: 2000, description: 'Gastos gerais', type: 'Impostos' },
-        { month: 'Abr', amount: 2780, description: 'Gastos gerais', type: 'Manutenção' },
-        { month: 'Mai', amount: 1890, description: 'Gastos gerais', type: 'Combustível' },
-        { month: 'Jun', amount: 2390, description: 'Gastos gerais', type: 'Impostos' },
+        { month: 'Jan', amount: 4000, description: 'Manutenção do motor', type: 'Manutenção' },
+        { month: 'Fev', amount: 3000, description: 'Abastecimento mensal', type: 'Combustível' },
+        { month: 'Mar', amount: 2000, description: 'IPVA anual', type: 'Impostos' },
+        { month: 'Abr', amount: 2780, description: 'Troca de pneus', type: 'Manutenção' },
+        { month: 'Mai', amount: 1890, description: 'Abastecimento mensal', type: 'Combustível' },
+        { month: 'Jun', amount: 2390, description: 'Licenciamento anual', type: 'Impostos' },
       ],
       maintenance: [
         { month: 'Jan', amount: 1000, description: 'Troca de óleo', type: 'Manutenção' },
-        { month: 'Fev', amount: 800, description: 'Alinhamento', type: 'Manutenção' },
-        { month: 'Mar', amount: 1200, description: 'Troca de pneus', type: 'Manutenção' },
-        { month: 'Abr', amount: 600, description: 'Revisão geral', type: 'Manutenção' },
+        { month: 'Fev', amount: 800, description: 'Alinhamento e balanceamento', type: 'Manutenção' },
+        { month: 'Mar', amount: 1200, description: 'Troca de pastilhas de freio', type: 'Manutenção' },
+        { month: 'Abr', amount: 2780, description: 'Troca de pneus', type: 'Manutenção' },
         { month: 'Mai', amount: 900, description: 'Troca de filtros', type: 'Manutenção' },
-        { month: 'Jun', amount: 1100, description: 'Reparo no motor', type: 'Manutenção' },
+        { month: 'Jun', amount: 1100, description: 'Revisão geral', type: 'Manutenção' },
       ],
       fuel: [
         { month: 'Jan', amount: 500, description: 'Abastecimento semanal', type: 'Combustível' },
@@ -43,12 +43,12 @@ const CustomReports = () => {
         { month: 'Jun', amount: 510, description: 'Abastecimento semanal', type: 'Combustível' },
       ],
       taxes: [
-        { month: 'Jan', amount: 200, description: 'IPVA', type: 'Impostos' },
+        { month: 'Jan', amount: 1000, description: 'IPVA', type: 'Impostos' },
         { month: 'Fev', amount: 200, description: 'Licenciamento', type: 'Impostos' },
-        { month: 'Mar', amount: 200, description: 'Seguro obrigatório', type: 'Impostos' },
-        { month: 'Abr', amount: 200, description: 'Taxa de renovação', type: 'Impostos' },
-        { month: 'Mai', amount: 200, description: 'Multa de trânsito', type: 'Impostos' },
-        { month: 'Jun', amount: 200, description: 'Taxa de vistoria', type: 'Impostos' },
+        { month: 'Mar', amount: 150, description: 'Seguro obrigatório', type: 'Impostos' },
+        { month: 'Abr', amount: 100, description: 'Taxa de renovação', type: 'Impostos' },
+        { month: 'Mai', amount: 300, description: 'Multa de trânsito', type: 'Impostos' },
+        { month: 'Jun', amount: 80, description: 'Taxa de vistoria', type: 'Impostos' },
       ],
     };
     setReportData(mockData[reportType as keyof typeof mockData]);
