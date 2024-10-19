@@ -11,48 +11,57 @@ import * as XLSX from 'xlsx';
 import { useToast } from "@/hooks/use-toast";
 
 const CustomReports = () => {
-  const [reportType, setReportType] = useState('financial');
+  const [reportType, setReportType] = useState('general');
   const [reportData, setReportData] = useState<any[]>([]);
-  const [filteredData, setFilteredData] = useState<any[]>([]);
   const { toast } = useToast();
 
   const generateReport = () => {
     // Simulação de geração de relatório
-    const mockData = [
-      { month: 'Jan', expenses: 4000, income: 2400 },
-      { month: 'Fev', expenses: 3000, income: 1398 },
-      { month: 'Mar', expenses: 2000, income: 9800 },
-      { month: 'Abr', expenses: 2780, income: 3908 },
-      { month: 'Mai', expenses: 1890, income: 4800 },
-      { month: 'Jun', expenses: 2390, income: 3800 },
-    ];
-    setReportData(mockData);
-    applyFilter(mockData);
-  };
-
-  const applyFilter = (data: any[]) => {
-    let filtered;
-    switch (reportType) {
-      case 'expenses':
-        filtered = data.map(item => ({ month: item.month, expenses: item.expenses }));
-        break;
-      case 'income':
-        filtered = data.map(item => ({ month: item.month, income: item.income }));
-        break;
-      default:
-        filtered = data;
-    }
-    setFilteredData(filtered);
+    const mockData = {
+      general: [
+        { month: 'Jan', amount: 4000 },
+        { month: 'Fev', amount: 3000 },
+        { month: 'Mar', amount: 2000 },
+        { month: 'Abr', amount: 2780 },
+        { month: 'Mai', amount: 1890 },
+        { month: 'Jun', amount: 2390 },
+      ],
+      maintenance: [
+        { month: 'Jan', amount: 1000 },
+        { month: 'Fev', amount: 800 },
+        { month: 'Mar', amount: 1200 },
+        { month: 'Abr', amount: 600 },
+        { month: 'Mai', amount: 900 },
+        { month: 'Jun', amount: 1100 },
+      ],
+      fuel: [
+        { month: 'Jan', amount: 500 },
+        { month: 'Fev', amount: 550 },
+        { month: 'Mar', amount: 480 },
+        { month: 'Abr', amount: 520 },
+        { month: 'Mai', amount: 490 },
+        { month: 'Jun', amount: 510 },
+      ],
+      taxes: [
+        { month: 'Jan', amount: 200 },
+        { month: 'Fev', amount: 200 },
+        { month: 'Mar', amount: 200 },
+        { month: 'Abr', amount: 200 },
+        { month: 'Mai', amount: 200 },
+        { month: 'Jun', amount: 200 },
+      ],
+    };
+    setReportData(mockData[reportType as keyof typeof mockData]);
   };
 
   const exportToPDF = () => {
     const doc = new jsPDF();
-    doc.text("Relatório Financeiro", 14, 15);
+    doc.text(`Relatório de ${getReportTitle()}`, 14, 15);
     doc.autoTable({
-      head: [['Mês', 'Despesas', 'Receitas']],
-      body: reportData.map(item => [item.month, `R$ ${item.expenses}`, `R$ ${item.income}`]),
+      head: [['Mês', 'Valor']],
+      body: reportData.map(item => [item.month, `R$ ${item.amount}`]),
     });
-    doc.save("relatorio_financeiro.pdf");
+    doc.save(`relatorio_${reportType}.pdf`);
     toast({
       title: "PDF Exportado",
       description: "O relatório foi exportado com sucesso para PDF.",
@@ -63,24 +72,33 @@ const CustomReports = () => {
     const ws = XLSX.utils.json_to_sheet(reportData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Relatório");
-    XLSX.writeFile(wb, "relatorio_financeiro.xlsx");
+    XLSX.writeFile(wb, `relatorio_${reportType}.xlsx`);
     toast({
       title: "Excel Exportado",
       description: "O relatório foi exportado com sucesso para Excel.",
     });
   };
 
+  const getReportTitle = () => {
+    switch (reportType) {
+      case 'general': return 'Gastos Gerais';
+      case 'maintenance': return 'Gastos com Manutenção';
+      case 'fuel': return 'Gastos com Abastecimento';
+      case 'taxes': return 'Gastos com Impostos';
+      default: return 'Relatório';
+    }
+  };
+
   const renderChart = () => {
     return (
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={filteredData}>
+        <BarChart data={reportData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" />
           <YAxis />
           <Tooltip />
           <Legend />
-          {(reportType === 'financial' || reportType === 'expenses') && <Bar dataKey="expenses" fill="#8884d8" />}
-          {(reportType === 'financial' || reportType === 'income') && <Bar dataKey="income" fill="#82ca9d" />}
+          <Bar dataKey="amount" fill="#8884d8" />
         </BarChart>
       </ResponsiveContainer>
     );
@@ -92,16 +110,14 @@ const CustomReports = () => {
         <TableHeader>
           <TableRow>
             <TableHead>Mês</TableHead>
-            {(reportType === 'financial' || reportType === 'expenses') && <TableHead>Despesas</TableHead>}
-            {(reportType === 'financial' || reportType === 'income') && <TableHead>Receitas</TableHead>}
+            <TableHead>Valor</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredData.map((item, index) => (
+          {reportData.map((item, index) => (
             <TableRow key={index}>
               <TableCell>{item.month}</TableCell>
-              {(reportType === 'financial' || reportType === 'expenses') && <TableCell className="text-red-500">R$ {item.expenses}</TableCell>}
-              {(reportType === 'financial' || reportType === 'income') && <TableCell className="text-green-500">R$ {item.income}</TableCell>}
+              <TableCell>R$ {item.amount}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -130,15 +146,17 @@ const CustomReports = () => {
                 <SelectValue placeholder="Tipo de Relatório" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="financial">Financeiro</SelectItem>
-                <SelectItem value="expenses">Despesas</SelectItem>
-                <SelectItem value="income">Receitas</SelectItem>
+                <SelectItem value="general">Gastos Gerais</SelectItem>
+                <SelectItem value="maintenance">Gastos com Manutenção</SelectItem>
+                <SelectItem value="fuel">Gastos com Abastecimento</SelectItem>
+                <SelectItem value="taxes">Gastos com Impostos</SelectItem>
               </SelectContent>
             </Select>
             <Button onClick={generateReport}>Gerar Relatório</Button>
           </div>
-          {filteredData.length > 0 && (
+          {reportData.length > 0 && (
             <div className="space-y-4">
+              <h2 className="text-2xl font-semibold">{getReportTitle()}</h2>
               {renderChart()}
               {renderTable()}
               <div className="flex justify-end space-x-2">
