@@ -19,12 +19,12 @@ const CustomReports = () => {
     // Simulação de geração de relatório com dados atualizados
     const mockData = {
       general: [
-        { month: 'Jan', amount: 4000, description: 'Manutenção do motor', type: 'Manutenção' },
-        { month: 'Fev', amount: 3000, description: 'Abastecimento mensal', type: 'Combustível' },
-        { month: 'Mar', amount: 2000, description: 'IPVA anual', type: 'Impostos' },
-        { month: 'Abr', amount: 2780, description: 'Troca de pneus', type: 'Manutenção' },
-        { month: 'Mai', amount: 1890, description: 'Abastecimento mensal', type: 'Combustível' },
-        { month: 'Jun', amount: 2390, description: 'Licenciamento anual', type: 'Impostos' },
+        { month: 'Jan', maintenance: 4000, fuel: 1500, taxes: 500, description: 'Manutenção do motor, abastecimento e IPVA', type: 'Geral' },
+        { month: 'Fev', maintenance: 800, fuel: 3000, taxes: 200, description: 'Alinhamento, abastecimento mensal e licenciamento', type: 'Geral' },
+        { month: 'Mar', maintenance: 1200, fuel: 1800, taxes: 2000, description: 'Troca de pastilhas, abastecimento e IPVA', type: 'Geral' },
+        { month: 'Abr', maintenance: 2780, fuel: 2000, taxes: 100, description: 'Troca de pneus, abastecimento e taxa de renovação', type: 'Geral' },
+        { month: 'Mai', maintenance: 900, fuel: 1890, taxes: 300, description: 'Troca de filtros, abastecimento e multa', type: 'Geral' },
+        { month: 'Jun', maintenance: 1100, fuel: 2100, taxes: 2390, description: 'Revisão geral, abastecimento e licenciamento', type: 'Geral' },
       ],
       maintenance: [
         { month: 'Jan', amount: 1000, description: 'Troca de óleo', type: 'Manutenção' },
@@ -90,19 +90,35 @@ const CustomReports = () => {
   };
 
   const renderChart = () => {
-    return (
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={reportData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="amount" fill="#8884d8" name="Valor" />
-          <Bar dataKey="type" fill="#82ca9d" name="Tipo de Gasto" />
-        </BarChart>
-      </ResponsiveContainer>
-    );
+    if (reportType === 'general') {
+      return (
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={reportData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="maintenance" fill="#8884d8" name="Manutenção" />
+            <Bar dataKey="fuel" fill="#82ca9d" name="Combustível" />
+            <Bar dataKey="taxes" fill="#ffc658" name="Impostos" />
+          </BarChart>
+        </ResponsiveContainer>
+      );
+    } else {
+      return (
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={reportData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="amount" fill="#8884d8" name="Valor" />
+          </BarChart>
+        </ResponsiveContainer>
+      );
+    }
   };
 
   const renderTable = () => {
@@ -120,7 +136,11 @@ const CustomReports = () => {
           {reportData.map((item, index) => (
             <TableRow key={index}>
               <TableCell>{item.month}</TableCell>
-              <TableCell>R$ {item.amount}</TableCell>
+              <TableCell>
+                {reportType === 'general'
+                  ? `R$ ${(item.maintenance + item.fuel + item.taxes).toFixed(2)}`
+                  : `R$ ${item.amount.toFixed(2)}`}
+              </TableCell>
               <TableCell>{item.description}</TableCell>
               <TableCell>{item.type}</TableCell>
             </TableRow>
