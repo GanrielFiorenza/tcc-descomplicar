@@ -19,12 +19,12 @@ const CustomReports = () => {
     // Simulação de geração de relatório com dados atualizados
     const mockData = {
       general: [
-        { month: 'Jan', maintenance: 4000, fuel: 1500, taxes: 500, description: 'Manutenção do motor, abastecimento e IPVA', type: 'Geral' },
-        { month: 'Fev', maintenance: 800, fuel: 3000, taxes: 200, description: 'Alinhamento, abastecimento mensal e licenciamento', type: 'Geral' },
-        { month: 'Mar', maintenance: 1200, fuel: 1800, taxes: 2000, description: 'Troca de pastilhas, abastecimento e IPVA', type: 'Geral' },
-        { month: 'Abr', maintenance: 2780, fuel: 2000, taxes: 100, description: 'Troca de pneus, abastecimento e taxa de renovação', type: 'Geral' },
-        { month: 'Mai', maintenance: 900, fuel: 1890, taxes: 300, description: 'Troca de filtros, abastecimento e multa', type: 'Geral' },
-        { month: 'Jun', maintenance: 1100, fuel: 2100, taxes: 2390, description: 'Revisão geral, abastecimento e licenciamento', type: 'Geral' },
+        { month: 'Jan', maintenance: 4000, fuel: 1500, taxes: 500, description: 'Manutenção do motor, abastecimento e IPVA' },
+        { month: 'Fev', maintenance: 800, fuel: 3000, taxes: 200, description: 'Alinhamento, abastecimento mensal e licenciamento' },
+        { month: 'Mar', maintenance: 1200, fuel: 1800, taxes: 2000, description: 'Troca de pastilhas, abastecimento e IPVA' },
+        { month: 'Abr', maintenance: 2780, fuel: 2000, taxes: 100, description: 'Troca de pneus, abastecimento e taxa de renovação' },
+        { month: 'Mai', maintenance: 900, fuel: 1890, taxes: 300, description: 'Troca de filtros, abastecimento e multa' },
+        { month: 'Jun', maintenance: 1100, fuel: 2100, taxes: 2390, description: 'Revisão geral, abastecimento e licenciamento' },
       ],
       maintenance: [
         { month: 'Jan', amount: 1000, description: 'Troca de óleo', type: 'Manutenção' },

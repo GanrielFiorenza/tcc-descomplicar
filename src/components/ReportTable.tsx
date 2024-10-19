@@ -12,24 +12,37 @@ export const ReportTable: React.FC<ReportTableProps> = ({ reportType, reportData
       <TableHeader>
         <TableRow>
           <TableHead>Mês</TableHead>
+          <TableHead>Tipo de Gasto</TableHead>
           <TableHead>Valor</TableHead>
           <TableHead>Descrição</TableHead>
-          <TableHead>Tipo de Gasto</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {reportData.map((item, index) => (
-          <TableRow key={index}>
-            <TableCell>{item.month}</TableCell>
-            <TableCell>
-              {reportType === 'general'
-                ? `R$ ${((item.maintenance || 0) + (item.fuel || 0) + (item.taxes || 0)).toFixed(2)}`
-                : `R$ ${(item.amount || 0).toFixed(2)}`}
-            </TableCell>
-            <TableCell>{item.description}</TableCell>
-            <TableCell>{item.type}</TableCell>
-          </TableRow>
-        ))}
+        {reportData.flatMap((item, index) => {
+          if (reportType === 'general') {
+            return [
+              { month: item.month, type: 'Manutenção', amount: item.maintenance, description: item.description },
+              { month: item.month, type: 'Combustível', amount: item.fuel, description: item.description },
+              { month: item.month, type: 'Impostos', amount: item.taxes, description: item.description }
+            ].map((expense, subIndex) => (
+              <TableRow key={`${index}-${subIndex}`}>
+                <TableCell>{expense.month}</TableCell>
+                <TableCell>{expense.type}</TableCell>
+                <TableCell>R$ {expense.amount?.toFixed(2) || '0.00'}</TableCell>
+                <TableCell>{expense.description}</TableCell>
+              </TableRow>
+            ));
+          } else {
+            return (
+              <TableRow key={index}>
+                <TableCell>{item.month}</TableCell>
+                <TableCell>{item.type}</TableCell>
+                <TableCell>R$ {item.amount?.toFixed(2) || '0.00'}</TableCell>
+                <TableCell>{item.description}</TableCell>
+              </TableRow>
+            );
+          }
+        })}
       </TableBody>
     </Table>
   );
