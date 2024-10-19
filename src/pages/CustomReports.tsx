@@ -19,36 +19,36 @@ const CustomReports = () => {
     // Simulação de geração de relatório
     const mockData = {
       general: [
-        { month: 'Jan', amount: 4000 },
-        { month: 'Fev', amount: 3000 },
-        { month: 'Mar', amount: 2000 },
-        { month: 'Abr', amount: 2780 },
-        { month: 'Mai', amount: 1890 },
-        { month: 'Jun', amount: 2390 },
+        { month: 'Jan', amount: 4000, description: 'Gastos gerais', type: 'Manutenção' },
+        { month: 'Fev', amount: 3000, description: 'Gastos gerais', type: 'Combustível' },
+        { month: 'Mar', amount: 2000, description: 'Gastos gerais', type: 'Impostos' },
+        { month: 'Abr', amount: 2780, description: 'Gastos gerais', type: 'Manutenção' },
+        { month: 'Mai', amount: 1890, description: 'Gastos gerais', type: 'Combustível' },
+        { month: 'Jun', amount: 2390, description: 'Gastos gerais', type: 'Impostos' },
       ],
       maintenance: [
-        { month: 'Jan', amount: 1000 },
-        { month: 'Fev', amount: 800 },
-        { month: 'Mar', amount: 1200 },
-        { month: 'Abr', amount: 600 },
-        { month: 'Mai', amount: 900 },
-        { month: 'Jun', amount: 1100 },
+        { month: 'Jan', amount: 1000, description: 'Troca de óleo', type: 'Manutenção' },
+        { month: 'Fev', amount: 800, description: 'Alinhamento', type: 'Manutenção' },
+        { month: 'Mar', amount: 1200, description: 'Troca de pneus', type: 'Manutenção' },
+        { month: 'Abr', amount: 600, description: 'Revisão geral', type: 'Manutenção' },
+        { month: 'Mai', amount: 900, description: 'Troca de filtros', type: 'Manutenção' },
+        { month: 'Jun', amount: 1100, description: 'Reparo no motor', type: 'Manutenção' },
       ],
       fuel: [
-        { month: 'Jan', amount: 500 },
-        { month: 'Fev', amount: 550 },
-        { month: 'Mar', amount: 480 },
-        { month: 'Abr', amount: 520 },
-        { month: 'Mai', amount: 490 },
-        { month: 'Jun', amount: 510 },
+        { month: 'Jan', amount: 500, description: 'Abastecimento semanal', type: 'Combustível' },
+        { month: 'Fev', amount: 550, description: 'Abastecimento semanal', type: 'Combustível' },
+        { month: 'Mar', amount: 480, description: 'Abastecimento semanal', type: 'Combustível' },
+        { month: 'Abr', amount: 520, description: 'Abastecimento semanal', type: 'Combustível' },
+        { month: 'Mai', amount: 490, description: 'Abastecimento semanal', type: 'Combustível' },
+        { month: 'Jun', amount: 510, description: 'Abastecimento semanal', type: 'Combustível' },
       ],
       taxes: [
-        { month: 'Jan', amount: 200 },
-        { month: 'Fev', amount: 200 },
-        { month: 'Mar', amount: 200 },
-        { month: 'Abr', amount: 200 },
-        { month: 'Mai', amount: 200 },
-        { month: 'Jun', amount: 200 },
+        { month: 'Jan', amount: 200, description: 'IPVA', type: 'Impostos' },
+        { month: 'Fev', amount: 200, description: 'Licenciamento', type: 'Impostos' },
+        { month: 'Mar', amount: 200, description: 'Seguro obrigatório', type: 'Impostos' },
+        { month: 'Abr', amount: 200, description: 'Taxa de renovação', type: 'Impostos' },
+        { month: 'Mai', amount: 200, description: 'Multa de trânsito', type: 'Impostos' },
+        { month: 'Jun', amount: 200, description: 'Taxa de vistoria', type: 'Impostos' },
       ],
     };
     setReportData(mockData[reportType as keyof typeof mockData]);
@@ -58,8 +58,8 @@ const CustomReports = () => {
     const doc = new jsPDF();
     doc.text(`Relatório de ${getReportTitle()}`, 14, 15);
     doc.autoTable({
-      head: [['Mês', 'Valor']],
-      body: reportData.map(item => [item.month, `R$ ${item.amount}`]),
+      head: [['Mês', 'Valor', 'Descrição', 'Tipo']],
+      body: reportData.map(item => [item.month, `R$ ${item.amount}`, item.description, item.type]),
     });
     doc.save(`relatorio_${reportType}.pdf`);
     toast({
@@ -98,7 +98,8 @@ const CustomReports = () => {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="amount" fill="#8884d8" />
+          <Bar dataKey="amount" fill="#8884d8" name="Valor" />
+          <Bar dataKey="type" fill="#82ca9d" name="Tipo de Gasto" />
         </BarChart>
       </ResponsiveContainer>
     );
@@ -111,6 +112,8 @@ const CustomReports = () => {
           <TableRow>
             <TableHead>Mês</TableHead>
             <TableHead>Valor</TableHead>
+            <TableHead>Descrição</TableHead>
+            <TableHead>Tipo de Gasto</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -118,6 +121,8 @@ const CustomReports = () => {
             <TableRow key={index}>
               <TableCell>{item.month}</TableCell>
               <TableCell>R$ {item.amount}</TableCell>
+              <TableCell>{item.description}</TableCell>
+              <TableCell>{item.type}</TableCell>
             </TableRow>
           ))}
         </TableBody>
