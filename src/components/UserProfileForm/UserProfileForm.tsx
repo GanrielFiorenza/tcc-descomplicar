@@ -6,6 +6,14 @@ import { isValidEmail } from '@/utils/validation';
 import { isValidUsername, isValidPassword, doPasswordsMatch } from '@/utils/formValidation';
 import UserInfoFields from './UserInfoFields';
 import PasswordFields from './PasswordFields';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface UserData {
   username: string;
@@ -24,6 +32,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData, setUserData
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const handleInputChange = (field: keyof UserData, value: string) => {
@@ -54,11 +63,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData, setUserData
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      setEditMode(false);
-      toast({
-        title: "Perfil atualizado",
-        description: "Suas informações foram salvas com sucesso.",
-      });
+      setIsConfirmDialogOpen(true);
     } else {
       toast({
         title: "Erro de validação",
@@ -66,6 +71,15 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData, setUserData
         variant: "destructive",
       });
     }
+  };
+
+  const confirmSave = () => {
+    setIsConfirmDialogOpen(false);
+    setEditMode(false);
+    toast({
+      title: "Perfil atualizado",
+      description: "Suas informações foram salvas com sucesso.",
+    });
   };
 
   const handleEdit = () => {
@@ -117,6 +131,25 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData, setUserData
           </Button>
         </div>
       )}
+
+      <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmar alterações</DialogTitle>
+            <DialogDescription>
+              Deseja alterar permanentemente os dados cadastrados?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="destructive" onClick={() => setIsConfirmDialogOpen(false)}>
+              Cancelar
+            </Button>
+            <Button variant="outline" onClick={confirmSave}>
+              Salvar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
