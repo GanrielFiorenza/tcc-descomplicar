@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Globe, Bell, User, Save } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Bell, User, Save } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 const Settings = () => {
-  const [language, setLanguage] = useState('pt-BR');
   const [notifications, setNotifications] = useState(true);
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [birthDate, setBirthDate] = useState('');
+  const [gender, setGender] = useState('');
   const { toast } = useToast();
 
   const handleSave = () => {
-    // Aqui você implementaria a lógica para salvar as configurações
+    // Here you would implement the logic to save the settings
     toast({
       title: "Configurações salvas",
       description: "Suas preferências foram atualizadas com sucesso.",
@@ -26,27 +30,6 @@ const Settings = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Configurações</h1>
       
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Globe className="mr-2 text-blue-500" />
-            Idioma
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Select onValueChange={setLanguage} defaultValue={language}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Selecione o idioma" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="pt-BR">Português (BR)</SelectItem>
-              <SelectItem value="en-US">English (US)</SelectItem>
-              <SelectItem value="es-ES">Español</SelectItem>
-            </SelectContent>
-          </Select>
-        </CardContent>
-      </Card>
-
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center">
@@ -83,7 +66,58 @@ const Settings = () => {
                 placeholder="Seu nome de usuário"
               />
             </div>
-            {/* Adicione mais campos de perfil conforme necessário */}
+            <div className="space-y-2">
+              <Label htmlFor="email">E-mail</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Seu e-mail"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Nova senha</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Digite uma nova senha"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirmar nova senha</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirme a nova senha"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="birthDate">Data de nascimento</Label>
+              <Input
+                id="birthDate"
+                type="date"
+                value={birthDate}
+                onChange={(e) => setBirthDate(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="gender">Gênero</Label>
+              <Select onValueChange={setGender} value={gender}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecione o gênero" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="masculino">Masculino</SelectItem>
+                  <SelectItem value="feminino">Feminino</SelectItem>
+                  <SelectItem value="outros">Outros</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
