@@ -5,7 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Bell, User, Save, Edit } from 'lucide-react';
+import { Bell, User, Save, Edit, X, Mail, Calendar, Users } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 const Settings = () => {
@@ -32,6 +32,13 @@ const Settings = () => {
 
   const handleEdit = () => {
     setEditMode(true);
+  };
+
+  const handleCancel = () => {
+    setEditMode(false);
+    // Reset any changes made
+    setPassword('');
+    setConfirmPassword('');
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -68,7 +75,7 @@ const Settings = () => {
               Perfil do Usuário
             </div>
             {!editMode && (
-              <Button onClick={handleEdit} variant="outline" className="bg-blue-700 text-white hover:bg-blue-800">
+              <Button onClick={handleEdit} variant="outline" className="bg-blue-800 text-white hover:bg-blue-900">
                 <Edit className="mr-2 h-4 w-4" /> Editar Perfil
               </Button>
             )}
@@ -77,7 +84,10 @@ const Settings = () => {
         <CardContent>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Nome de usuário</Label>
+              <Label htmlFor="username" className="flex items-center">
+                <User className="mr-2 h-4 w-4 text-blue-500" />
+                Nome de usuário
+              </Label>
               {editMode ? (
                 <Input
                   id="username"
@@ -90,7 +100,10 @@ const Settings = () => {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">E-mail</Label>
+              <Label htmlFor="email" className="flex items-center">
+                <Mail className="mr-2 h-4 w-4 text-blue-500" />
+                E-mail
+              </Label>
               {editMode ? (
                 <Input
                   id="email"
@@ -106,7 +119,10 @@ const Settings = () => {
             {editMode && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="password">Nova senha</Label>
+                  <Label htmlFor="password" className="flex items-center">
+                    <X className="mr-2 h-4 w-4 text-red-500" />
+                    Nova senha
+                  </Label>
                   <Input
                     id="password"
                     type="password"
@@ -116,7 +132,10 @@ const Settings = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirmar nova senha</Label>
+                  <Label htmlFor="confirmPassword" className="flex items-center">
+                    <X className="mr-2 h-4 w-4 text-red-500" />
+                    Confirmar nova senha
+                  </Label>
                   <Input
                     id="confirmPassword"
                     type="password"
@@ -128,7 +147,10 @@ const Settings = () => {
               </>
             )}
             <div className="space-y-2">
-              <Label htmlFor="birthDate">Data de nascimento</Label>
+              <Label htmlFor="birthDate" className="flex items-center">
+                <Calendar className="mr-2 h-4 w-4 text-blue-500" />
+                Data de nascimento
+              </Label>
               {editMode ? (
                 <Input
                   id="birthDate"
@@ -141,7 +163,10 @@ const Settings = () => {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="gender">Gênero</Label>
+              <Label htmlFor="gender" className="flex items-center">
+                <Users className="mr-2 h-4 w-4 text-blue-500" />
+                Gênero
+              </Label>
               {editMode ? (
                 <Select onValueChange={(value) => handleInputChange('gender', value)} value={userData.gender}>
                   <SelectTrigger className="w-full">
@@ -158,12 +183,18 @@ const Settings = () => {
               )}
             </div>
           </div>
+          {editMode && (
+            <div className="mt-6 flex justify-end space-x-4">
+              <Button onClick={handleCancel} variant="outline" className="bg-gray-200 text-gray-800 hover:bg-gray-300">
+                <X className="mr-2 h-4 w-4" /> Cancelar
+              </Button>
+              <Button onClick={handleSave} className="bg-blue-800 text-white hover:bg-blue-900">
+                <Save className="mr-2 h-4 w-4" /> Salvar
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
-
-      <Button onClick={handleSave} className="w-full bg-blue-700 hover:bg-blue-800">
-        <Save className="mr-2 h-4 w-4" /> Salvar Configurações
-      </Button>
     </div>
   );
 };
