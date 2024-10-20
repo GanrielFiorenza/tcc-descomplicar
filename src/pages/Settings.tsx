@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Bell, User, Save, Edit, X, Mail, Calendar, Users, Lock } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { format } from 'date-fns';
 
 const Settings = () => {
   const [notifications, setNotifications] = useState(true);
@@ -43,6 +44,14 @@ const Settings = () => {
 
   const handleInputChange = (field: string, value: string) => {
     setUserData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const formatBirthDate = (date: string) => {
+    try {
+      return format(new Date(date), 'dd/MM/yyyy');
+    } catch {
+      return date; // Return original string if parsing fails
+    }
   };
 
   return (
@@ -160,7 +169,9 @@ const Settings = () => {
                     onChange={(e) => handleInputChange('birthDate', e.target.value)}
                   />
                 ) : (
-                  <div className="p-2 bg-gray-100 rounded">{userData.birthDate}</div>
+                  <div className="p-2 bg-gray-100 rounded">
+                    {formatBirthDate(userData.birthDate)}
+                  </div>
                 )}
               </div>
               <div className="space-y-2">
