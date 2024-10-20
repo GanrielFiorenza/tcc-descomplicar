@@ -5,7 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Bell, User, Save, Edit, X, Mail, Calendar, Users } from 'lucide-react';
+import { Bell, User, Save, Edit, X, Mail, Calendar, Users, Lock } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 const Settings = () => {
@@ -117,10 +117,10 @@ const Settings = () => {
               )}
             </div>
             {editMode && (
-              <>
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="password" className="flex items-center">
-                    <X className="mr-2 h-4 w-4 text-red-500" />
+                    <Lock className="mr-2 h-4 w-4 text-red-500" />
                     Nova senha
                   </Label>
                   <Input
@@ -133,7 +133,7 @@ const Settings = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword" className="flex items-center">
-                    <X className="mr-2 h-4 w-4 text-red-500" />
+                    <Lock className="mr-2 h-4 w-4 text-red-500" />
                     Confirmar nova senha
                   </Label>
                   <Input
@@ -144,43 +144,45 @@ const Settings = () => {
                     placeholder="Confirme a nova senha"
                   />
                 </div>
-              </>
+              </div>
             )}
-            <div className="space-y-2">
-              <Label htmlFor="birthDate" className="flex items-center">
-                <Calendar className="mr-2 h-4 w-4 text-blue-500" />
-                Data de nascimento
-              </Label>
-              {editMode ? (
-                <Input
-                  id="birthDate"
-                  type="date"
-                  value={userData.birthDate}
-                  onChange={(e) => handleInputChange('birthDate', e.target.value)}
-                />
-              ) : (
-                <div className="p-2 bg-gray-100 rounded">{userData.birthDate}</div>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="gender" className="flex items-center">
-                <Users className="mr-2 h-4 w-4 text-blue-500" />
-                Gênero
-              </Label>
-              {editMode ? (
-                <Select onValueChange={(value) => handleInputChange('gender', value)} value={userData.gender}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecione o gênero" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="masculino">Masculino</SelectItem>
-                    <SelectItem value="feminino">Feminino</SelectItem>
-                    <SelectItem value="outros">Outros</SelectItem>
-                  </SelectContent>
-                </Select>
-              ) : (
-                <div className="p-2 bg-gray-100 rounded">{userData.gender}</div>
-              )}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="birthDate" className="flex items-center">
+                  <Calendar className="mr-2 h-4 w-4 text-blue-500" />
+                  Data de nascimento
+                </Label>
+                {editMode ? (
+                  <Input
+                    id="birthDate"
+                    type="date"
+                    value={userData.birthDate}
+                    onChange={(e) => handleInputChange('birthDate', e.target.value)}
+                  />
+                ) : (
+                  <div className="p-2 bg-gray-100 rounded">{userData.birthDate}</div>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="gender" className="flex items-center">
+                  <Users className="mr-2 h-4 w-4 text-blue-500" />
+                  Gênero
+                </Label>
+                {editMode ? (
+                  <Select onValueChange={(value) => handleInputChange('gender', value)} value={userData.gender}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Selecione o gênero" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="masculino">Masculino</SelectItem>
+                      <SelectItem value="feminino">Feminino</SelectItem>
+                      <SelectItem value="outros">Outros</SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <div className="p-2 bg-gray-100 rounded">{userData.gender}</div>
+                )}
+              </div>
             </div>
           </div>
           {editMode && (
