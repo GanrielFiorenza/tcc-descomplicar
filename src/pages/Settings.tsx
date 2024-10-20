@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import NotificationSettings from '@/components/NotificationSettings';
-import UserProfileForm from '@/components/UserProfileForm';
+import UserProfileForm from '@/components/UserProfileForm/UserProfileForm';
 
 const Settings = () => {
   const [notifications, setNotifications] = useState(true);
