@@ -16,6 +16,7 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const handleLogin = () => {
     setIsLoggedIn(true);
@@ -25,6 +26,10 @@ const App = () => {
     setIsLoggedIn(false);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -32,7 +37,7 @@ const App = () => {
         <BrowserRouter>
           <div className="flex">
             {isLoggedIn && <Sidebar onLogout={handleLogout} />}
-            <main className={`flex-1 ${isLoggedIn ? 'ml-16 lg:ml-64' : ''}`}>
+            <main className={`flex-1 transition-all duration-300 ${isLoggedIn ? (isSidebarOpen ? 'ml-64' : 'ml-16') : ''}`}>
               <Routes>
                 <Route path="/" element={<Index onLogin={handleLogin} />} />
                 <Route

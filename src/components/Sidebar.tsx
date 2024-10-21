@@ -22,7 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
   ];
 
   return (
-    <div className={`bg-gray-800 text-white h-screen ${isOpen ? 'w-64' : 'w-16'} transition-all duration-300 ease-in-out flex flex-col fixed top-0 left-0 overflow-y-auto`}>
+    <div className={`bg-gray-800 text-white h-screen ${isOpen ? 'w-64' : 'w-16'} transition-all duration-300 ease-in-out flex flex-col fixed top-0 left-0 overflow-y-auto z-50`}>
       <div className="flex justify-between items-center p-4 sticky top-0 bg-gray-800 z-10">
         {isOpen && (
           <div className="flex items-center w-full">
@@ -44,14 +44,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
             to={item.path}
             className={`flex items-center p-4 hover:bg-gray-700 transition-colors ${
               location.pathname === item.path ? 'bg-gray-900' : ''
-            }`}
+            } ${isOpen ? '' : 'justify-center'}`}
           >
             <item.icon className="h-5 w-5" />
             {isOpen && <span className="ml-4">{item.label}</span>}
           </Link>
         ))}
       </nav>
-      {isOpen && (
+      {isOpen ? (
         <Button
           variant="destructive"
           className="m-4 sticky bottom-0"
@@ -59,6 +59,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
         >
           <LogOut className="h-5 w-5 mr-2" />
           Sair
+        </Button>
+      ) : (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="m-4 sticky bottom-0"
+          onClick={onLogout}
+        >
+          <LogOut className="h-5 w-5" />
         </Button>
       )}
     </div>
