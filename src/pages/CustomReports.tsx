@@ -75,7 +75,24 @@ const CustomReports = () => {
   };
 
   const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(reportData);
+    const tableData = reportData.flatMap((item) => {
+      if (reportType === 'general') {
+        return [
+          { Mês: item.month, 'Tipo de Gasto': 'Manutenção', Valor: item.maintenance, Descrição: item.description },
+          { Mês: item.month, 'Tipo de Gasto': 'Combustível', Valor: item.fuel, Descrição: item.description },
+          { Mês: item.month, 'Tipo de Gasto': 'Impostos', Valor: item.taxes, Descrição: item.description }
+        ];
+      } else {
+        return [{
+          Mês: item.month,
+          'Tipo de Gasto': item.type,
+          Valor: item.amount,
+          Descrição: item.description
+        }];
+      }
+    });
+
+    const ws = XLSX.utils.json_to_sheet(tableData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Relatório");
     XLSX.writeFile(wb, `relatorio_${reportType}.xlsx`);
