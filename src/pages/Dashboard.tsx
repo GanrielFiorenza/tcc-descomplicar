@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Bell, CirclePlus } from 'lucide-react';
+import { Bell, CirclePlus, DollarSign, Settings } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import MaintenanceList from '../components/MaintenanceList';
+import MonthlyExpenses from '../components/MonthlyExpenses';
 
 const data = [
   { name: 'Jan', gastos: 4000 },
@@ -72,6 +73,10 @@ const Dashboard = () => {
     { date: '2023-10-05', description: 'Troca de pneus' },
   ];
 
+  // Mock data for MonthlyExpenses
+  const totalExpenses = 2150.75;
+  const estimatedExpenses = 3000;
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
@@ -95,6 +100,8 @@ const Dashboard = () => {
             </ResponsiveContainer>
           </CardContent>
         </Card>
+
+        <MonthlyExpenses totalExpenses={totalExpenses} estimatedExpenses={estimatedExpenses} />
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
