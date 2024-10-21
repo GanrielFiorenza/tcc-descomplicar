@@ -38,10 +38,6 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
     }
   };
 
-  const getChartColor = () => {
-    return percentage <= 100 ? "#8B5CF6" : "#EF4444";
-  };
-
   return (
     <Card className="w-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -98,10 +94,22 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
                   a 15.9155 15.9155 0 0 1 0 31.831
                   a 15.9155 15.9155 0 0 1 0 -31.831"
                 fill="none"
-                stroke={getChartColor()}
+                stroke="#8B5CF6"
                 strokeWidth="3"
                 strokeDasharray={`${Math.min(percentage, 100)}, 100`}
               />
+              {percentage > 100 && (
+                <path
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="#EF4444"
+                  strokeWidth="3"
+                  strokeDasharray={`${percentage - 100}, 100`}
+                  strokeDashoffset="-100"
+                />
+              )}
             </svg>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold">
               {percentage.toFixed(0)}%
