@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Bell } from 'lucide-react';
+import { Bell, CirclePlus } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 
 const data = [
   { name: 'Jan', gastos: 4000 },
@@ -13,6 +18,21 @@ const data = [
 ];
 
 const Dashboard = () => {
+  const [newMaintenanceDate, setNewMaintenanceDate] = useState('');
+  const [newMaintenanceDescription, setNewMaintenanceDescription] = useState('');
+  const { toast } = useToast();
+
+  const handleAddMaintenance = () => {
+    // Here you would typically add the new maintenance to your state or send it to an API
+    console.log('New maintenance:', { date: newMaintenanceDate, description: newMaintenanceDescription });
+    toast({
+      title: "Manutenção agendada",
+      description: `Nova manutenção agendada para ${newMaintenanceDate}`,
+    });
+    setNewMaintenanceDate('');
+    setNewMaintenanceDescription('');
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
@@ -38,9 +58,49 @@ const Dashboard = () => {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle>Próximas Manutenções</CardTitle>
-            <CardDescription>Eventos importantes</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Próximas Manutenções
+            </CardTitle>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <CirclePlus className="h-6 w-6 text-blue-500" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <div className="grid gap-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium leading-none">Agendar Manutenção</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Defina a data e descrição da próxima manutenção.
+                    </p>
+                  </div>
+                  <div className="grid gap-2">
+                    <div className="grid grid-cols-3 items-center gap-4">
+                      <Label htmlFor="date">Data</Label>
+                      <Input
+                        id="date"
+                        type="date"
+                        className="col-span-2"
+                        value={newMaintenanceDate}
+                        onChange={(e) => setNewMaintenanceDate(e.target.value)}
+                      />
+                    </div>
+                    <div className="grid grid-cols-3 items-center gap-4">
+                      <Label htmlFor="description">Descrição</Label>
+                      <Input
+                        id="description"
+                        className="col-span-2"
+                        value={newMaintenanceDescription}
+                        onChange={(e) => setNewMaintenanceDescription(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <Button onClick={handleAddMaintenance}>Agendar</Button>
+                </div>
+              </PopoverContent>
+            </Popover>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
