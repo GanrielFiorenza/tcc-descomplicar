@@ -19,7 +19,6 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
   const { toast } = useToast();
 
   const percentage = (totalExpenses / currentEstimate) * 100;
-  const displayPercentage = percentage > 100 ? percentage : Math.min(percentage, 100);
 
   const handleSaveLimit = () => {
     const newEstimate = parseFloat(newLimit);
