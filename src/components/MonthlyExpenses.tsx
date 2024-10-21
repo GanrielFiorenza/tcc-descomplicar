@@ -109,8 +109,8 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
         </Dialog>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col items-center">
-          <div className="relative w-32 h-32">
+        <div className="flex flex-col items-center justify-center h-[300px]">
+          <div className="relative w-48 h-48">
             <svg className="w-full h-full" viewBox="0 0 36 36">
               <path
                 d="M18 2.0845
@@ -142,12 +142,12 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
                 />
               )}
             </svg>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold">
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl font-bold">
               {percentage.toFixed(0)}%
             </div>
           </div>
-          <div className="mt-4 flex items-center text-lg font-semibold">
-            <DollarSign className="mr-2 h-5 w-5 text-purple-500" />
+          <div className="mt-4 flex items-center text-xl font-semibold">
+            <DollarSign className="mr-2 h-6 w-6 text-purple-500" />
             <span>{`${totalExpenses.toFixed(2)} / ${currentEstimate.toFixed(2)}`}</span>
           </div>
           <div className="mt-2 text-sm text-gray-500">
