@@ -43,6 +43,15 @@ const Dashboard = () => {
     }
   };
 
+  // Mocked data for last maintenance records
+  const lastMaintenanceList = [
+    { date: '2024-02-15', description: 'Troca de óleo' },
+    { date: '2024-01-30', description: 'Alinhamento e balanceamento' },
+    { date: '2023-12-20', description: 'Troca de filtro de ar' },
+    { date: '2023-11-10', description: 'Revisão dos freios' },
+    { date: '2023-10-05', description: 'Troca de pneus' },
+  ];
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
@@ -117,7 +126,25 @@ const Dashboard = () => {
               {maintenanceList.map((maintenance, index) => (
                 <li key={index} className="flex items-center">
                   <Bell className="mr-2 h-4 w-4 text-blue-500" />
-                  <span>{new Date(maintenance.date).toLocaleDateString()} - {maintenance.description}</span>
+                  <span>{maintenance.date} - {maintenance.description}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-2xl font-bold">
+              Últimas Manutenções
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {lastMaintenanceList.map((maintenance, index) => (
+                <li key={index} className="flex items-center">
+                  <Bell className="mr-2 h-4 w-4 text-green-500" />
+                  <span>{maintenance.date} - {maintenance.description}</span>
                 </li>
               ))}
             </ul>
