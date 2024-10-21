@@ -161,7 +161,7 @@ const Dashboard = () => {
                     <span>{maintenance.date} - {maintenance.description}</span>
                   </div>
                   <SquareCheck
-                    className="h-6 w-6 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors"
+                    className="h-6 w-6 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors"
                     onClick={() => handleCheckMaintenance(maintenance.id)}
                   />
                 </li>
