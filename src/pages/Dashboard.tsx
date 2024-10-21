@@ -20,17 +20,25 @@ const data = [
 const Dashboard = () => {
   const [newMaintenanceDate, setNewMaintenanceDate] = useState('');
   const [newMaintenanceDescription, setNewMaintenanceDescription] = useState('');
+  const [maintenanceList, setMaintenanceList] = useState([
+    { date: '2024-03-15', description: 'Troca de óleo em 500 km' },
+    { date: '2024-03-30', description: 'Revisão anual em 15 dias' },
+    { date: '2024-04-15', description: 'Renovação do seguro em 1 mês' },
+  ]);
   const { toast } = useToast();
 
   const handleAddMaintenance = () => {
-    // Here you would typically add the new maintenance to your state or send it to an API
-    console.log('New maintenance:', { date: newMaintenanceDate, description: newMaintenanceDescription });
-    toast({
-      title: "Manutenção agendada",
-      description: `Nova manutenção agendada para ${newMaintenanceDate}`,
-    });
-    setNewMaintenanceDate('');
-    setNewMaintenanceDescription('');
+    if (newMaintenanceDate && newMaintenanceDescription) {
+      const newMaintenance = { date: newMaintenanceDate, description: newMaintenanceDescription };
+      const updatedList = [...maintenanceList, newMaintenance].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      setMaintenanceList(updatedList);
+      setNewMaintenanceDate('');
+      setNewMaintenanceDescription('');
+      toast({
+        title: "Manutenção agendada",
+        description: `Nova manutenção agendada para ${newMaintenanceDate}`,
+      });
+    }
   };
 
   return (
@@ -59,7 +67,7 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-2xl font-bold">
               Próximas Manutenções
             </CardTitle>
             <Popover>
@@ -104,18 +112,12 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
-              <li className="flex items-center">
-                <Bell className="mr-2 h-4 w-4 text-blue-500" />
-                <span>Troca de óleo em 500 km</span>
-              </li>
-              <li className="flex items-center">
-                <Bell className="mr-2 h-4 w-4 text-blue-500" />
-                <span>Revisão anual em 15 dias</span>
-              </li>
-              <li className="flex items-center">
-                <Bell className="mr-2 h-4 w-4 text-blue-500" />
-                <span>Renovação do seguro em 1 mês</span>
-              </li>
+              {maintenanceList.map((maintenance, index) => (
+                <li key={index} className="flex items-center">
+                  <Bell className="mr-2 h-4 w-4 text-blue-500" />
+                  <span>{new Date(maintenance.date).toLocaleDateString()} - {maintenance.description}</span>
+                </li>
+              ))}
             </ul>
           </CardContent>
         </Card>
