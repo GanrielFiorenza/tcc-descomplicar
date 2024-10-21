@@ -7,17 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import MaintenanceListItem from '../components/MaintenanceListItem';
+import MaintenanceList from '../components/MaintenanceList';
 
 const data = [
   { name: 'Jan', gastos: 4000 },
@@ -37,10 +27,8 @@ const Dashboard = () => {
     { id: 3, date: '2024-04-15', description: 'Renovação do seguro em 1 mês' },
   ]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [selectedMaintenanceId, setSelectedMaintenanceId] = useState<number | null>(null);
-  const { toast } = useToast();
   const [checkedMaintenances, setCheckedMaintenances] = useState<number[]>([]);
+  const { toast } = useToast();
 
   const handleAddMaintenance = () => {
     if (newMaintenanceDate && newMaintenanceDescription) {
@@ -62,19 +50,18 @@ const Dashboard = () => {
   };
 
   const handleCheckMaintenance = (id: number) => {
-    setSelectedMaintenanceId(id);
-    setConfirmDialogOpen(true);
+    setCheckedMaintenances(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
   };
 
-  const confirmMaintenanceCompletion = () => {
-    if (selectedMaintenanceId) {
-      setCheckedMaintenances([...checkedMaintenances, selectedMaintenanceId]);
-      setConfirmDialogOpen(false);
-      toast({
-        title: "Manutenção concluída",
-        description: "A tarefa de manutenção foi marcada como concluída.",
-      });
-    }
+  const handleConfirmMaintenance = (id: number) => {
+    setMaintenanceList(prev => prev.filter(item => item.id !== id));
+    setCheckedMaintenances(prev => prev.filter(item => item !== id));
+    toast({
+      title: "Manutenção concluída",
+      description: "A tarefa de manutenção foi marcada como concluída e removida da lista.",
+    });
   };
 
   const lastMaintenanceList = [
@@ -155,17 +142,12 @@ const Dashboard = () => {
             </Popover>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-2">
-              {maintenanceList.map((maintenance) => (
-                <MaintenanceListItem
-                  key={maintenance.id}
-                  date={maintenance.date}
-                  description={maintenance.description}
-                  onCheck={() => handleCheckMaintenance(maintenance.id)}
-                  isChecked={checkedMaintenances.includes(maintenance.id)}
-                />
-              ))}
-            </ul>
+            <MaintenanceList
+              maintenanceList={maintenanceList}
+              checkedMaintenances={checkedMaintenances}
+              onCheck={handleCheckMaintenance}
+              onConfirm={handleConfirmMaintenance}
+            />
           </CardContent>
         </Card>
 
@@ -187,23 +169,6 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
-
-      <AlertDialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar conclusão de tarefa?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tem certeza que deseja marcar esta tarefa de manutenção como concluída?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmMaintenanceCompletion} className="bg-blue-500 text-white">
-              Confirmar
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 };
