@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -6,6 +6,7 @@ import { FileText, Download, Printer, ChartBar } from 'lucide-react';
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import html2canvas from 'html2canvas';
 import { useToast } from "@/hooks/use-toast";
 import { ReportChart } from '@/components/ReportChart';
 import { ReportTable } from '@/components/ReportTable';
@@ -60,13 +61,34 @@ const CustomReports = () => {
     });
   };
 
-  const exportToPDF = () => {
+  const exportToPDF = async () => {
     const doc = new jsPDF();
     doc.text(`Relatório de ${getReportTitle()}`, 14, 15);
+
+    // Add chart to PDF
+    if (chartRef.current) {
+      const canvas = await html2canvas(chartRef.current);
+      const imgData = canvas.toDataURL('image/png');
+      doc.addImage(imgData, 'PNG', 10, 20, 190, 100);
+    }
+
+    // Add table to PDF
     doc.autoTable({
-      head: [['Mês', 'Valor', 'Descrição', 'Tipo']],
-      body: reportData.map(item => [item.month, `R$ ${((item.maintenance || 0) + (item.fuel || 0) + (item.taxes || 0)).toFixed(2)}`, item.description, item.type]),
+      head: [['Mês', 'Tipo de Gasto', 'Valor', 'Descrição']],
+      body: reportData.flatMap(item => {
+        if (reportType === 'general') {
+          return [
+            ['Manutenção', item.month, `R$ ${item.maintenance.toFixed(2)}`, item.description],
+            ['Combustível', item.month, `R$ ${item.fuel.toFixed(2)}`, item.description],
+            ['Impostos', item.month, `R$ ${item.taxes.toFixed(2)}`, item.description]
+          ];
+        } else {
+          return [[item.month, item.type, `R$ ${item.amount.toFixed(2)}`, item.description]];
+        }
+      }),
+      startY: 125 // Start the table below the chart
     });
+
     doc.save(`relatorio_${reportType}.pdf`);
     toast({
       title: "PDF Exportado",
@@ -112,6 +134,8 @@ const CustomReports = () => {
     }
   };
 
+  const chartRef = useRef(null);
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6 flex items-center">
@@ -144,7 +168,9 @@ const CustomReports = () => {
           {reportData.length > 0 && (
             <div className="space-y-4">
               <h2 className="text-2xl font-semibold">{getReportTitle()}</h2>
-              <ReportChart reportType={selectedReportType} reportData={reportData} />
+              <div ref={chartRef}>
+                <ReportChart reportType={selectedReportType} reportData={reportData} />
+              </div>
               <ReportTable reportType={selectedReportType} reportData={reportData} />
               <div className="flex justify-end space-x-2">
                 <Button onClick={exportToPDF} variant="outline">
