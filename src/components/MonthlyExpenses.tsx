@@ -112,7 +112,7 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
               )}
             </svg>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold">
-              {percentage.toFixed(0)}%
+              {percentage > 100 ? '100+' : percentage.toFixed(0)}%
             </div>
           </div>
           <div className="mt-4 flex items-center text-lg font-semibold">
