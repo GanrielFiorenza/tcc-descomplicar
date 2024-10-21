@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Bell, CirclePlus, SquareCheck } from 'lucide-react';
+import { CirclePlus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import MaintenanceListItem from '../components/MaintenanceListItem';
 
 const data = [
   { name: 'Jan', gastos: 4000 },
@@ -39,6 +40,7 @@ const Dashboard = () => {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [selectedMaintenanceId, setSelectedMaintenanceId] = useState<number | null>(null);
   const { toast } = useToast();
+  const [checkedMaintenances, setCheckedMaintenances] = useState<number[]>([]);
 
   const handleAddMaintenance = () => {
     if (newMaintenanceDate && newMaintenanceDescription) {
@@ -66,7 +68,7 @@ const Dashboard = () => {
 
   const confirmMaintenanceCompletion = () => {
     if (selectedMaintenanceId) {
-      setMaintenanceList(maintenanceList.filter(item => item.id !== selectedMaintenanceId));
+      setCheckedMaintenances([...checkedMaintenances, selectedMaintenanceId]);
       setConfirmDialogOpen(false);
       toast({
         title: "Manutenção concluída",
@@ -115,7 +117,7 @@ const Dashboard = () => {
             <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
               <PopoverTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
-                  <CirclePlus className="h-6 w-6 text-blue-500" />
+                  <CirclePlus className="h-6 w-6 text-blue-500 hover:text-blue-600 transition-colors" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-80">
@@ -155,16 +157,13 @@ const Dashboard = () => {
           <CardContent>
             <ul className="space-y-2">
               {maintenanceList.map((maintenance) => (
-                <li key={maintenance.id} className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Bell className="mr-2 h-4 w-4 text-blue-500" />
-                    <span>{maintenance.date} - {maintenance.description}</span>
-                  </div>
-                  <SquareCheck
-                    className="h-6 w-6 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors"
-                    onClick={() => handleCheckMaintenance(maintenance.id)}
-                  />
-                </li>
+                <MaintenanceListItem
+                  key={maintenance.id}
+                  date={maintenance.date}
+                  description={maintenance.description}
+                  onCheck={() => handleCheckMaintenance(maintenance.id)}
+                  isChecked={checkedMaintenances.includes(maintenance.id)}
+                />
               ))}
             </ul>
           </CardContent>
