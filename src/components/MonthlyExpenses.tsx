@@ -19,6 +19,8 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
   const { toast } = useToast();
 
   const percentage = (totalExpenses / currentEstimate) * 100;
+  const cappedPercentage = Math.min(percentage, 100);
+  const excessPercentage = Math.max(0, percentage - 100);
 
   const handleSaveLimit = () => {
     const newEstimate = parseFloat(newLimit);
@@ -96,9 +98,9 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
                 fill="none"
                 stroke="#8B5CF6"
                 strokeWidth="3"
-                strokeDasharray={`${Math.min(percentage, 100)}, 100`}
+                strokeDasharray={`${cappedPercentage}, 100`}
               />
-              {percentage > 100 && (
+              {excessPercentage > 0 && (
                 <path
                   d="M18 2.0845
                     a 15.9155 15.9155 0 0 1 0 31.831
@@ -106,7 +108,7 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
                   fill="none"
                   stroke="#EF4444"
                   strokeWidth="3"
-                  strokeDasharray={`${percentage - 100}, 100`}
+                  strokeDasharray={`${excessPercentage}, 100`}
                   strokeDashoffset="-100"
                 />
               )}
