@@ -25,6 +25,7 @@ const Dashboard = () => {
     { date: '2024-03-30', description: 'Revisão anual em 15 dias' },
     { date: '2024-04-15', description: 'Renovação do seguro em 1 mês' },
   ]);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { toast } = useToast();
 
   const handleAddMaintenance = () => {
@@ -34,6 +35,7 @@ const Dashboard = () => {
       setMaintenanceList(updatedList);
       setNewMaintenanceDate('');
       setNewMaintenanceDescription('');
+      setIsPopoverOpen(false);
       toast({
         title: "Manutenção agendada",
         description: `Nova manutenção agendada para ${newMaintenanceDate}`,
@@ -70,7 +72,7 @@ const Dashboard = () => {
             <CardTitle className="text-2xl font-bold">
               Próximas Manutenções
             </CardTitle>
-            <Popover>
+            <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
               <PopoverTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
                   <CirclePlus className="h-6 w-6 text-blue-500" />
