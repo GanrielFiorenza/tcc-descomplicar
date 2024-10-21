@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Bell, CirclePlus, Check } from 'lucide-react';
+import { Bell, CirclePlus, SquareCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
@@ -75,7 +75,6 @@ const Dashboard = () => {
     }
   };
 
-  // Mocked data for last maintenance records
   const lastMaintenanceList = [
     { date: '2024-02-15', description: 'Troca de óleo' },
     { date: '2024-01-30', description: 'Alinhamento e balanceamento' },
@@ -161,13 +160,10 @@ const Dashboard = () => {
                     <Bell className="mr-2 h-4 w-4 text-blue-500" />
                     <span>{maintenance.date} - {maintenance.description}</span>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="icon"
+                  <SquareCheck
+                    className="h-6 w-6 text-blue-500 cursor-pointer hover:text-blue-600 transition-colors"
                     onClick={() => handleCheckMaintenance(maintenance.id)}
-                  >
-                    <Check className="h-4 w-4" />
-                  </Button>
+                  />
                 </li>
               ))}
             </ul>
