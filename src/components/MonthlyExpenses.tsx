@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { DollarSign, Settings } from 'lucide-react';
+import { DollarSign, Pen } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 interface MonthlyExpensesProps {
@@ -18,7 +18,8 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
   const [currentEstimate, setCurrentEstimate] = useState(estimatedExpenses);
   const { toast } = useToast();
 
-  const percentage = Math.min((totalExpenses / currentEstimate) * 100, 100);
+  const percentage = (totalExpenses / currentEstimate) * 100;
+  const displayPercentage = percentage > 100 ? percentage : Math.min(percentage, 100);
 
   const handleSaveLimit = () => {
     const newEstimate = parseFloat(newLimit);
@@ -45,7 +46,7 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="icon">
-              <Settings className="h-4 w-4" />
+              <Pen className="h-4 w-4" />
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
@@ -96,8 +97,20 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
                 fill="none"
                 stroke="#8B5CF6"
                 strokeWidth="3"
-                strokeDasharray={`${percentage}, 100`}
+                strokeDasharray={`${Math.min(percentage, 100)}, 100`}
               />
+              {percentage > 100 && (
+                <path
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="#EF4444"
+                  strokeWidth="3"
+                  strokeDasharray={`${percentage - 100}, 100`}
+                  strokeDashoffset="-100"
+                />
+              )}
             </svg>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold">
               {percentage.toFixed(2)}%
