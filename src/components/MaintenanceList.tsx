@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Bell, SquareCheck } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
@@ -16,6 +16,20 @@ interface MaintenanceListProps {
 }
 
 const MaintenanceList: React.FC<MaintenanceListProps> = ({ maintenanceList, checkedMaintenances, onCheck, onConfirm }) => {
+  const [tempChecked, setTempChecked] = useState<number | null>(null);
+
+  const handleCheck = (id: number) => {
+    setTempChecked(id);
+    onCheck(id);
+  };
+
+  const handleCancel = () => {
+    if (tempChecked !== null) {
+      onCheck(tempChecked); // Deselect the item
+      setTempChecked(null);
+    }
+  };
+
   return (
     <ul className="space-y-2">
       {maintenanceList.map((maintenance) => (
@@ -30,7 +44,7 @@ const MaintenanceList: React.FC<MaintenanceListProps> = ({ maintenanceList, chec
                 className={`h-6 w-6 cursor-pointer transition-colors hover:text-gray-600 ${
                   checkedMaintenances.includes(maintenance.id) ? 'text-green-500' : 'text-gray-400'
                 }`}
-                onClick={() => onCheck(maintenance.id)}
+                onClick={() => handleCheck(maintenance.id)}
               />
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -41,8 +55,11 @@ const MaintenanceList: React.FC<MaintenanceListProps> = ({ maintenanceList, chec
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={() => onConfirm(maintenance.id)} className="bg-blue-500 text-white">
+                <AlertDialogCancel onClick={handleCancel}>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={() => {
+                  onConfirm(maintenance.id);
+                  setTempChecked(null);
+                }} className="bg-blue-500 text-white">
                   Confirmar
                 </AlertDialogAction>
               </AlertDialogFooter>
