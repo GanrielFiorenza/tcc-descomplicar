@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { LogIn, UserPlus, Mail, Lock, Info, Check, AlertTriangle, Star } from 'lucide-react';
+import { LogIn, UserPlus, Mail, Lock, Info, Check, AlertTriangle, Car } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Header from "@/components/Header";
 
@@ -41,9 +41,9 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
       <div className="min-h-screen flex flex-col items-center pt-16">
         <div className="text-center mb-8 space-y-2">
           <h1 className="text-4xl font-bold text-blue-900 flex items-center justify-center gap-2">
-            <Star className="h-8 w-8 text-yellow-500" />
+            <Car className="h-8 w-8 text-blue-500" />
             Bem-vindo ao DescompliCar
-            <Star className="h-8 w-8 text-yellow-500" />
+            <Car className="h-8 w-8 text-blue-500" />
           </h1>
           <p className="text-gray-600 flex items-center justify-center gap-2">
             <Info className="h-5 w-5 text-blue-500" />
