@@ -70,7 +70,7 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600">
               <LogIn className="mr-2 h-4 w-4" /> Entrar
             </Button>
           </form>
@@ -98,7 +98,7 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
             </svg>
             Entrar com Google
           </Button>
-          <Button variant="link" className="w-full">
+          <Button variant="link" className="w-full" onClick={() => navigate('/create-account')}>
             <UserPlus className="mr-2 h-4 w-4" /> Criar uma conta
           </Button>
         </CardFooter>

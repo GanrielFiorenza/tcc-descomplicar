@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
 import Index from "./pages/Index";
+import CreateAccount from "./pages/CreateAccount";
 import Dashboard from "./pages/Dashboard";
 import VehicleRegistration from "./pages/VehicleRegistration";
 import MaintenanceHistory from "./pages/MaintenanceHistory";
@@ -50,6 +51,7 @@ const App = () => {
             >
               <Routes>
                 <Route path="/" element={<Index onLogin={handleLogin} />} />
+                <Route path="/create-account" element={<CreateAccount />} />
                 <Route
                   path="/dashboard"
                   element={isLoggedIn ? <Dashboard /> : <Navigate to="/" />}
