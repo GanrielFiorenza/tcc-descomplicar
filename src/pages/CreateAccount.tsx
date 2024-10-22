@@ -43,11 +43,8 @@ const CreateAccount: React.FC = () => {
         description: "Você será redirecionado para o dashboard.",
         duration: 3000,
       });
-      setTimeout(() => {
-        // Simulate login process
-        // In a real application, you'd want to properly authenticate the user here
-        navigate('/dashboard');
-      }, 3000);
+      // Simulate login process and redirect immediately
+      navigate('/dashboard');
     }
   };
 
