@@ -164,7 +164,7 @@ const CreateAccount: React.FC = () => {
                       <Users className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Select onValueChange={setGender} required>
                         <SelectTrigger className="w-full pl-10">
-                          <SelectValue placeholder="Selecione o gênero" />
+                          <SelectValue placeholder="Selecione" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="masculino">Masculino</SelectItem>
@@ -176,7 +176,7 @@ const CreateAccount: React.FC = () => {
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full bg-green-500 hover:bg-green-600">
+                <Button type="submit" className="w-full bg-blue-800 hover:bg-blue-900">
                   Criar Conta
                 </Button>
               </form>
