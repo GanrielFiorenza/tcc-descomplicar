@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from 'react-router-dom';
@@ -123,7 +122,7 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* New Header Section */}
+      {/* Header Section */}
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-blue-900 flex items-center">
@@ -158,23 +157,6 @@ const LandingPage = () => {
           <p className="text-xl md:text-2xl text-gray-600 mb-8">
             Simplifique o gerenciamento do seu veículo e mantenha tudo sob controle
           </p>
-          <div className="flex gap-4 justify-center">
-            <Button 
-              className="bg-blue-800 hover:bg-blue-900 flex items-center gap-2"
-              onClick={() => navigate('/login')}
-            >
-              <LogIn className="h-4 w-4" />
-              Fazer Login
-            </Button>
-            <Button 
-              variant="outline"
-              className="flex items-center gap-2"
-              onClick={() => navigate('/create-account')}
-            >
-              <UserPlus className="h-4 w-4" />
-              Criar Conta
-            </Button>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
