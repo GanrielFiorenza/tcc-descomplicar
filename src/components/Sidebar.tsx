@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -6,10 +6,11 @@ import { ChevronLeft, ChevronRight, LayoutDashboard, Car, Wrench, Wallet, FileTe
 
 interface SidebarProps {
   onLogout: () => void;
+  isOpen: boolean;
+  toggleSidebar: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
-  const [isOpen, setIsOpen] = useState(true);
+const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) => {
   const location = useLocation();
 
   const navItems = [
@@ -33,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
             <h2 className="text-xl font-bold">Menu</h2>
           </div>
         )}
-        <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} className={isOpen ? '' : 'mx-auto'}>
+        <Button variant="ghost" size="icon" onClick={toggleSidebar} className={isOpen ? '' : 'mx-auto'}>
           {isOpen ? <ChevronLeft /> : <ChevronRight />}
         </Button>
       </div>

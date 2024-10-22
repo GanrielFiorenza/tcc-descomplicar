@@ -35,9 +35,19 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <BrowserRouter>
-          <div className="flex">
-            {isLoggedIn && <Sidebar onLogout={handleLogout} />}
-            <main className={`flex-1 transition-all duration-300 ${isLoggedIn ? (isSidebarOpen ? 'ml-64' : 'ml-16') : ''}`}>
+          <div className="flex h-screen overflow-hidden">
+            {isLoggedIn && (
+              <Sidebar
+                onLogout={handleLogout}
+                isOpen={isSidebarOpen}
+                toggleSidebar={toggleSidebar}
+              />
+            )}
+            <main
+              className={`flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 transition-all duration-300 ease-in-out ${
+                isLoggedIn ? (isSidebarOpen ? 'ml-64' : 'ml-16') : ''
+              }`}
+            >
               <Routes>
                 <Route path="/" element={<Index onLogin={handleLogin} />} />
                 <Route
