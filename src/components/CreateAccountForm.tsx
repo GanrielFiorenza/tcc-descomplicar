@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Mail, Lock, Calendar, Users } from 'lucide-react';
+import { User, Mail, Lock, Calendar, Users, Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
 
 interface CreateAccountFormProps {
   name: string;
@@ -35,6 +36,9 @@ const CreateAccountForm = ({
   onBirthDateChange,
   onGenderChange,
 }: CreateAccountFormProps) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div className="space-y-2">
@@ -75,12 +79,19 @@ const CreateAccountForm = ({
             <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <Input 
               id="password" 
-              type="password" 
+              type={showPassword ? "text" : "password"}
               className={`pl-10 ${errors.password ? 'border-red-500' : ''}`}
               value={password}
               onChange={onPasswordChange}
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
           {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
         </div>
@@ -90,12 +101,19 @@ const CreateAccountForm = ({
             <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <Input 
               id="confirmPassword" 
-              type="password" 
+              type={showConfirmPassword ? "text" : "password"}
               className={`pl-10 ${errors.confirmPassword ? 'border-red-500' : ''}`}
               value={confirmPassword}
               onChange={onConfirmPasswordChange}
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+            >
+              {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
           {errors.confirmPassword && <p className="text-red-500 text-xs">{errors.confirmPassword}</p>}
         </div>
