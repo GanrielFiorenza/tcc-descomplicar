@@ -62,6 +62,11 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-2xl font-bold">Gasto no mês</CardTitle>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Pen className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Alterar Limite de Gastos</DialogTitle>
