@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from 'react-router-dom';
-import { User, Mail, Lock, Calendar, Users, Car } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import Header from "@/components/Header";
+import CreateAccountForm from "@/components/CreateAccountForm";
+import { useState } from "react";
 
-const CreateAccount: React.FC = () => {
+const CreateAccount = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,15 +36,7 @@ const CreateAccount: React.FC = () => {
     e.preventDefault();
     if (validateForm()) {
       try {
-        // Here you would typically handle the account creation logic
-        // For demonstration, we'll simulate a successful account creation
-        console.log({ name, email, password, birthDate, gender });
-        
-        // Simulate API call for account creation
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Simulate login process
-        // In a real application, you'd want to properly authenticate the user here
         localStorage.setItem('isLoggedIn', 'true');
         
         toast({
@@ -54,7 +45,6 @@ const CreateAccount: React.FC = () => {
           duration: 3000,
         });
         
-        // Redirect to dashboard
         navigate('/dashboard');
       } catch (error) {
         console.error('Error creating account:', error);
@@ -69,16 +59,8 @@ const CreateAccount: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Header Section */}
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-900 flex items-center">
-            <Car className="h-6 w-6 mr-2 text-blue-800" />
-            DescompliCar
-          </h1>
-        </div>
-      </header>
-
+      <Header />
+      
       <div className="min-h-screen flex items-center justify-center">
         <div className="relative p-8">
           <div className="shadow-[0_0_40px_rgba(0,0,0,0.4)] rounded-lg">
@@ -88,107 +70,22 @@ const CreateAccount: React.FC = () => {
                 <CardDescription className="text-center">Preencha os dados para criar sua conta</CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="space-y-2">
-                    <label htmlFor="name" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Nome</label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input 
-                        id="name" 
-                        placeholder="Seu nome completo" 
-                        className="pl-10" 
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email</label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input 
-                        id="email" 
-                        type="email" 
-                        placeholder="seu@email.com" 
-                        className="pl-10" 
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label htmlFor="password" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Senha</label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input 
-                          id="password" 
-                          type="password" 
-                          className={`pl-10 ${errors.password ? 'border-red-500' : ''}`}
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          required
-                        />
-                      </div>
-                      {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="confirmPassword" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Confirmar Senha</label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input 
-                          id="confirmPassword" 
-                          type="password" 
-                          className={`pl-10 ${errors.confirmPassword ? 'border-red-500' : ''}`}
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          required
-                        />
-                      </div>
-                      {errors.confirmPassword && <p className="text-red-500 text-xs">{errors.confirmPassword}</p>}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label htmlFor="birthDate" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Data de Nascimento</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input 
-                          id="birthDate" 
-                          type="date" 
-                          className="pl-10"
-                          value={birthDate}
-                          onChange={(e) => setBirthDate(e.target.value)}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="gender" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Gênero</label>
-                      <div className="relative">
-                        <Users className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Select onValueChange={setGender} required>
-                          <SelectTrigger className="w-full pl-10">
-                            <SelectValue placeholder="Selecione" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="masculino">Masculino</SelectItem>
-                            <SelectItem value="feminino">Feminino</SelectItem>
-                            <SelectItem value="outros">Outros</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Button type="submit" className="w-full bg-blue-800 hover:bg-blue-900">
-                    Criar Conta
-                  </Button>
-                </form>
+                <CreateAccountForm
+                  name={name}
+                  email={email}
+                  password={password}
+                  confirmPassword={confirmPassword}
+                  birthDate={birthDate}
+                  gender={gender}
+                  errors={errors}
+                  onSubmit={handleSubmit}
+                  onNameChange={(e) => setName(e.target.value)}
+                  onEmailChange={(e) => setEmail(e.target.value)}
+                  onPasswordChange={(e) => setPassword(e.target.value)}
+                  onConfirmPasswordChange={(e) => setConfirmPassword(e.target.value)}
+                  onBirthDateChange={(e) => setBirthDate(e.target.value)}
+                  onGenderChange={setGender}
+                />
               </CardContent>
               <CardFooter>
                 <Button variant="link" className="w-full" onClick={() => navigate('/login')}>
