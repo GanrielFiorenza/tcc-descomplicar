@@ -169,13 +169,6 @@ const LandingPage = () => {
           <h2 className="text-3xl font-bold text-blue-900 mb-6">
             Comece a cuidar melhor do seu veículo hoje mesmo
           </h2>
-          <Button 
-            className="bg-blue-800 hover:bg-blue-900 flex items-center gap-2"
-            onClick={() => navigate('/create-account')}
-          >
-            <UserPlus className="h-4 w-4" />
-            Criar Conta Gratuita
-          </Button>
         </div>
       </div>
     </div>
