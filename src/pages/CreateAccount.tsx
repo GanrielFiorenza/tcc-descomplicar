@@ -69,18 +69,19 @@ const CreateAccount: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <div className="relative">
+      <div className="relative p-8">
         {/* Decorative circles */}
         <div className="absolute -top-10 -left-10 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
         <div className="absolute -top-5 -right-10 w-32 h-32 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-10 left-10 w-32 h-32 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
 
         {/* Card with enhanced shadow */}
-        <Card className="w-full max-w-md relative backdrop-blur-sm bg-white/90 shadow-[0_0_40px_rgba(0,0,0,0.15)] border border-white/20">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Criar Conta</CardTitle>
-          <CardDescription className="text-center">Preencha os dados para criar sua conta</CardDescription>
-        </CardHeader>
+        <div className="shadow-[0_0_40px_rgba(0,0,0,0.4)] rounded-lg">
+          <Card className="w-full max-w-md relative backdrop-blur-sm bg-white/90 border border-white/20">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-center">Bem-vindo ao descompliCar</CardTitle>
+              <CardDescription className="text-center">Preencha os dados para criar sua conta</CardDescription>
+            </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
@@ -182,7 +183,8 @@ const CreateAccount: React.FC = () => {
             Já tem uma conta? Faça login
           </Button>
         </CardFooter>
-        </Card>
+          </Card>
+        </div>
       </div>
     </div>
   );
