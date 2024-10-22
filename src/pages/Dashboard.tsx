@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Bell, CirclePlus, DollarSign, Pen } from 'lucide-react';
+import { Bell, CirclePlus, DollarSign } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,24 @@ const data = [
   { name: 'Mai', gastos: 1890 },
   { name: 'Jun', gastos: 2390 },
 ];
+
+const AnimatedBellIcon = ({ className }: { className?: string }) => {
+  const [isRinging, setIsRinging] = useState(false);
+
+  useEffect(() => {
+    setIsRinging(true);
+    const timer = setTimeout(() => setIsRinging(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <Bell
+      className={`${className} ${
+        isRinging ? 'animate-[wiggle_1s_ease-in-out_infinite]' : ''
+      }`}
+    />
+  );
+};
 
 const Dashboard = () => {
   const [newMaintenanceDate, setNewMaintenanceDate] = useState('');
@@ -105,7 +123,8 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-2xl font-bold">
+            <CardTitle className="text-2xl font-bold flex items-center">
+              <AnimatedBellIcon className="mr-2 h-6 w-6 text-blue-500" />
               Próximas Manutenções
             </CardTitle>
             <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
@@ -160,7 +179,8 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-2xl font-bold">
+            <CardTitle className="text-2xl font-bold flex items-center">
+              <AnimatedBellIcon className="mr-2 h-6 w-6 text-green-500" />
               Últimas Manutenções
             </CardTitle>
           </CardHeader>
