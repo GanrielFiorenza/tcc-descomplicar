@@ -42,9 +42,9 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
         <div className="absolute -top-5 -right-10 w-32 h-32 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-10 left-10 w-32 h-32 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
         
-        {/* Card with enhanced shadow */}
+        {/* Card with only black shadow */}
         <div className="shadow-[0_0_40px_rgba(0,0,0,0.4)] rounded-lg">
-          <Card className="w-full max-w-md relative backdrop-blur-sm bg-white/90 border border-white/20">
+          <Card className="w-full max-w-md relative backdrop-blur-sm bg-white/90">
             <CardHeader>
               <CardTitle className="text-2xl font-bold text-center">Bem-vindo ao descompliCar</CardTitle>
               <CardDescription className="text-center">Faça login para acompanhar seus gastos e revisões</CardDescription>
@@ -113,7 +113,7 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
           </Card>
         </div>
         {toastMessage && (
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded shadow-lg">
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded">
             {toastMessage}
           </div>
         )}
