@@ -11,21 +11,44 @@ const CreateAccount: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [gender, setGender] = useState('');
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+    
+    if (password.length < 6) {
+      newErrors.password = "A senha deve ter pelo menos 6 caracteres";
+    }
+    
+    if (password !== confirmPassword) {
+      newErrors.confirmPassword = "As senhas não coincidem";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically handle the account creation logic
-    console.log({ name, email, password, birthDate, gender });
-    toast({
-      title: "Conta criada com sucesso!",
-      description: "Você será redirecionado para a página de login.",
-      duration: 3000,
-    });
-    setTimeout(() => navigate('/'), 3000);
+    if (validateForm()) {
+      // Here you would typically handle the account creation logic
+      console.log({ name, email, password, birthDate, gender });
+      toast({
+        title: "Conta criada com sucesso!",
+        description: "Você será redirecionado para o dashboard.",
+        duration: 3000,
+      });
+      setTimeout(() => {
+        // Simulate login process
+        // In a real application, you'd want to properly authenticate the user here
+        navigate('/dashboard');
+      }, 3000);
+    }
   };
 
   return (
@@ -73,12 +96,28 @@ const CreateAccount: React.FC = () => {
                 <Input 
                   id="password" 
                   type="password" 
-                  className="pl-10"
+                  className={`pl-10 ${errors.password ? 'border-red-500' : ''}`}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
+              {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="confirmPassword" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Confirmar Senha</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Input 
+                  id="confirmPassword" 
+                  type="password" 
+                  className={`pl-10 ${errors.confirmPassword ? 'border-red-500' : ''}`}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+              {errors.confirmPassword && <p className="text-red-500 text-xs">{errors.confirmPassword}</p>}
             </div>
             <div className="space-y-2">
               <label htmlFor="birthDate" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Data de Nascimento</label>
