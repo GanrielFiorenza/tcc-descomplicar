@@ -28,6 +28,7 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
   const { toast } = useToast();
 
   const percentage = (totalExpenses / currentEstimate) * 100;
+  const displayPercentage = Math.round(percentage);
   const cappedPercentage = Math.min(percentage, 100);
   const excessPercentage = Math.max(0, percentage - 100);
 
@@ -153,7 +154,7 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
               )}
             </svg>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl font-bold">
-              {Math.round(animationPercentage)}%
+              {displayPercentage}%
             </div>
           </div>
           <div className="mt-4 flex items-center text-xl font-semibold">
