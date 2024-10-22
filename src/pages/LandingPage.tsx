@@ -129,7 +129,23 @@ const LandingPage = () => {
             <Car className="h-6 w-6 mr-2 text-blue-800" />
             DescompliCar
           </h1>
-          
+          <div className="flex gap-4">
+            <Button 
+              variant="ghost"
+              className="flex items-center gap-2 text-blue-800 hover:text-blue-900 hover:bg-blue-50"
+              onClick={() => navigate('/login')}
+            >
+              <LogIn className="h-4 w-4" />
+              Login
+            </Button>
+            <Button 
+              className="flex items-center gap-2 bg-blue-800 hover:bg-blue-900"
+              onClick={() => navigate('/create-account')}
+            >
+              <UserPlus className="h-4 w-4" />
+              Criar Conta
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -153,13 +169,7 @@ const LandingPage = () => {
           <h2 className="text-3xl font-bold text-blue-900 mb-6">
             Comece a cuidar melhor do seu veículo hoje mesmo
           </h2>
-          <Button 
-            className="bg-blue-800 hover:bg-blue-900 flex items-center gap-2"
-            onClick={() => navigate('/create-account')}
-          >
-            <UserPlus className="h-4 w-4" />
-            Criar Conta Gratuita
-          </Button>
+          
         </div>
       </div>
     </div>
