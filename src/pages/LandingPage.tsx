@@ -72,7 +72,7 @@ const features = [
     details: [
       "Interface intuitiva e fácil de usar, pensada para proprietários de veículos.",
       "Cadastre seus veículos com todas as informações importantes em um só lugar.",
-      "Acesse rapidamente documentos, histórico de manutenções e gastos.",
+      "Acesse rapidamente dados veiculares, histórico de manutenções e gastos.",
       "Organize todas as informações importantes do seu veículo de forma prática."
     ]
   },
