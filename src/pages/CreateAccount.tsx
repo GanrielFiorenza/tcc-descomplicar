@@ -68,21 +68,15 @@ const CreateAccount: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="relative p-8">
-        {/* Decorative circles */}
-        <div className="absolute -top-10 -left-10 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -top-5 -right-10 w-32 h-32 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-10 left-10 w-32 h-32 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-
-        {/* Card with only black shadow */}
         <div className="shadow-[0_0_40px_rgba(0,0,0,0.4)] rounded-lg">
           <Card className="w-full max-w-md relative backdrop-blur-sm bg-white/90">
             <CardHeader>
               <CardTitle className="text-2xl font-bold text-center">Bem-vindo ao descompliCar</CardTitle>
               <CardDescription className="text-center">Preencha os dados para criar sua conta</CardDescription>
             </CardHeader>
-        <CardContent>
+            <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="name" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Nome</label>
@@ -177,12 +171,12 @@ const CreateAccount: React.FC = () => {
               Criar Conta
             </Button>
           </form>
-        </CardContent>
-        <CardFooter>
+            </CardContent>
+            <CardFooter>
           <Button variant="link" className="w-full" onClick={() => navigate('/')}>
             Já tem uma conta? Faça login
           </Button>
-        </CardFooter>
+            </CardFooter>
           </Card>
         </div>
       </div>
