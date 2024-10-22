@@ -33,18 +33,37 @@ const CreateAccount: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      // Here you would typically handle the account creation logic
-      console.log({ name, email, password, birthDate, gender });
-      toast({
-        title: "Conta criada com sucesso!",
-        description: "Você será redirecionado para o dashboard.",
-        duration: 3000,
-      });
-      // Simulate login process and redirect immediately
-      navigate('/dashboard');
+      try {
+        // Here you would typically handle the account creation logic
+        // For demonstration, we'll simulate a successful account creation
+        console.log({ name, email, password, birthDate, gender });
+        
+        // Simulate API call for account creation
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Simulate login process
+        // In a real application, you'd want to properly authenticate the user here
+        localStorage.setItem('isLoggedIn', 'true');
+        
+        toast({
+          title: "Conta criada com sucesso!",
+          description: "Você será redirecionado para o dashboard.",
+          duration: 3000,
+        });
+        
+        // Redirect to dashboard
+        navigate('/dashboard');
+      } catch (error) {
+        console.error('Error creating account:', error);
+        toast({
+          title: "Erro ao criar conta",
+          description: "Por favor, tente novamente mais tarde.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
