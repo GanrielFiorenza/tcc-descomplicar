@@ -24,15 +24,15 @@ const AnimatedBellIcon = ({ className }: { className?: string }) => {
 
   useEffect(() => {
     setIsRinging(true);
-    const timer = setTimeout(() => setIsRinging(false), 2000);
+    const timer = setTimeout(() => setIsRinging(false), 1000); // Reduced from 2000ms to 1000ms
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <Bell
       className={`${className} ${
-        isRinging ? 'animate-[wiggle_1s_ease-in-out_infinite]' : ''
-      }`}
+        isRinging ? 'animate-[wiggle_0.5s_ease-in-out_infinite] scale-110 text-yellow-400' : ''
+      } transition-all duration-300`}
     />
   );
 };
