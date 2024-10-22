@@ -16,7 +16,7 @@ const LandingPage = () => {
             descompliCar
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-8">
-            Simplifique o gerenciamento da sua frota e economize tempo e dinheiro
+            Simplifique o gerenciamento do seu veículo e mantenha tudo sob controle
           </p>
           <div className="flex gap-4 justify-center">
             <Button 
@@ -39,9 +39,9 @@ const LandingPage = () => {
           <Card className="p-6 hover:shadow-lg transition-shadow">
             <CardContent className="space-y-4">
               <Car className="h-12 w-12 text-blue-800" />
-              <h3 className="text-xl font-semibold">Gestão de Frota</h3>
+              <h3 className="text-xl font-semibold">Gestão Simplificada</h3>
               <p className="text-gray-600">
-                Mantenha o controle total sobre seus veículos com nossa plataforma intuitiva de gestão de frota.
+                Mantenha todas as informações do seu veículo organizadas em um só lugar, de forma simples e intuitiva.
               </p>
             </CardContent>
           </Card>
@@ -49,9 +49,9 @@ const LandingPage = () => {
           <Card className="p-6 hover:shadow-lg transition-shadow">
             <CardContent className="space-y-4">
               <Wrench className="h-12 w-12 text-blue-800" />
-              <h3 className="text-xl font-semibold">Manutenção Preventiva</h3>
+              <h3 className="text-xl font-semibold">Manutenção em Dia</h3>
               <p className="text-gray-600">
-                Agende e acompanhe manutenções preventivas para evitar problemas futuros e reduzir custos.
+                Receba lembretes de manutenção preventiva e mantenha seu veículo sempre em perfeitas condições.
               </p>
             </CardContent>
           </Card>
@@ -61,7 +61,7 @@ const LandingPage = () => {
               <DollarSign className="h-12 w-12 text-blue-800" />
               <h3 className="text-xl font-semibold">Controle de Gastos</h3>
               <p className="text-gray-600">
-                Monitore todos os custos relacionados à sua frota e identifique oportunidades de economia.
+                Acompanhe todos os gastos do seu veículo e identifique onde você pode economizar.
               </p>
             </CardContent>
           </Card>
@@ -69,9 +69,9 @@ const LandingPage = () => {
           <Card className="p-6 hover:shadow-lg transition-shadow">
             <CardContent className="space-y-4">
               <FileText className="h-12 w-12 text-blue-800" />
-              <h3 className="text-xl font-semibold">Relatórios Detalhados</h3>
+              <h3 className="text-xl font-semibold">Histórico Completo</h3>
               <p className="text-gray-600">
-                Gere relatórios personalizados para análise completa do desempenho da sua frota.
+                Mantenha um registro detalhado de todas as manutenções e despesas do seu veículo.
               </p>
             </CardContent>
           </Card>
@@ -79,9 +79,9 @@ const LandingPage = () => {
           <Card className="p-6 hover:shadow-lg transition-shadow">
             <CardContent className="space-y-4">
               <Shield className="h-12 w-12 text-blue-800" />
-              <h3 className="text-xl font-semibold">Segurança e Conformidade</h3>
+              <h3 className="text-xl font-semibold">Tranquilidade</h3>
               <p className="text-gray-600">
-                Mantenha sua frota em conformidade com todas as regulamentações e requisitos de segurança.
+                Tenha a certeza de que seu veículo está sempre em dia com manutenções e documentações necessárias.
               </p>
             </CardContent>
           </Card>
@@ -90,7 +90,7 @@ const LandingPage = () => {
         {/* Call to Action */}
         <div className="text-center">
           <h2 className="text-3xl font-bold text-blue-900 mb-6">
-            Comece a otimizar sua gestão de frota hoje mesmo
+            Comece a cuidar melhor do seu veículo hoje mesmo
           </h2>
           <Button 
             className="bg-blue-800 hover:bg-blue-900"
