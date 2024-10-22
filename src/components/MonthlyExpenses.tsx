@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
@@ -13,7 +13,6 @@ interface MonthlyExpensesProps {
   estimatedExpenses: number;
 }
 
-// Mock data for months with expenses
 const monthsWithExpenses = [
   { value: '2024-01', label: 'Janeiro 2024' },
   { value: '2024-02', label: 'Fevereiro 2024' },
@@ -24,12 +23,21 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newLimit, setNewLimit] = useState(estimatedExpenses.toString());
   const [currentEstimate, setCurrentEstimate] = useState(estimatedExpenses);
-  const [selectedMonth, setSelectedMonth] = useState(monthsWithExpenses[2].value); // Default to the latest month
+  const [selectedMonth, setSelectedMonth] = useState(monthsWithExpenses[2].value);
+  const [animationPercentage, setAnimationPercentage] = useState(0);
   const { toast } = useToast();
 
   const percentage = (totalExpenses / currentEstimate) * 100;
   const cappedPercentage = Math.min(percentage, 100);
   const excessPercentage = Math.max(0, percentage - 100);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimationPercentage(cappedPercentage);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [cappedPercentage]);
 
   const handleSaveLimit = () => {
     const newEstimate = parseFloat(newLimit);
@@ -54,11 +62,6 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-2xl font-bold">Gasto no mês</CardTitle>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="outline" size="icon">
-              <Pen className="h-4 w-4" />
-            </Button>
-          </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Alterar Limite de Gastos</DialogTitle>
@@ -127,7 +130,8 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
                 fill="none"
                 stroke="#8B5CF6"
                 strokeWidth="3"
-                strokeDasharray={`${cappedPercentage}, 100`}
+                strokeDasharray={`${animationPercentage}, 100`}
+                className="transition-all duration-1000 ease-out"
               />
               {excessPercentage > 0 && (
                 <path
@@ -137,13 +141,14 @@ const MonthlyExpenses: React.FC<MonthlyExpensesProps> = ({ totalExpenses, estima
                   fill="none"
                   stroke="#EF4444"
                   strokeWidth="3"
-                  strokeDasharray={`${excessPercentage}, 100`}
+                  strokeDasharray={`${Math.min(animationPercentage - 100, excessPercentage)}, 100`}
                   strokeDashoffset="-100"
+                  className="transition-all duration-1000 ease-out"
                 />
               )}
             </svg>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl font-bold">
-              {percentage.toFixed(0)}%
+              {Math.round(animationPercentage)}%
             </div>
           </div>
           <div className="mt-4 flex items-center text-xl font-semibold">
