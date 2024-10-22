@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from 'react-router-dom';
-import { Car, Wrench, DollarSign, FileText, Shield, CheckCircle2, Bell, Coins, ClipboardList, Clock } from 'lucide-react';
+import { Car, Wrench, DollarSign, FileText, Shield, CheckCircle2, Bell, Coins, ClipboardList, Clock, LogIn, UserPlus } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -123,6 +123,33 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      {/* New Header Section */}
+      <header className="bg-white shadow-sm">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-blue-900 flex items-center">
+            <Car className="h-6 w-6 mr-2 text-blue-800" />
+            DescompliCar
+          </h1>
+          <div className="flex gap-4">
+            <Button 
+              variant="ghost"
+              className="flex items-center gap-2 text-blue-800 hover:text-blue-900 hover:bg-blue-50"
+              onClick={() => navigate('/login')}
+            >
+              <LogIn className="h-4 w-4" />
+              Login
+            </Button>
+            <Button 
+              className="flex items-center gap-2 bg-blue-800 hover:bg-blue-900"
+              onClick={() => navigate('/create-account')}
+            >
+              <UserPlus className="h-4 w-4" />
+              Criar Conta
+            </Button>
+          </div>
+        </div>
+      </header>
+
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-bold text-blue-900 mb-6">
@@ -133,15 +160,18 @@ const LandingPage = () => {
           </p>
           <div className="flex gap-4 justify-center">
             <Button 
-              className="bg-blue-800 hover:bg-blue-900"
+              className="bg-blue-800 hover:bg-blue-900 flex items-center gap-2"
               onClick={() => navigate('/login')}
             >
+              <LogIn className="h-4 w-4" />
               Fazer Login
             </Button>
             <Button 
               variant="outline"
+              className="flex items-center gap-2"
               onClick={() => navigate('/create-account')}
             >
+              <UserPlus className="h-4 w-4" />
               Criar Conta
             </Button>
           </div>
@@ -158,9 +188,10 @@ const LandingPage = () => {
             Comece a cuidar melhor do seu veículo hoje mesmo
           </h2>
           <Button 
-            className="bg-blue-800 hover:bg-blue-900"
+            className="bg-blue-800 hover:bg-blue-900 flex items-center gap-2"
             onClick={() => navigate('/create-account')}
           >
+            <UserPlus className="h-4 w-4" />
             Criar Conta Gratuita
           </Button>
         </div>
