@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from 'react-router-dom';
-import { Car, Wrench, DollarSign, FileText, Shield } from 'lucide-react';
+import { Car, Wrench, DollarSign, FileText, Shield, CheckCircle2, Bell, Coins, ClipboardList, Clock } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -16,33 +16,54 @@ const FeatureDialog = ({ title, description, details }: {
   title: string; 
   description: string;
   details: string[];
-}) => (
-  <Dialog>
-    <DialogTrigger asChild>
-      <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer">
-        <CardContent className="space-y-4">
-          {title === "Gestão Simplificada" && <Car className="h-12 w-12 text-blue-800" />}
-          {title === "Manutenção em Dia" && <Wrench className="h-12 w-12 text-blue-800" />}
-          {title === "Controle de Gastos" && <DollarSign className="h-12 w-12 text-blue-800" />}
-          {title === "Histórico Completo" && <FileText className="h-12 w-12 text-blue-800" />}
-          {title === "Tranquilidade" && <Shield className="h-12 w-12 text-blue-800" />}
-          <h3 className="text-xl font-semibold">{title}</h3>
-          <p className="text-gray-600">{description}</p>
-        </CardContent>
-      </Card>
-    </DialogTrigger>
-    <DialogContent className="sm:max-w-[425px]">
-      <DialogHeader>
-        <DialogTitle>{title}</DialogTitle>
-        <DialogDescription className="pt-4">
-          {details.map((detail, index) => (
-            <p key={index} className="mb-2">{detail}</p>
-          ))}
-        </DialogDescription>
-      </DialogHeader>
-    </DialogContent>
-  </Dialog>
-);
+}) => {
+  const getIcon = (detail: string) => {
+    if (detail.includes("Interface") || detail.includes("Cadastre")) return <CheckCircle2 className="h-5 w-5 text-green-500" />;
+    if (detail.includes("lembretes") || detail.includes("Notificações")) return <Bell className="h-5 w-5 text-yellow-500" />;
+    if (detail.includes("gastos") || detail.includes("economia")) return <Coins className="h-5 w-5 text-blue-500" />;
+    if (detail.includes("Registro") || detail.includes("Histórico")) return <ClipboardList className="h-5 w-5 text-purple-500" />;
+    if (detail.includes("vencimentos") || detail.includes("renovação")) return <Clock className="h-5 w-5 text-red-500" />;
+    return <CheckCircle2 className="h-5 w-5 text-green-500" />;
+  };
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer">
+          <CardContent className="space-y-4">
+            {title === "Gestão Simplificada" && <Car className="h-12 w-12 text-blue-800" />}
+            {title === "Manutenção em Dia" && <Wrench className="h-12 w-12 text-blue-800" />}
+            {title === "Controle de Gastos" && <DollarSign className="h-12 w-12 text-blue-800" />}
+            {title === "Histórico Completo" && <FileText className="h-12 w-12 text-blue-800" />}
+            {title === "Tranquilidade" && <Shield className="h-12 w-12 text-blue-800" />}
+            <h3 className="text-xl font-semibold">{title}</h3>
+            <p className="text-gray-600">{description}</p>
+          </CardContent>
+        </Card>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[600px] p-8">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-bold text-blue-800 mb-4 flex items-center gap-3">
+            {title === "Gestão Simplificada" && <Car className="h-8 w-8" />}
+            {title === "Manutenção em Dia" && <Wrench className="h-8 w-8" />}
+            {title === "Controle de Gastos" && <DollarSign className="h-8 w-8" />}
+            {title === "Histórico Completo" && <FileText className="h-8 w-8" />}
+            {title === "Tranquilidade" && <Shield className="h-8 w-8" />}
+            {title}
+          </DialogTitle>
+          <DialogDescription className="pt-4 space-y-4">
+            {details.map((detail, index) => (
+              <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                {getIcon(detail)}
+                <p className="text-base text-gray-700">{detail}</p>
+              </div>
+            ))}
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 const features = [
   {
