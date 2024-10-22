@@ -68,11 +68,16 @@ const CreateAccount: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 relative">
+      <div className="absolute inset-0 bg-white/30 backdrop-blur-sm" />
+      <Card className="w-full max-w-md relative shadow-2xl border-2 border-white/50 bg-white/80 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Criar Conta</CardTitle>
-          <CardDescription className="text-center">Preencha os dados para criar sua conta</CardDescription>
+          <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            Criar Conta
+          </CardTitle>
+          <CardDescription className="text-center text-gray-600">
+            Preencha os dados para criar sua conta
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -165,13 +170,13 @@ const CreateAccount: React.FC = () => {
                 </Select>
               </div>
             </div>
-            <Button type="submit" className="w-full bg-green-500 hover:bg-green-600">
+            <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg">
               Criar Conta
             </Button>
           </form>
         </CardContent>
         <CardFooter>
-          <Button variant="link" className="w-full" onClick={() => navigate('/')}>
+          <Button variant="link" className="w-full text-blue-600 hover:text-blue-700" onClick={() => navigate('/')}>
             Já tem uma conta? Faça login
           </Button>
         </CardFooter>
