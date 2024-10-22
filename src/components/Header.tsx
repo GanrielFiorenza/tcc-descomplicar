@@ -8,10 +8,13 @@ const Header = () => {
   return (
     <header className="bg-white shadow-sm">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-blue-900 flex items-center">
+        <button 
+          onClick={() => navigate('/')} 
+          className="text-2xl font-bold text-blue-900 flex items-center hover:text-blue-800 transition-colors"
+        >
           <Car className="h-6 w-6 mr-2 text-blue-800" />
           DescompliCar
-        </h1>
+        </button>
         <div className="flex gap-4">
           <Button 
             variant="ghost"

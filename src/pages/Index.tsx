@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { LogIn, UserPlus, Mail, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Header from "@/components/Header";
 
 interface IndexProps {
   onLogin: () => void;
@@ -35,10 +36,12 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
-      <div className="relative p-8">
-        <div className="shadow-[0_0_40px_rgba(0,0,0,0.4)] rounded-lg">
-          <Card className="w-full max-w-md relative backdrop-blur-sm bg-white/90">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <Header />
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="relative p-8">
+          <div className="shadow-[0_0_40px_rgba(0,0,0,0.4)] rounded-lg">
+            <Card className="w-full max-w-md relative backdrop-blur-sm bg-white/90">
             <CardHeader>
               <CardTitle className="text-2xl font-bold text-center">Bem-vindo ao descompliCar</CardTitle>
               <CardDescription className="text-center">Faça login para acompanhar seus gastos e revisões</CardDescription>
@@ -104,13 +107,14 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
                 <UserPlus className="mr-2 h-4 w-4" /> Criar uma conta
               </Button>
             </CardFooter>
-          </Card>
-        </div>
-        {toastMessage && (
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded">
-            {toastMessage}
+            </Card>
           </div>
-        )}
+          {toastMessage && (
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded">
+              {toastMessage}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
