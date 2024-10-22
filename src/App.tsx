@@ -3,6 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import LandingPage from "./pages/LandingPage";
 import Index from "./pages/Index";
 import CreateAccount from "./pages/CreateAccount";
 import Dashboard from "./pages/Dashboard";
@@ -57,31 +58,32 @@ const App = () => {
               }`}
             >
               <Routes>
-                <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Index onLogin={handleLogin} />} />
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Index onLogin={handleLogin} />} />
                 <Route path="/create-account" element={<CreateAccount />} />
                 <Route
                   path="/dashboard"
-                  element={isLoggedIn ? <Dashboard /> : <Navigate to="/" />}
+                  element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />}
                 />
                 <Route
                   path="/vehicles"
-                  element={isLoggedIn ? <VehicleRegistration /> : <Navigate to="/" />}
+                  element={isLoggedIn ? <VehicleRegistration /> : <Navigate to="/login" />}
                 />
                 <Route
                   path="/maintenance"
-                  element={isLoggedIn ? <MaintenanceHistory /> : <Navigate to="/" />}
+                  element={isLoggedIn ? <MaintenanceHistory /> : <Navigate to="/login" />}
                 />
                 <Route
                   path="/expenses"
-                  element={isLoggedIn ? <ExpenseControl /> : <Navigate to="/" />}
+                  element={isLoggedIn ? <ExpenseControl /> : <Navigate to="/login" />}
                 />
                 <Route
                   path="/reports"
-                  element={isLoggedIn ? <CustomReports /> : <Navigate to="/" />}
+                  element={isLoggedIn ? <CustomReports /> : <Navigate to="/login" />}
                 />
                 <Route
                   path="/settings"
-                  element={isLoggedIn ? <Settings /> : <Navigate to="/" />}
+                  element={isLoggedIn ? <Settings /> : <Navigate to="/login" />}
                 />
               </Routes>
             </main>
