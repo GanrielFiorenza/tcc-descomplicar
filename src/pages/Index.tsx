@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { LogIn, UserPlus, Mail, Lock, Info, Check, AlertTriangle, Car } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/components/ui/card"
+import { LogIn, UserPlus, Mail, Lock, Info, Check, AlertTriangle, Car, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Header from "@/components/Header";
 
@@ -14,6 +14,7 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const showToast = (message: string) => {
@@ -82,11 +83,22 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input 
                         id="password" 
-                        type="password" 
-                        className="pl-10"
+                        type={showPassword ? "text" : "password"}
+                        className="pl-10 pr-10"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                      >
+                        {showPassword ? (
+                          <Eye className="h-4 w-4" />
+                        ) : (
+                          <EyeOff className="h-4 w-4" />
+                        )}
+                      </button>
                     </div>
                   </div>
                   <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600">
