@@ -166,7 +166,10 @@ const LandingPage = () => {
         </div>
 
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-blue-900 mb-6">
+          <h2 
+            className="text-3xl font-bold text-blue-900 mb-6 cursor-pointer hover:text-blue-700 transition-colors"
+            onClick={() => navigate('/create-account')}
+          >
             Comece a cuidar melhor do seu veículo hoje mesmo
           </h2>
         </div>
