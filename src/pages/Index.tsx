@@ -5,6 +5,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/co
 import { LogIn, UserPlus, Mail, Lock, Info, Check, AlertTriangle, Car, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Header from "@/components/Header";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/config/firebase";
+import { useToast } from "@/hooks/use-toast";
 
 interface IndexProps {
   onLogin: () => void;
@@ -15,26 +18,54 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const showToast = (message: string) => {
-    setToastMessage(message);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
-
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email === 'gabriel@exemplo.com' && password === 'gabi123') {
+    setIsLoading(true);
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       onLogin();
       navigate('/dashboard');
-    } else {
-      showToast("Credenciais inválidas. Tente novamente.");
+    } catch (error: any) {
+      let errorMessage = "Ocorreu um erro ao fazer login.";
+      
+      switch (error.code) {
+        case 'auth/invalid-email':
+          errorMessage = "E-mail inválido.";
+          break;
+        case 'auth/user-disabled':
+          errorMessage = "Esta conta foi desativada.";
+          break;
+        case 'auth/user-not-found':
+          errorMessage = "Usuário não encontrado.";
+          break;
+        case 'auth/wrong-password':
+          errorMessage = "Senha incorreta.";
+          break;
+        case 'auth/too-many-requests':
+          errorMessage = "Muitas tentativas de login. Tente novamente mais tarde.";
+          break;
+      }
+
+      toast({
+        variant: "destructive",
+        title: "Erro no login",
+        description: errorMessage,
+      });
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleGoogleLogin = () => {
-    showToast("Funcionalidade de login com Google será implementada em breve.");
-  }
+    toast({
+      description: "Funcionalidade de login com Google será implementada em breve.",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -74,6 +105,7 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
                         className="pl-10" 
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        disabled={isLoading}
                       />
                     </div>
                   </div>
@@ -87,11 +119,13 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
                         className="pl-10 pr-10"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        disabled={isLoading}
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                        disabled={isLoading}
                       >
                         {showPassword ? (
                           <Eye className="h-4 w-4" />
@@ -101,13 +135,31 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
                       </button>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600">
-                    <LogIn className="mr-2 h-4 w-4" /> Entrar
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-blue-500 hover:bg-blue-600"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <span className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Entrando...
+                      </span>
+                    ) : (
+                      <>
+                        <LogIn className="mr-2 h-4 w-4" /> Entrar
+                      </>
+                    )}
                   </Button>
                 </form>
               </CardContent>
               <CardFooter className="flex flex-col space-y-4">
-                <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
+                <Button 
+                  variant="outline" 
+                  className="w-full" 
+                  onClick={handleGoogleLogin}
+                  disabled={isLoading}
+                >
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"
@@ -129,7 +181,12 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
                   </svg>
                   Entrar com Google
                 </Button>
-                <Button variant="link" className="w-full" onClick={() => navigate('/create-account')}>
+                <Button 
+                  variant="link" 
+                  className="w-full" 
+                  onClick={() => navigate('/create-account')}
+                  disabled={isLoading}
+                >
                   <UserPlus className="mr-2 h-4 w-4" /> Criar uma conta
                 </Button>
               </CardFooter>

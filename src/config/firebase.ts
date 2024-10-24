@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY || "AIzaSyDonCvvAdNVQPUdhDk58wFZwLefRQXy6II",
@@ -14,9 +15,4 @@ const firebaseConfig = {
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
-
-// Export any additional Firebase services you might need in the future
-// import { getAuth } from "firebase/auth";
-// import { getFirestore } from "firebase/firestore";
-// export const auth = getAuth(app);
-// export const db = getFirestore(app);
+export const auth = getAuth(app);
