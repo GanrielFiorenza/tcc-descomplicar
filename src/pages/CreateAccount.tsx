@@ -6,6 +6,9 @@ import Header from "@/components/Header";
 import CreateAccountForm from "@/components/CreateAccountForm";
 import { useState } from "react";
 import { Car, Shield } from "lucide-react";
+import { auth, db } from "@/config/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 const CreateAccount = () => {
   const [name, setName] = useState('');
@@ -15,6 +18,7 @@ const CreateAccount = () => {
   const [birthDate, setBirthDate] = useState('');
   const [gender, setGender] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -36,8 +40,21 @@ const CreateAccount = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
+      setIsLoading(true);
       try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Criar usuário com email e senha
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Salvar dados adicionais no Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          name,
+          birthDate,
+          gender,
+          email,
+          createdAt: new Date().toISOString()
+        });
+
         localStorage.setItem('isLoggedIn', 'true');
         
         toast({
@@ -47,13 +64,21 @@ const CreateAccount = () => {
         });
         
         navigate('/dashboard');
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error creating account:', error);
+        let errorMessage = "Erro ao criar conta. Tente novamente.";
+        
+        if (error.code === 'auth/email-already-in-use') {
+          errorMessage = "Este e-mail já está em uso.";
+        }
+        
         toast({
           title: "Erro ao criar conta",
-          description: "Por favor, tente novamente mais tarde.",
+          description: errorMessage,
           variant: "destructive",
         });
+      } finally {
+        setIsLoading(false);
       }
     }
   };

@@ -27,6 +27,7 @@ const CreateAccountForm = ({
   password,
   confirmPassword,
   birthDate,
+  gender,
   errors,
   onSubmit,
   onNameChange,
