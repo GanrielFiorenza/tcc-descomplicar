@@ -54,7 +54,19 @@ const UserInfoFields: React.FC<UserInfoFieldsProps> = ({ userData, editMode, err
           <Mail className="mr-2 h-4 w-4 text-blue-500" />
           E-mail
         </Label>
-        <div className="p-2 bg-gray-100 rounded">{userData.email}</div>
+        {editMode ? (
+          <Input
+            id="email"
+            type="email"
+            value={userData.email}
+            onChange={(e) => handleInputChange('email', e.target.value)}
+            placeholder="Seu e-mail"
+            className={errors.email ? "border-red-500" : ""}
+          />
+        ) : (
+          <div className="p-2 bg-gray-100 rounded">{userData.email}</div>
+        )}
+        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
