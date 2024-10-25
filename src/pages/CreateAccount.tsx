@@ -7,7 +7,7 @@ import CreateAccountForm from "@/components/CreateAccountForm";
 import { useState } from "react";
 import { Car, Shield } from "lucide-react";
 import { auth, db } from "@/config/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 
 const CreateAccount = () => {
@@ -55,6 +55,9 @@ const CreateAccount = () => {
           createdAt: new Date().toISOString()
         });
 
+        // Realizar login automático
+        await signInWithEmailAndPassword(auth, email, password);
+        
         localStorage.setItem('isLoggedIn', 'true');
         
         toast({
