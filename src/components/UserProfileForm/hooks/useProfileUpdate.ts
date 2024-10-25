@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { auth, db } from "@/config/firebase";
 import { doc, updateDoc } from "firebase/firestore";
-import { updateEmail, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
+import { 
+  updateEmail, 
+  updatePassword, 
+  EmailAuthProvider, 
+  reauthenticateWithCredential,
+  sendEmailVerification 
+} from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 
 interface UserData {
@@ -33,6 +39,7 @@ export const useProfileUpdate = (
       await reauthenticateWithCredential(auth.currentUser, credential);
       return true;
     } catch (error) {
+      console.error('Reauth error:', error);
       toast({
         title: "Erro na autenticação",
         description: "Senha atual incorreta",
@@ -46,7 +53,7 @@ export const useProfileUpdate = (
     if (!auth.currentUser) return;
 
     try {
-      // Atualiza dados no Firestore
+      // Primeiro atualiza os dados básicos no Firestore
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
         name: userData.username,
         birthDate: userData.birthDate,
@@ -54,14 +61,28 @@ export const useProfileUpdate = (
         updatedAt: new Date().toISOString()
       });
 
-      // Atualiza email se foi alterado
-      if (userData.email !== auth.currentUser.email) {
-        await updateEmail(auth.currentUser, userData.email);
-      }
-
-      // Atualiza senha se foi fornecida
+      // Se houver nova senha, atualiza primeiro
       if (password) {
         await updatePassword(auth.currentUser, password);
+      }
+
+      // Se o email foi alterado, envia verificação
+      if (userData.email !== auth.currentUser.email) {
+        try {
+          await updateEmail(auth.currentUser, userData.email);
+          await sendEmailVerification(auth.currentUser);
+          toast({
+            title: "Verificação de e-mail enviada",
+            description: "Por favor, verifique seu novo e-mail para confirmar a alteração.",
+          });
+        } catch (emailError: any) {
+          console.error('Email update error:', emailError);
+          if (emailError.code === 'auth/requires-recent-login') {
+            setIsReauthDialogOpen(true);
+            return;
+          }
+          throw emailError;
+        }
       }
 
       setIsConfirmDialogOpen(false);
@@ -95,6 +116,7 @@ export const useProfileUpdate = (
 
       await updateUserData();
     } catch (error) {
+      console.error('Confirm save error:', error);
       toast({
         title: "Erro ao atualizar",
         description: "Não foi possível atualizar suas informações.",
