@@ -3,6 +3,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { auth } from "./config/firebase";
+import { signOut } from "firebase/auth";
 import LandingPage from "./pages/LandingPage";
 import Index from "./pages/Index";
 import CreateAccount from "./pages/CreateAccount";
@@ -23,6 +25,20 @@ const App = () => {
   useEffect(() => {
     const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
     setIsLoggedIn(loggedIn);
+
+    // Add event listener for when the window is closed or refreshed
+    const handleBeforeUnload = async () => {
+      if (auth.currentUser) {
+        await signOut(auth);
+        localStorage.removeItem('isLoggedIn');
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, []);
 
   const handleLogin = () => {
@@ -92,6 +108,7 @@ const App = () => {
       </TooltipProvider>
     </QueryClientProvider>
   );
+
 };
 
 export default App;

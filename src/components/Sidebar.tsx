@@ -1,8 +1,11 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ChevronLeft, ChevronRight, LayoutDashboard, Car, Wrench, Wallet, FileText, Settings, LogOut } from 'lucide-react';
+import { auth } from '@/config/firebase';
+import { signOut } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
 
 interface SidebarProps {
   onLogout: () => void;
@@ -12,6 +15,26 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      onLogout();
+      navigate('/login');
+      toast({
+        title: "Logout realizado",
+        description: "Você foi desconectado com sucesso.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao sair",
+        description: "Ocorreu um erro ao tentar desconectar.",
+      });
+    }
+  };
 
   const navItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -56,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
         <Button
           variant="destructive"
           className="m-4 sticky bottom-0"
-          onClick={onLogout}
+          onClick={handleLogout}
         >
           <LogOut className="h-5 w-5 mr-2" />
           Sair
@@ -66,7 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
           variant="ghost"
           size="icon"
           className="m-4 sticky bottom-0"
-          onClick={onLogout}
+          onClick={handleLogout}
         >
           <LogOut className="h-5 w-5" />
         </Button>
