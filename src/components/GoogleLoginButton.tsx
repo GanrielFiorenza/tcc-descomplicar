@@ -16,18 +16,26 @@ const GoogleLoginButton = ({ onLogin, isLoading }: GoogleLoginButtonProps) => {
   const handleGoogleLogin = async () => {
     try {
       const provider = new GoogleAuthProvider();
+      // Força sempre mostrar a seleção de conta
       provider.setCustomParameters({
-        prompt: 'select_account'
+        prompt: 'select_account',
+        access_type: 'offline',
+        include_granted_scopes: 'true'
       });
       
-      await signInWithPopup(auth, provider);
-      onLogin();
-      toast({
-        title: "Login realizado com sucesso",
-        description: "Você foi conectado usando sua conta Google.",
-      });
-      navigate('/dashboard');
+      const result = await signInWithPopup(auth, provider);
+      
+      if (result.user) {
+        localStorage.setItem('isLoggedIn', 'true');
+        onLogin();
+        toast({
+          title: "Login realizado com sucesso",
+          description: "Você foi conectado usando sua conta Google.",
+        });
+        navigate('/dashboard');
+      }
     } catch (error: any) {
+      console.error('Erro no login:', error);
       toast({
         variant: "destructive",
         title: "Erro ao fazer login com Google",
