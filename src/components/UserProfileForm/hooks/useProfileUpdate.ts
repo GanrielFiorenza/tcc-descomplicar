@@ -4,7 +4,7 @@ import {
   updatePassword, 
   EmailAuthProvider, 
   reauthenticateWithCredential,
-  sendEmailVerification 
+  updateEmail
 } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 
@@ -66,30 +66,8 @@ export const useProfileUpdate = (
 
       // Handle email change
       const isEmailChanged = userData.email !== auth.currentUser.email;
-      if (isEmailChanged) {
-        try {
-          // Instead of updating email directly, send verification email
-          await sendEmailVerification(auth.currentUser, {
-            url: window.location.origin + '/settings',
-          });
-          
-          // Store the new email in Firestore for later update
-          await updateDoc(doc(db, "users", auth.currentUser.uid), {
-            pendingEmail: userData.email
-          });
-
-          toast({
-            title: "Verificação de e-mail enviada",
-            description: "Por favor, verifique seu e-mail atual para confirmar a alteração do novo endereço de e-mail.",
-          });
-        } catch (emailError: any) {
-          console.error('Email verification error:', emailError);
-          if (emailError.code === 'auth/requires-recent-login') {
-            setIsReauthDialogOpen(true);
-            return;
-          }
-          throw emailError;
-        }
+      if (isEmailChanged && auth.currentUser) {
+        await updateEmail(auth.currentUser, userData.email);
       }
 
       setIsConfirmDialogOpen(false);
@@ -98,12 +76,10 @@ export const useProfileUpdate = (
       setPassword('');
       setConfirmPassword('');
 
-      if (!isEmailChanged) {
-        toast({
-          title: "Perfil atualizado",
-          description: "Suas informações foram salvas com sucesso.",
-        });
-      }
+      toast({
+        title: "Perfil atualizado",
+        description: "Suas informações foram salvas com sucesso.",
+      });
     } catch (error: any) {
       console.error('Error updating profile:', error);
       toast({
