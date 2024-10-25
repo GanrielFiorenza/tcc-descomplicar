@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { auth, db } from "@/config/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { 
@@ -66,7 +65,8 @@ export const useProfileUpdate = (
       }
 
       // Handle email change
-      if (userData.email !== auth.currentUser.email) {
+      const isEmailChanged = userData.email !== auth.currentUser.email;
+      if (isEmailChanged) {
         try {
           // Instead of updating email directly, send verification email
           await sendEmailVerification(auth.currentUser, {
@@ -98,7 +98,7 @@ export const useProfileUpdate = (
       setPassword('');
       setConfirmPassword('');
 
-      if (!userData.email !== auth.currentUser.email) {
+      if (!isEmailChanged) {
         toast({
           title: "Perfil atualizado",
           description: "Suas informações foram salvas com sucesso.",
