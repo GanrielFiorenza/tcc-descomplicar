@@ -1,19 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Edit } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { isValidEmail } from '@/utils/validation';
-import { isValidUsername, isValidPassword, doPasswordsMatch } from '@/utils/formValidation';
+import { auth, db } from "@/config/firebase";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import UserInfoFields from './UserInfoFields';
 import PasswordFields from './PasswordFields';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { ConfirmDialog } from './ConfirmDialog';
 
 interface UserData {
   username: string;
@@ -35,62 +28,54 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData, setUserData
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const { toast } = useToast();
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (auth.currentUser) {
+        const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          setUserData({
+            username: data.name,
+            email: auth.currentUser.email || '',
+            birthDate: data.birthDate,
+            gender: data.gender
+          });
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [setUserData]);
+
   const handleInputChange = (field: keyof UserData, value: string) => {
     setUserData(prev => ({ ...prev, [field]: value }));
     setErrors(prev => ({ ...prev, [field]: '' }));
   };
 
-  const handleSave = () => {
-    const newErrors: { [key: string]: string } = {};
+  const confirmSave = async () => {
+    try {
+      if (auth.currentUser) {
+        await updateDoc(doc(db, "users", auth.currentUser.uid), {
+          name: userData.username,
+          birthDate: userData.birthDate,
+          gender: userData.gender,
+          updatedAt: new Date().toISOString()
+        });
 
-    if (!isValidUsername(userData.username)) {
-      newErrors.username = "O nome de usuário não pode estar vazio";
-    }
-
-    if (!isValidEmail(userData.email)) {
-      newErrors.email = "O e-mail inserido não é válido";
-    }
-
-    if (password || confirmPassword) {
-      if (!isValidPassword(password)) {
-        newErrors.password = "A senha deve ter pelo menos 6 caracteres";
+        setIsConfirmDialogOpen(false);
+        setEditMode(false);
+        toast({
+          title: "Perfil atualizado",
+          description: "Suas informações foram salvas com sucesso.",
+        });
       }
-      if (!doPasswordsMatch(password, confirmPassword)) {
-        newErrors.confirmPassword = "As senhas não coincidem";
-      }
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      setIsConfirmDialogOpen(true);
-    } else {
+    } catch (error) {
       toast({
-        title: "Erro de validação",
-        description: "Por favor, corrija os campos destacados.",
+        title: "Erro ao atualizar",
+        description: "Não foi possível atualizar suas informações.",
         variant: "destructive",
       });
     }
-  };
-
-  const confirmSave = () => {
-    setIsConfirmDialogOpen(false);
-    setEditMode(false);
-    toast({
-      title: "Perfil atualizado",
-      description: "Suas informações foram salvas com sucesso.",
-    });
-  };
-
-  const handleEdit = () => {
-    setEditMode(true);
-  };
-
-  const handleCancel = () => {
-    setEditMode(false);
-    setPassword('');
-    setConfirmPassword('');
-    setErrors({});
   };
 
   return (
@@ -98,7 +83,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData, setUserData
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Perfil do Usuário</h2>
         {!editMode && (
-          <Button onClick={handleEdit} variant="outline" className="bg-blue-800 text-white hover:bg-blue-900">
+          <Button onClick={() => setEditMode(true)} variant="outline" className="bg-blue-800 text-white hover:bg-blue-900">
             <Edit className="mr-2 h-4 w-4" /> Editar Perfil
           </Button>
         )}
@@ -123,33 +108,20 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData, setUserData
 
       {editMode && (
         <div className="mt-6 flex justify-end space-x-4">
-          <Button onClick={handleCancel} variant="outline" className="bg-gray-200 text-gray-800 hover:bg-gray-300">
+          <Button onClick={() => setEditMode(false)} variant="outline" className="bg-gray-200 text-gray-800 hover:bg-gray-300">
             Cancelar
           </Button>
-          <Button onClick={handleSave} className="bg-blue-800 text-white hover:bg-blue-900">
+          <Button onClick={() => setIsConfirmDialogOpen(true)} className="bg-blue-800 text-white hover:bg-blue-900">
             Salvar
           </Button>
         </div>
       )}
 
-      <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirmar alterações</DialogTitle>
-            <DialogDescription>
-              Deseja alterar permanentemente os dados cadastrados?
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="destructive" onClick={() => setIsConfirmDialogOpen(false)}>
-              Cancelar
-            </Button>
-            <Button variant="outline" onClick={confirmSave}>
-              Salvar
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        isOpen={isConfirmDialogOpen}
+        onOpenChange={setIsConfirmDialogOpen}
+        onConfirm={confirmSave}
+      />
     </div>
   );
 };

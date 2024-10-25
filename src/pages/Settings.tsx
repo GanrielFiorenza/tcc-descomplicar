@@ -6,10 +6,10 @@ import UserProfileForm from '@/components/UserProfileForm/UserProfileForm';
 const Settings = () => {
   const [notifications, setNotifications] = useState(true);
   const [userData, setUserData] = useState({
-    username: 'gabriel',
-    email: 'gabriel@exemplo.com',
-    birthDate: '1990-01-01',
-    gender: 'masculino'
+    username: '',
+    email: '',
+    birthDate: '',
+    gender: ''
   });
 
   return (
