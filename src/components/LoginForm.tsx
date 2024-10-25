@@ -5,6 +5,7 @@ import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/config/firebase";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from 'react-router-dom';
 
 interface LoginFormProps {
   onLogin: () => void;
@@ -19,6 +20,7 @@ interface LoginFormProps {
 const LoginForm = ({ onLogin, isLoading, setIsLoading, email, setEmail, password, setPassword }: LoginFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +29,11 @@ const LoginForm = ({ onLogin, isLoading, setIsLoading, email, setEmail, password
     try {
       await signInWithEmailAndPassword(auth, email, password);
       onLogin();
+      navigate('/dashboard');
+      toast({
+        title: "Login realizado com sucesso",
+        description: "Você foi conectado com sucesso.",
+      });
     } catch (error: any) {
       let errorMessage = "Ocorreu um erro ao fazer login.";
       

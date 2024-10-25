@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { auth } from "@/config/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from 'react-router-dom';
 
 interface GoogleLoginButtonProps {
   onLogin: () => void;
@@ -10,16 +11,22 @@ interface GoogleLoginButtonProps {
 
 const GoogleLoginButton = ({ onLogin, isLoading }: GoogleLoginButtonProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   const handleGoogleLogin = async () => {
     try {
       const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      });
+      
       await signInWithPopup(auth, provider);
       onLogin();
       toast({
         title: "Login realizado com sucesso",
         description: "Você foi conectado usando sua conta Google.",
       });
+      navigate('/dashboard');
     } catch (error: any) {
       toast({
         variant: "destructive",
