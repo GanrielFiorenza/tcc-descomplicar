@@ -3,8 +3,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { 
   updatePassword, 
   EmailAuthProvider, 
-  reauthenticateWithCredential,
-  updateEmail
+  reauthenticateWithCredential
 } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 
@@ -64,12 +63,6 @@ export const useProfileUpdate = (
         await updatePassword(auth.currentUser, password);
       }
 
-      // Handle email change
-      const isEmailChanged = userData.email !== auth.currentUser.email;
-      if (isEmailChanged && auth.currentUser) {
-        await updateEmail(auth.currentUser, userData.email);
-      }
-
       setIsConfirmDialogOpen(false);
       setIsReauthDialogOpen(false);
       setEditMode(false);
@@ -94,7 +87,7 @@ export const useProfileUpdate = (
     try {
       if (!auth.currentUser) return;
 
-      if (userData.email !== auth.currentUser.email || password) {
+      if (password) {
         setIsReauthDialogOpen(true);
         return;
       }
