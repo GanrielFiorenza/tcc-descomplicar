@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/components/ui/card"
 import { UserPlus, Info, Car } from 'lucide-react';
@@ -16,6 +16,26 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Add keyboard event handler with proper type checking
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const key = event.key?.toLowerCase?.() || '';
+      // Only proceed if toLowerCase exists and key is valid
+      if (key === 'enter') {
+        const activeElement = document.activeElement;
+        if (!activeElement || activeElement === document.body) {
+          const loginButton = document.querySelector('button[type="submit"]');
+          if (loginButton instanceof HTMLButtonElement && !loginButton.disabled) {
+            loginButton.click();
+          }
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
