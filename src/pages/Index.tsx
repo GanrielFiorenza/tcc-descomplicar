@@ -18,12 +18,13 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Early return if event or key is not valid
-      if (!e?.key) return;
-      
-      // Convert key to lowercase safely
-      const key = e.key.toLowerCase();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Ensure event and key exist and are of the correct type
+      if (!event || typeof event.key !== 'string') {
+        return;
+      }
+
+      const key = event.key.toLowerCase();
       
       if (key === 'enter') {
         const activeElement = document.activeElement;
