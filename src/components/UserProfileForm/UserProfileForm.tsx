@@ -19,15 +19,34 @@ interface UserData {
 interface UserProfileFormProps {
   userData: UserData;
   setUserData: React.Dispatch<React.SetStateAction<UserData>>;
+  forceEditMode?: boolean;
+  onEditModeChange?: (editMode: boolean) => void;
 }
 
-const UserProfileForm: React.FC<UserProfileFormProps> = ({ userData, setUserData }) => {
+const UserProfileForm: React.FC<UserProfileFormProps> = ({ 
+  userData, 
+  setUserData, 
+  forceEditMode,
+  onEditModeChange 
+}) => {
   const [editMode, setEditMode] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isReauthDialogOpen, setIsReauthDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (forceEditMode !== undefined) {
+      setEditMode(forceEditMode);
+    }
+  }, [forceEditMode]);
+
+  useEffect(() => {
+    if (onEditModeChange) {
+      onEditModeChange(editMode);
+    }
+  }, [editMode, onEditModeChange]);
 
   const { confirmSave, handleReauthSubmit } = useProfileUpdate(
     userData,
