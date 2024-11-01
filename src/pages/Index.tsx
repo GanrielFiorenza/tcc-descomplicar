@@ -19,14 +19,11 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Ensure event and key exist and are of the correct type
-      if (!event || typeof event.key !== 'string') {
+      if (!event?.key || typeof event.key !== 'string') {
         return;
       }
 
-      const key = event.key.toLowerCase();
-      
-      if (key === 'enter') {
+      if (event.key.toLowerCase() === 'enter') {
         const activeElement = document.activeElement;
         if (!activeElement || activeElement === document.body) {
           const loginButton = document.querySelector('button[type="submit"]');
