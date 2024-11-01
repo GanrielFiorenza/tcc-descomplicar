@@ -24,10 +24,19 @@ const LoginForm = ({ onLogin, isLoading, setIsLoading, email, setEmail, password
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !password) {
+      toast({
+        variant: "destructive",
+        title: "Erro no login",
+        description: "Por favor, preencha todos os campos.",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email.toLowerCase(), password);
       onLogin();
       navigate('/dashboard');
       toast({
@@ -76,9 +85,10 @@ const LoginForm = ({ onLogin, isLoading, setIsLoading, email, setEmail, password
             placeholder="seu@email.com" 
             type="email" 
             className="pl-10" 
-            value={email}
+            value={email || ''}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
+            required
           />
         </div>
       </div>
@@ -90,9 +100,10 @@ const LoginForm = ({ onLogin, isLoading, setIsLoading, email, setEmail, password
             id="password" 
             type={showPassword ? "text" : "password"}
             className="pl-10 pr-10"
-            value={password}
+            value={password || ''}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
+            required
           />
           <button
             type="button"
