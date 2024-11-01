@@ -17,12 +17,11 @@ const Index: React.FC<IndexProps> = ({ onLogin }) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Add keyboard event handler with proper type checking
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      const key = event.key?.toLowerCase?.() || '';
-      // Only proceed if toLowerCase exists and key is valid
-      if (key === 'enter') {
+      if (!event || typeof event.key !== 'string') return;
+      
+      if (event.key.toLowerCase() === 'enter') {
         const activeElement = document.activeElement;
         if (!activeElement || activeElement === document.body) {
           const loginButton = document.querySelector('button[type="submit"]');
