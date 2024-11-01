@@ -24,7 +24,9 @@ const LoginForm = ({ onLogin, isLoading, setIsLoading, email, setEmail, password
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
+    
+    // Ensure email and password are not empty
+    if (!email?.trim() || !password?.trim()) {
       toast({
         variant: "destructive",
         title: "Erro no login",
@@ -36,7 +38,9 @@ const LoginForm = ({ onLogin, isLoading, setIsLoading, email, setEmail, password
     setIsLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email.toLowerCase(), password);
+      // Ensure email is a string and convert to lowercase
+      const emailToUse = String(email).toLowerCase();
+      await signInWithEmailAndPassword(auth, emailToUse, password);
       onLogin();
       navigate('/dashboard');
       toast({
