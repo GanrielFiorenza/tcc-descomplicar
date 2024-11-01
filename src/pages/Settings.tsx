@@ -16,11 +16,14 @@ const Settings = () => {
   const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
-    const hasEmptyFields = !userData.username || !userData.birthDate || !userData.gender;
-    if (hasEmptyFields) {
-      setShowEmptyDataAlert(true);
+    // Only check required fields (excluding password) on initial load
+    if (!editMode) {
+      const hasEmptyRequiredFields = !userData.username || !userData.birthDate || !userData.gender;
+      if (hasEmptyRequiredFields) {
+        setShowEmptyDataAlert(true);
+      }
     }
-  }, [userData]);
+  }, [userData, editMode]);
 
   const handleEmptyDataConfirm = () => {
     setShowEmptyDataAlert(false);
