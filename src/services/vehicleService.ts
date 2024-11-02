@@ -48,8 +48,9 @@ export const updateVehicle = async (vehicle: Vehicle) => {
   if (!user) throw new Error('User must be logged in to update a vehicle');
   if (vehicle.userId !== user.uid) throw new Error('Unauthorized to update this vehicle');
 
-  const vehicleRef = doc(db, "vehicles", vehicle.id);
-  await updateDoc(vehicleRef, vehicle);
+  const { id, ...updateData } = vehicle;
+  const vehicleRef = doc(db, "vehicles", id);
+  await updateDoc(vehicleRef, updateData);
   return vehicle;
 };
 
