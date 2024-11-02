@@ -53,11 +53,11 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
   };
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center">
       <TooltipProvider>
         <Tooltip open={!!errors.vehicleId}>
           <TooltipTrigger asChild>
-            <div className="w-[120px]">
+            <div className="w-[150px] px-2">
               <Select 
                 value={editedMaintenance.vehicleId.toString()}
                 onValueChange={(value) => setEditedMaintenance({...editedMaintenance, vehicleId: parseInt(value)})}
@@ -80,7 +80,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
       <TooltipProvider>
         <Tooltip open={!!errors.date}>
           <TooltipTrigger asChild>
-            <div className="w-[120px]">
+            <div className="w-[120px] px-2">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" className={`w-full justify-start text-left font-normal ${errors.date ? "border-red-500" : ""}`}>
@@ -106,7 +106,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
       <TooltipProvider>
         <Tooltip open={!!errors.serviceType}>
           <TooltipTrigger asChild>
-            <div className="w-[180px]">
+            <div className="w-[180px] px-2">
               <Select 
                 value={editedMaintenance.serviceType}
                 onValueChange={(value) => setEditedMaintenance({...editedMaintenance, serviceType: value})}
@@ -129,7 +129,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
       <TooltipProvider>
         <Tooltip open={!!errors.cost}>
           <TooltipTrigger asChild>
-            <div className="w-[100px]">
+            <div className="w-[100px] px-2">
               <Input
                 type="number"
                 value={editedMaintenance.cost}
@@ -146,7 +146,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
       <TooltipProvider>
         <Tooltip open={!!errors.observations}>
           <TooltipTrigger asChild>
-            <div className="w-[200px]">
+            <div className="w-[200px] px-2">
               <Input
                 type="text"
                 value={editedMaintenance.observations}
@@ -160,7 +160,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
         </Tooltip>
       </TooltipProvider>
 
-      <div className="flex space-x-2">
+      <div className="w-[100px] flex justify-end space-x-2 px-2">
         <Button variant="outline" size="sm" onClick={onCancel}>
           <X className="h-4 w-4" />
         </Button>
