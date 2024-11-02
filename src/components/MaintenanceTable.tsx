@@ -18,9 +18,9 @@ import { MaintenanceEditForm } from './MaintenanceEditForm';
 
 interface MaintenanceTableProps {
   maintenances: Maintenance[];
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
   onEdit: (maintenance: Maintenance) => void;
-  vehicles: { id: number; name: string }[];
+  vehicles: { id: string; name: string }[];
 }
 
 const serviceTypeTranslations: { [key: string]: string } = {
@@ -31,10 +31,10 @@ const serviceTypeTranslations: { [key: string]: string } = {
 };
 
 const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDelete, onEdit, vehicles }) => {
-  const [maintenanceToDelete, setMaintenanceToDelete] = useState<number | null>(null);
+  const [maintenanceToDelete, setMaintenanceToDelete] = useState<string | null>(null);
   const [editingMaintenance, setEditingMaintenance] = useState<Maintenance | null>(null);
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     setMaintenanceToDelete(id);
   };
 
@@ -58,7 +58,7 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
     setEditingMaintenance(null);
   };
 
-  const getVehicleName = (vehicleId: number) => {
+  const getVehicleName = (vehicleId: string) => {
     const vehicle = vehicles.find(v => v.id === vehicleId);
     return vehicle ? vehicle.name : 'Veículo não encontrado';
   };

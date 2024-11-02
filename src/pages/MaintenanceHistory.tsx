@@ -9,6 +9,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import MaintenanceTable from '../components/MaintenanceTable';
 import { MaintenanceForm } from '../components/MaintenanceForm';
 import { Maintenance } from '../types/maintenance';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { addMaintenance, getUserMaintenances, updateMaintenance, deleteMaintenance } from '@/services/maintenanceService';
+import { getUserVehicles } from '@/services/vehicleService';
 
 const serviceTypeOptions = [
   { value: 'all', label: 'Todos' },
@@ -19,24 +22,76 @@ const serviceTypeOptions = [
 ];
 
 const MaintenanceHistory: React.FC = () => {
-  // Mock de veículos para demonstração
-  const [vehicles] = useState([
-    { id: 1, name: 'Honda Civic 2020' },
-    { id: 2, name: 'Toyota Corolla 2019' },
-    { id: 3, name: 'Volkswagen Golf 2021' },
-  ]);
-
-  const [maintenances, setMaintenances] = useState<Maintenance[]>([
-    { id: 1, vehicleId: 1, date: '2023-01-15', serviceType: 'oil_change', cost: 50, observations: 'Regular maintenance' },
-    { id: 2, vehicleId: 2, date: '2023-02-20', serviceType: 'brake_replacement', cost: 200, observations: 'Front brakes replaced' },
-    { id: 3, vehicleId: 1, date: '2023-03-10', serviceType: 'tire_rotation', cost: 30, observations: 'Routine service' },
-  ]);
-
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const { toast } = useToast();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { data: vehicles = [] } = useQuery({
+    queryKey: ['vehicles'],
+    queryFn: getUserVehicles,
+  });
+
+  const { data: maintenances = [] } = useQuery({
+    queryKey: ['maintenances'],
+    queryFn: getUserMaintenances,
+  });
+
+  const addMaintenanceMutation = useMutation({
+    mutationFn: addMaintenance,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['maintenances'] });
+      setIsModalOpen(false);
+      toast({
+        title: "Manutenção Adicionada",
+        description: "O registro de manutenção foi adicionado com sucesso.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Erro ao adicionar manutenção",
+        description: error.message,
+      });
+    },
+  });
+
+  const updateMaintenanceMutation = useMutation({
+    mutationFn: updateMaintenance,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['maintenances'] });
+      toast({
+        title: "Manutenção Atualizada",
+        description: "O registro de manutenção foi atualizado com sucesso.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Erro ao atualizar manutenção",
+        description: error.message,
+      });
+    },
+  });
+
+  const deleteMaintenanceMutation = useMutation({
+    mutationFn: deleteMaintenance,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['maintenances'] });
+      toast({
+        title: "Manutenção Removida",
+        description: "O registro de manutenção foi removido com sucesso.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Erro ao remover manutenção",
+        description: error.message,
+      });
+    },
+  });
 
   const filteredMaintenances = maintenances.filter(maintenance =>
     (maintenance.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -44,34 +99,18 @@ const MaintenanceHistory: React.FC = () => {
     (filterType === 'all' || maintenance.serviceType === filterType)
   );
 
-  const handleAddMaintenance = (newMaintenance: Omit<Maintenance, 'id'>) => {
-    setMaintenances([...maintenances, {
-      id: maintenances.length + 1,
-      ...newMaintenance
-    }]);
-    setIsModalOpen(false);
-    toast({
-      title: "Manutenção Adicionada",
-      description: "O registro de manutenção foi adicionado com sucesso.",
-    });
+  const handleAddMaintenance = (newMaintenance: Omit<Maintenance, 'id' | 'userId'>) => {
+    addMaintenanceMutation.mutate(newMaintenance);
   };
 
-  const handleDeleteMaintenance = (id: number) => {
-    setMaintenances(maintenances.filter(maintenance => maintenance.id !== id));
-    toast({
-      title: "Manutenção Excluída",
-      description: "O registro de manutenção foi excluído com sucesso.",
-    });
+  const handleDeleteMaintenance = (id: string) => {
+    deleteMaintenanceMutation.mutate(id);
   };
 
   const handleEditMaintenance = (editedMaintenance: Maintenance) => {
-    setMaintenances(maintenances.map(maintenance => 
-      maintenance.id === editedMaintenance.id ? editedMaintenance : maintenance
-    ));
-    toast({
-      title: "Manutenção Atualizada",
-      description: "O registro de manutenção foi atualizado com sucesso.",
-    });
+    if (editedMaintenance.userId) {
+      updateMaintenanceMutation.mutate(editedMaintenance as any);
+    }
   };
 
   return (

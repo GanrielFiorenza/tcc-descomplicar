@@ -1,8 +1,9 @@
 export interface Maintenance {
-  id: number;
-  vehicleId: number;
+  id: string;
+  vehicleId: string;
   date: string;
   serviceType: string;
   cost: number;
   observations: string;
+  userId?: string;
 }
