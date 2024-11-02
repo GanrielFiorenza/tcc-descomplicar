@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { CalendarIcon, DollarSign, Wrench, ClipboardIcon, AlertCircle } from 'lucide-react';
+import { CalendarIcon, DollarSign, Wrench, ClipboardIcon, AlertCircle, Car } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
@@ -28,40 +28,38 @@ const serviceTypeOptions = [
 ];
 
 interface MaintenanceFormProps {
-  onSubmit: (maintenance: Omit<Maintenance, 'id' | 'vehicleId'>) => void;
+  onSubmit: (maintenance: Omit<Maintenance, 'id'>) => void;
   onCancel: () => void;
+  vehicles: { id: number; name: string }[];
 }
 
-export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCancel }) => {
+export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCancel, vehicles }) => {
   const [newMaintenance, setNewMaintenance] = useState<Partial<Maintenance>>({
     date: '',
     serviceType: '',
     cost: 0,
     observations: '',
+    vehicleId: undefined,
   });
   const { toast } = useToast();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
   const handleSubmit = () => {
-    // Check for empty fields
-    if (!newMaintenance.date || !newMaintenance.serviceType || !newMaintenance.cost) {
+    if (!newMaintenance.date || !newMaintenance.serviceType || !newMaintenance.cost || !newMaintenance.vehicleId) {
       setAlertMessage("Por favor, preencha todos os campos obrigatórios.");
       setIsAlertOpen(true);
       return;
     }
 
-    // Check for invalid cost
     if (typeof newMaintenance.cost !== 'number' || newMaintenance.cost <= 0) {
       setAlertMessage("O custo deve ser um número positivo.");
       setIsAlertOpen(true);
       return;
     }
 
-    // If all checks pass, submit the form
-    onSubmit(newMaintenance as Omit<Maintenance, 'id' | 'vehicleId'>);
+    onSubmit(newMaintenance as Omit<Maintenance, 'id'>);
     
-    // Show success toast
     toast({
       title: "Manutenção adicionada",
       description: "A nova manutenção foi registrada com sucesso.",
@@ -72,6 +70,23 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
   return (
     <>
       <div className="grid gap-4 py-4">
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Car className="h-4 w-4 text-purple-500" />
+          <Select 
+            value={newMaintenance.vehicleId?.toString()} 
+            onValueChange={(value) => setNewMaintenance({...newMaintenance, vehicleId: parseInt(value)})}
+          >
+            <SelectTrigger className="w-[280px]">
+              <SelectValue placeholder="Selecione o veículo" />
+            </SelectTrigger>
+            <SelectContent>
+              {vehicles.map((vehicle) => (
+                <SelectItem key={vehicle.id} value={vehicle.id.toString()}>{vehicle.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="grid grid-cols-4 items-center gap-4">
           <CalendarIcon className="h-4 w-4 text-blue-500" />
           <Popover>
@@ -128,6 +143,7 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
             onChange={(e) => setNewMaintenance({...newMaintenance, observations: e.target.value})}
           />
         </div>
+
         <div className="flex justify-end space-x-2">
           <Button variant="outline" onClick={onCancel}>
             Cancelar

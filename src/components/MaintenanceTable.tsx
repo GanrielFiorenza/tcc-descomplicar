@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon, DollarSign, Wrench, Trash2, AlertTriangle, Edit } from 'lucide-react';
+import { CalendarIcon, DollarSign, Wrench, Trash2, AlertTriangle, Edit, Car } from 'lucide-react';
 import { Maintenance } from '../types/maintenance';
 import {
   AlertDialog,
@@ -20,6 +20,7 @@ interface MaintenanceTableProps {
   maintenances: Maintenance[];
   onDelete: (id: number) => void;
   onEdit: (maintenance: Maintenance) => void;
+  vehicles: { id: number; name: string }[];
 }
 
 const serviceTypeTranslations: { [key: string]: string } = {
@@ -29,7 +30,7 @@ const serviceTypeTranslations: { [key: string]: string } = {
   'other': 'Outro',
 };
 
-const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDelete, onEdit }) => {
+const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDelete, onEdit, vehicles }) => {
   const [maintenanceToDelete, setMaintenanceToDelete] = useState<number | null>(null);
   const [editingMaintenance, setEditingMaintenance] = useState<Maintenance | null>(null);
 
@@ -57,11 +58,17 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
     setEditingMaintenance(null);
   };
 
+  const getVehicleName = (vehicleId: number) => {
+    const vehicle = vehicles.find(v => v.id === vehicleId);
+    return vehicle ? vehicle.name : 'Veículo não encontrado';
+  };
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead className="w-[120px]">Data</TableHead>
+          <TableHead className="w-[150px]">Veículo</TableHead>
           <TableHead className="w-[180px]">Tipo de Serviço</TableHead>
           <TableHead className="w-[100px]">Custo</TableHead>
           <TableHead className="w-[200px]">Observações</TableHead>
@@ -72,11 +79,12 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
         {maintenances.map((maintenance) => (
           <TableRow key={maintenance.id}>
             {editingMaintenance?.id === maintenance.id ? (
-              <TableCell colSpan={5}>
+              <TableCell colSpan={6}>
                 <MaintenanceEditForm
                   maintenance={editingMaintenance}
                   onSave={handleSaveEdit}
                   onCancel={handleCancelEdit}
+                  vehicles={vehicles}
                 />
               </TableCell>
             ) : (
@@ -84,6 +92,10 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
                 <TableCell className="w-[120px]">
                   <CalendarIcon className="inline mr-2" size={16} />
                   {new Date(maintenance.date).toLocaleDateString()}
+                </TableCell>
+                <TableCell className="w-[150px]">
+                  <Car className="inline mr-2" size={16} />
+                  {getVehicleName(maintenance.vehicleId)}
                 </TableCell>
                 <TableCell className="w-[180px]">
                   <Wrench className="inline mr-2" size={16} />

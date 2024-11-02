@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Check, X, CalendarIcon, AlertCircle } from 'lucide-react';
+import { Check, X, CalendarIcon, AlertCircle, Car } from 'lucide-react';
 import { format } from "date-fns";
 import { Maintenance } from '../types/maintenance';
 import { useToast } from "@/hooks/use-toast";
@@ -21,9 +21,10 @@ interface MaintenanceEditFormProps {
   maintenance: Maintenance;
   onSave: (maintenance: Maintenance) => void;
   onCancel: () => void;
+  vehicles: { id: number; name: string }[];
 }
 
-export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ maintenance, onSave, onCancel }) => {
+export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ maintenance, onSave, onCancel, vehicles }) => {
   const [editedMaintenance, setEditedMaintenance] = useState<Maintenance>(maintenance);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const { toast } = useToast();
@@ -34,6 +35,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
     if (!editedMaintenance.serviceType) newErrors.serviceType = "Este campo não pode ficar vazio";
     if (!editedMaintenance.cost || editedMaintenance.cost <= 0) newErrors.cost = "O custo deve ser um valor positivo";
     if (!editedMaintenance.observations.trim()) newErrors.observations = "Este campo não pode ficar vazio";
+    if (!editedMaintenance.vehicleId) newErrors.vehicleId = "Selecione um veículo";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -50,30 +52,31 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
     }
   };
 
-  const renderInput = (field: keyof Maintenance, placeholder: string, type: string = 'text', className: string) => (
-    <TooltipProvider>
-      <Tooltip open={!!errors[field]}>
-        <TooltipTrigger asChild>
-          <div className={className}>
-            <Input
-              type={type}
-              value={editedMaintenance[field]}
-              onChange={(e) => setEditedMaintenance({...editedMaintenance, [field]: e.target.value})}
-              placeholder={placeholder}
-              className={`w-full ${errors[field] ? "border-red-500" : ""}`}
-            />
-            {errors[field] && (
-              <AlertCircle className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-500" size={16} />
-            )}
-          </div>
-        </TooltipTrigger>
-        {errors[field] && <TooltipContent>{errors[field]}</TooltipContent>}
-      </Tooltip>
-    </TooltipProvider>
-  );
-
   return (
     <div className="grid grid-cols-12 gap-2 items-center">
+      <TooltipProvider>
+        <Tooltip open={!!errors.vehicleId}>
+          <TooltipTrigger asChild>
+            <div className="col-span-2">
+              <Select 
+                value={editedMaintenance.vehicleId.toString()}
+                onValueChange={(value) => setEditedMaintenance({...editedMaintenance, vehicleId: parseInt(value)})}
+              >
+                <SelectTrigger className={`w-full ${errors.vehicleId ? "border-red-500" : ""}`}>
+                  <SelectValue placeholder="Veículo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {vehicles.map((vehicle) => (
+                    <SelectItem key={vehicle.id} value={vehicle.id.toString()}>{vehicle.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </TooltipTrigger>
+          {errors.vehicleId && <TooltipContent>{errors.vehicleId}</TooltipContent>}
+        </Tooltip>
+      </TooltipProvider>
+
       <TooltipProvider>
         <Tooltip open={!!errors.date}>
           <TooltipTrigger asChild>
@@ -123,25 +126,47 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
         </Tooltip>
       </TooltipProvider>
 
-      {renderInput('cost', 'Custo', 'number', 'col-span-2')}
-      {renderInput('observations', 'Observações', 'text', 'col-span-3')}
+      <TooltipProvider>
+        <Tooltip open={!!errors.cost}>
+          <TooltipTrigger asChild>
+            <div className="col-span-2">
+              <Input
+                type="number"
+                value={editedMaintenance.cost}
+                onChange={(e) => setEditedMaintenance({...editedMaintenance, cost: parseFloat(e.target.value)})}
+                placeholder="Custo"
+                className={`w-full ${errors.cost ? "border-red-500" : ""}`}
+              />
+            </div>
+          </TooltipTrigger>
+          {errors.cost && <TooltipContent>{errors.cost}</TooltipContent>}
+        </Tooltip>
+      </TooltipProvider>
 
-      <div className="col-span-2 flex space-x-1">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleSave}
-          className="bg-green-500 text-white hover:bg-green-600 px-2 flex-grow"
-        >
-          <Check className="h-4 w-4" />
+      <TooltipProvider>
+        <Tooltip open={!!errors.observations}>
+          <TooltipTrigger asChild>
+            <div className="col-span-3">
+              <Input
+                type="text"
+                value={editedMaintenance.observations}
+                onChange={(e) => setEditedMaintenance({...editedMaintenance, observations: e.target.value})}
+                placeholder="Observações"
+                className={`w-full ${errors.observations ? "border-red-500" : ""}`}
+              />
+            </div>
+          </TooltipTrigger>
+          {errors.observations && <TooltipContent>{errors.observations}</TooltipContent>}
+        </Tooltip>
+      </TooltipProvider>
+
+      <div className="flex justify-end space-x-2">
+        <Button variant="outline" onClick={onCancel}>
+          Cancelar
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onCancel}
-          className="bg-red-500 text-white hover:bg-red-600 px-2 flex-grow"
-        >
-          <X className="h-4 w-4" />
+        <Button onClick={handleSave} className="bg-green-500 hover:bg-green-600">
+          <Check className="mr-2 h-4 w-4" />
+          Salvar
         </Button>
       </div>
     </div>
