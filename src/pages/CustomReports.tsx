@@ -20,9 +20,11 @@ const CustomReports = () => {
   const { toast } = useToast();
   const chartRef = useRef<HTMLDivElement>(null);
 
-  const { data: reportData, isLoading } = useQuery({
+  const { data: reportData, isLoading, error } = useQuery({
     queryKey: ['reports'],
     queryFn: getReportData,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 
   const getFilteredData = () => {
