@@ -9,7 +9,7 @@ interface ExpenseEditRowProps {
   handleInputChange: (field: string, value: string) => void;
   handleSaveEdit: () => void;
   handleCancelEdit: () => void;
-  vehicles: { id: number; name: string }[];
+  vehicles: { id: string; name: string }[];  // Changed from number to string
   categories: string[];
 }
 
@@ -33,7 +33,7 @@ export const ExpenseEditRow: React.FC<ExpenseEditRowProps> = ({
       </td>
       <td className="p-2 h-16">
         <Select
-          value={editedValues.vehicleId.toString()}
+          value={editedValues.vehicleId}
           onValueChange={(value) => handleInputChange('vehicleId', value)}
         >
           <SelectTrigger className="w-full h-full text-sm">
@@ -41,7 +41,7 @@ export const ExpenseEditRow: React.FC<ExpenseEditRowProps> = ({
           </SelectTrigger>
           <SelectContent>
             {vehicles.map((vehicle) => (
-              <SelectItem key={vehicle.id} value={vehicle.id.toString()}>
+              <SelectItem key={vehicle.id} value={vehicle.id}>
                 {vehicle.name}
               </SelectItem>
             ))}
