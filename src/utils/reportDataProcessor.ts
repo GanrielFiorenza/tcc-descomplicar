@@ -16,20 +16,6 @@ export const processReportData = (reportData: ReportData | undefined): Processed
 
   const monthlyData = new Map<string, ProcessedReportData>();
 
-  // Initialize with default values for each month in the current year
-  const currentYear = new Date().getFullYear();
-  for (let month = 0; month < 12; month++) {
-    const monthStr = `${currentYear}-${String(month + 1).padStart(2, '0')}`;
-    monthlyData.set(monthStr, {
-      month: monthStr,
-      maintenance: 0,
-      fuel: 0,
-      taxes: 0,
-      others: 0,
-      description: ''
-    });
-  }
-
   // Process maintenances
   reportData.maintenances.forEach((maintenance: Maintenance) => {
     const month = maintenance.date.substring(0, 7); // Get YYYY-MM
