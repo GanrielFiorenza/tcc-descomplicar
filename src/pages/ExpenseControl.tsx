@@ -8,65 +8,101 @@ import { ExpenseChart } from '@/components/ExpenseChart';
 import { VehicleFilter } from '@/components/VehicleFilter';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ExpenseForm } from '@/components/ExpenseForm';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { addExpense, getUserExpenses, updateExpense, deleteExpense, Expense } from '@/services/expenseService';
+import { getUserVehicles, Vehicle } from '@/services/vehicleService';
 
-interface Expense {
-  id: number;
-  vehicleId: number;
-  date: string;
-  category: string;
-  amount: number;
-  description: string;
-}
+const formatVehicleName = (vehicle: Vehicle) => {
+  return `${vehicle.brand} ${vehicle.model} (${vehicle.plate})`;
+};
 
 const ExpenseControl = () => {
-  const [vehicles] = useState([
-    { id: 1, name: "Carro 1" },
-    { id: 2, name: "Carro 2" },
-    { id: 3, name: "Carro 3" },
-  ]);
-
-  // Mocked initial expenses
-  const initialExpenses: Expense[] = [
-    { id: 1, vehicleId: 1, date: '2024-03-01', category: 'Combustível', amount: 150.00, description: 'Abastecimento mensal' },
-    { id: 2, vehicleId: 1, date: '2024-03-05', category: 'Manutenção', amount: 300.00, description: 'Troca de óleo' },
-    { id: 3, vehicleId: 2, date: '2024-03-02', category: 'Combustível', amount: 120.00, description: 'Abastecimento semanal' },
-    { id: 4, vehicleId: 2, date: '2024-03-10', category: 'Peças', amount: 450.00, description: 'Substituição de pneus' },
-    { id: 5, vehicleId: 3, date: '2024-03-03', category: 'Impostos', amount: 200.00, description: 'IPVA' },
-    { id: 6, vehicleId: 3, date: '2024-03-15', category: 'Combustível', amount: 180.00, description: 'Abastecimento quinzenal' },
-  ];
-
-  const [expenses, setExpenses] = useState<Expense[]>(initialExpenses);
-  const [selectedVehicle, setSelectedVehicle] = useState<number | null>(null);
+  const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const handleAddExpense = (newExpense: Omit<Expense, 'id'>) => {
-    const expenseWithId = { ...newExpense, id: Date.now(), vehicleId: Number(newExpense.vehicleId) };
-    setExpenses([...expenses, expenseWithId]);
-    setIsModalOpen(false);
-    toast({
-      title: "Despesa adicionada",
-      description: "A nova despesa foi registrada com sucesso.",
-    });
+  const { data: rawVehicles = [] } = useQuery({
+    queryKey: ['vehicles'],
+    queryFn: getUserVehicles
+  });
+
+  const vehicles = rawVehicles.map(vehicle => ({
+    id: vehicle.id,
+    name: formatVehicleName(vehicle)
+  }));
+
+  const { data: expenses = [] } = useQuery({
+    queryKey: ['expenses'],
+    queryFn: getUserExpenses
+  });
+
+  const addExpenseMutation = useMutation({
+    mutationFn: addExpense,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['expenses'] });
+      setIsModalOpen(false);
+      toast({
+        title: "Despesa adicionada",
+        description: "A nova despesa foi registrada com sucesso.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao adicionar despesa",
+        description: error instanceof Error ? error.message : "Ocorreu um erro ao adicionar a despesa",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const updateExpenseMutation = useMutation({
+    mutationFn: updateExpense,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['expenses'] });
+      toast({
+        title: "Despesa atualizada",
+        description: "A despesa foi atualizada com sucesso.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao atualizar despesa",
+        description: error instanceof Error ? error.message : "Ocorreu um erro ao atualizar a despesa",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const deleteExpenseMutation = useMutation({
+    mutationFn: deleteExpense,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['expenses'] });
+      toast({
+        title: "Despesa removida",
+        description: "A despesa foi removida com sucesso.",
+        variant: "destructive",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao remover despesa",
+        description: error instanceof Error ? error.message : "Ocorreu um erro ao remover a despesa",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleAddExpense = (newExpense: Omit<Expense, 'id' | 'userId'>) => {
+    addExpenseMutation.mutate(newExpense);
   };
 
   const handleEditExpense = (editedExpense: Expense) => {
-    setExpenses(expenses.map(expense => 
-      expense.id === editedExpense.id ? editedExpense : expense
-    ));
-    toast({
-      title: "Despesa atualizada",
-      description: "A despesa foi atualizada com sucesso.",
-    });
+    updateExpenseMutation.mutate(editedExpense);
   };
 
-  const handleDeleteExpense = (expenseId: number) => {
-    setExpenses(expenses.filter(expense => expense.id !== expenseId));
-    toast({
-      title: "Despesa removida",
-      description: "A despesa foi removida com sucesso.",
-      variant: "destructive",
-    });
+  const handleDeleteExpense = (expenseId: string) => {
+    deleteExpenseMutation.mutate(expenseId);
   };
 
   const filteredExpenses = selectedVehicle
