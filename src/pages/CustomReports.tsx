@@ -52,15 +52,13 @@ const CustomReports = () => {
 
     const tableData = getFilteredData().map(item => [
       item.month,
-      `R$ ${item.maintenance.toFixed(2)}`,
-      `R$ ${item.fuel.toFixed(2)}`,
-      `R$ ${item.taxes.toFixed(2)}`,
-      `R$ ${item.others.toFixed(2)}`,
+      item.type,
+      `R$ ${item.amount.toFixed(2)}`,
       item.description
     ]);
 
     doc.autoTable({
-      head: [['Mês', 'Manutenção', 'Combustível', 'Impostos', 'Outros', 'Descrição']],
+      head: [['Mês', 'Tipo', 'Valor', 'Descrição']],
       body: tableData,
       startY: 125
     });
@@ -75,10 +73,8 @@ const CustomReports = () => {
   const exportToExcel = () => {
     const data = getFilteredData().map(item => ({
       Mês: item.month,
-      Manutenção: item.maintenance,
-      Combustível: item.fuel,
-      Impostos: item.taxes,
-      Outros: item.others,
+      Tipo: item.type,
+      Valor: item.amount,
       Descrição: item.description
     }));
 
