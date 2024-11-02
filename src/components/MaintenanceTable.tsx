@@ -68,7 +68,7 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
       <TableHeader>
         <TableRow>
           <TableHead className="w-[120px]">Data</TableHead>
-          <TableHead className="w-[150px]">Veículo</TableHead>
+          <TableHead className="w-[120px]">Veículo</TableHead>
           <TableHead className="w-[180px]">Tipo de Serviço</TableHead>
           <TableHead className="w-[100px]">Custo</TableHead>
           <TableHead className="w-[200px]">Observações</TableHead>
@@ -93,7 +93,7 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
                   <CalendarIcon className="inline mr-2" size={16} />
                   {new Date(maintenance.date).toLocaleDateString()}
                 </TableCell>
-                <TableCell className="w-[150px]">
+                <TableCell className="w-[120px]">
                   <Car className="inline mr-2" size={16} />
                   {getVehicleName(maintenance.vehicleId)}
                 </TableCell>
