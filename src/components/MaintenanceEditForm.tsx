@@ -64,7 +64,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({
 
   return (
     <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-      <td className="p-4 align-middle w-[120px]">
+      <td className="p-4 align-middle" style={{ width: '15%' }}>
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" className={`w-full justify-start text-left font-normal ${errors.date ? "border-red-500" : ""}`}>
@@ -83,7 +83,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({
         </Popover>
       </td>
 
-      <td className="p-4 align-middle w-[120px]">
+      <td className="p-4 align-middle" style={{ width: '20%' }}>
         <Select 
           value={editedMaintenance.vehicleId.toString()}
           onValueChange={(value) => setEditedMaintenance({...editedMaintenance, vehicleId: parseInt(value)})}
@@ -99,7 +99,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({
         </Select>
       </td>
 
-      <td className="p-4 align-middle w-[180px]">
+      <td className="p-4 align-middle" style={{ width: '20%' }}>
         <Select 
           value={editedMaintenance.serviceType}
           onValueChange={(value) => setEditedMaintenance({...editedMaintenance, serviceType: value})}
@@ -115,7 +115,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({
         </Select>
       </td>
 
-      <td className="p-4 align-middle w-[100px]">
+      <td className="p-4 align-middle" style={{ width: '15%' }}>
         <Input
           type="number"
           value={editedMaintenance.cost}
@@ -125,7 +125,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({
         />
       </td>
 
-      <td className="p-4 align-middle w-[200px]">
+      <td className="p-4 align-middle" style={{ width: '20%' }}>
         <Textarea
           value={editedMaintenance.observations}
           onChange={(e) => setEditedMaintenance({...editedMaintenance, observations: e.target.value})}
