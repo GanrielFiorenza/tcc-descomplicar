@@ -53,11 +53,11 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ mainte
   };
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center w-full">
       <TooltipProvider>
         <Tooltip open={!!errors.vehicleId}>
           <TooltipTrigger asChild>
-            <div className="w-[150px] px-2">
+            <div className="w-[120px] px-2">
               <Select 
                 value={editedMaintenance.vehicleId.toString()}
                 onValueChange={(value) => setEditedMaintenance({...editedMaintenance, vehicleId: parseInt(value)})}
