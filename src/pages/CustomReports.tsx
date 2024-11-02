@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,54 +10,97 @@ import html2canvas from 'html2canvas';
 import { useToast } from "@/hooks/use-toast";
 import { ReportChart } from '@/components/ReportChart';
 import { ReportTable } from '@/components/ReportTable';
+import { useQuery } from '@tanstack/react-query';
+import { getReportData } from '@/services/reportService';
 
 const CustomReports = () => {
-  const [reportType, setReportType] = useState('general');
-  const [reportData, setReportData] = useState<any[]>([]);
-  const [selectedReportType, setSelectedReportType] = useState('general');
+  const [reportType, setReportType] = useState('all');
+  const [selectedReportType, setSelectedReportType] = useState('all');
   const { toast } = useToast();
+  const chartRef = useRef(null);
 
-  const mockData = {
-    general: [
-      { month: 'Jan', maintenance: 4000, fuel: 1500, taxes: 500, description: 'Manutenção: Revisão completa do motor. Combustível: Abastecimento mensal. Impostos: Pagamento do IPVA.' },
-      { month: 'Fev', maintenance: 800, fuel: 3000, taxes: 200, description: 'Manutenção: Alinhamento e balanceamento. Combustível: Abastecimento quinzenal. Impostos: Taxa de licenciamento.' },
-      { month: 'Mar', maintenance: 1200, fuel: 1800, taxes: 2000, description: 'Manutenção: Troca de pastilhas de freio. Combustível: Abastecimento semanal. Impostos: Pagamento do IPVA atrasado.' },
-      { month: 'Abr', maintenance: 2780, fuel: 2000, taxes: 100, description: 'Manutenção: Troca dos quatro pneus. Combustível: Abastecimento mensal. Impostos: Taxa de renovação da CNH.' },
-      { month: 'Mai', maintenance: 900, fuel: 1890, taxes: 300, description: 'Manutenção: Troca de filtros e óleo. Combustível: Abastecimento quinzenal. Impostos: Multa de trânsito.' },
-      { month: 'Jun', maintenance: 1100, fuel: 2100, taxes: 2390, description: 'Manutenção: Revisão geral semestral. Combustível: Abastecimento semanal. Impostos: Pagamento do IPVA e licenciamento.' },
-    ],
-    maintenance: [
-      { month: 'Jan', amount: 1000, description: 'Troca de óleo e filtros', type: 'Manutenção' },
-      { month: 'Fev', amount: 800, description: 'Alinhamento e balanceamento', type: 'Manutenção' },
-      { month: 'Mar', amount: 1200, description: 'Troca de pastilhas de freio', type: 'Manutenção' },
-      { month: 'Abr', amount: 2780, description: 'Troca dos quatro pneus', type: 'Manutenção' },
-      { month: 'Mai', amount: 900, description: 'Revisão do sistema de arrefecimento', type: 'Manutenção' },
-      { month: 'Jun', amount: 1100, description: 'Revisão geral semestral', type: 'Manutenção' },
-    ],
-    fuel: [
-      { month: 'Jan', amount: 500, description: 'Abastecimento semanal - 1ª semana', type: 'Combustível' },
-      { month: 'Fev', amount: 550, description: 'Abastecimento semanal - 2ª semana', type: 'Combustível' },
-      { month: 'Mar', amount: 480, description: 'Abastecimento semanal - 3ª semana', type: 'Combustível' },
-      { month: 'Abr', amount: 520, description: 'Abastecimento semanal - 4ª semana', type: 'Combustível' },
-      { month: 'Mai', amount: 490, description: 'Abastecimento quinzenal - 1ª quinzena', type: 'Combustível' },
-      { month: 'Jun', amount: 510, description: 'Abastecimento quinzenal - 2ª quinzena', type: 'Combustível' },
-    ],
-    taxes: [
-      { month: 'Jan', amount: 1000, description: 'IPVA - Parcela 1', type: 'Impostos' },
-      { month: 'Fev', amount: 200, description: 'Licenciamento anual', type: 'Impostos' },
-      { month: 'Mar', amount: 150, description: 'Seguro obrigatório', type: 'Impostos' },
-      { month: 'Abr', amount: 100, description: 'Taxa de renovação da CNH', type: 'Impostos' },
-      { month: 'Mai', amount: 300, description: 'Multa de trânsito - Excesso de velocidade', type: 'Impostos' },
-      { month: 'Jun', amount: 80, description: 'Taxa de vistoria veicular', type: 'Impostos' },
-    ],
+  const { data: reportData, isLoading } = useQuery({
+    queryKey: ['reports'],
+    queryFn: getReportData,
+  });
+
+  const processReportData = () => {
+    if (!reportData) return [];
+
+    const monthlyData = new Map();
+
+    // Process maintenances
+    reportData.maintenances.forEach(maintenance => {
+      const month = maintenance.date.substring(0, 7); // Get YYYY-MM
+      if (!monthlyData.has(month)) {
+        monthlyData.set(month, {
+          month,
+          maintenance: 0,
+          fuel: 0,
+          taxes: 0,
+          others: 0,
+          description: ''
+        });
+      }
+      const data = monthlyData.get(month);
+      data.maintenance += maintenance.cost;
+      data.description += `Manutenção: ${maintenance.observations}. `;
+    });
+
+    // Process expenses
+    reportData.expenses.forEach(expense => {
+      const month = expense.date.substring(0, 7);
+      if (!monthlyData.has(month)) {
+        monthlyData.set(month, {
+          month,
+          maintenance: 0,
+          fuel: 0,
+          taxes: 0,
+          others: 0,
+          description: ''
+        });
+      }
+      const data = monthlyData.get(month);
+      
+      switch (expense.category.toLowerCase()) {
+        case 'combustível':
+          data.fuel += expense.amount;
+          data.description += `Combustível: ${expense.description}. `;
+          break;
+        case 'impostos':
+          data.taxes += expense.amount;
+          data.description += `Impostos: ${expense.description}. `;
+          break;
+        default:
+          data.others += expense.amount;
+          data.description += `Outros: ${expense.description}. `;
+      }
+    });
+
+    return Array.from(monthlyData.values())
+      .sort((a, b) => a.month.localeCompare(b.month));
+  };
+
+  const getFilteredData = () => {
+    const data = processReportData();
+    if (reportType === 'all') return data;
+
+    return data.map(item => {
+      const filtered = { ...item };
+      Object.keys(filtered).forEach(key => {
+        if (key !== reportType && key !== 'month' && key !== 'description') {
+          filtered[key] = 0;
+        }
+      });
+      return filtered;
+    });
   };
 
   const generateReport = () => {
-    setReportData(mockData[reportType as keyof typeof mockData]);
     setSelectedReportType(reportType);
     toast({
       title: "Relatório Gerado",
-      description: `O relatório de ${getReportTitle()} foi gerado com sucesso.`,
+      description: `O relatório foi gerado com sucesso.`,
     });
   };
 
@@ -124,24 +167,15 @@ const CustomReports = () => {
     });
   };
 
-  const getReportTitle = () => {
-    switch (reportType) {
-      case 'general': return 'Gastos Gerais';
-      case 'maintenance': return 'Gastos com Manutenção';
-      case 'fuel': return 'Gastos com Abastecimento';
-      case 'taxes': return 'Gastos com Impostos';
-      default: return 'Relatório';
-    }
-  };
-
-  const chartRef = useRef(null);
+  if (isLoading) {
+    return <div>Carregando...</div>;
+  }
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 flex items-center">
-        <FileText className="mr-2" />
-        Relatórios Personalizados
-      </h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Relatórios Personalizados</h1>
+      </div>
 
       <Card className="mb-6">
         <CardHeader>
@@ -157,37 +191,36 @@ const CustomReports = () => {
                 <SelectValue placeholder="Tipo de Relatório" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="general">Gastos Gerais</SelectItem>
+                <SelectItem value="all">Todos os Gastos</SelectItem>
                 <SelectItem value="maintenance">Gastos com Manutenção</SelectItem>
-                <SelectItem value="fuel">Gastos com Abastecimento</SelectItem>
+                <SelectItem value="fuel">Gastos com Combustível</SelectItem>
                 <SelectItem value="taxes">Gastos com Impostos</SelectItem>
+                <SelectItem value="others">Outros Gastos</SelectItem>
               </SelectContent>
             </Select>
             <Button onClick={generateReport}>Gerar Relatório</Button>
           </div>
-          {reportData.length > 0 && (
-            <div className="space-y-4">
-              <h2 className="text-2xl font-semibold">{getReportTitle()}</h2>
-              <div ref={chartRef}>
-                <ReportChart reportType={selectedReportType} reportData={reportData} />
-              </div>
-              <ReportTable reportType={selectedReportType} reportData={reportData} />
-              <div className="flex justify-end space-x-2">
-                <Button onClick={exportToPDF} variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Exportar PDF
-                </Button>
-                <Button onClick={exportToExcel} variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Exportar Excel
-                </Button>
-                <Button onClick={() => window.print()} variant="outline">
-                  <Printer className="mr-2 h-4 w-4" />
-                  Imprimir
-                </Button>
-              </div>
+
+          <div className="space-y-4">
+            <div ref={chartRef}>
+              <ReportChart reportType={selectedReportType} reportData={getFilteredData()} />
             </div>
-          )}
+            <ReportTable reportType={selectedReportType} reportData={getFilteredData()} />
+            <div className="flex justify-end space-x-2">
+              <Button onClick={exportToPDF} variant="outline">
+                <Download className="mr-2 h-4 w-4" />
+                Exportar PDF
+              </Button>
+              <Button onClick={exportToExcel} variant="outline">
+                <Download className="mr-2 h-4 w-4" />
+                Exportar Excel
+              </Button>
+              <Button onClick={() => window.print()} variant="outline">
+                <Printer className="mr-2 h-4 w-4" />
+                Imprimir
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
