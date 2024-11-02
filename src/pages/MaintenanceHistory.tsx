@@ -11,7 +11,7 @@ import { MaintenanceForm } from '../components/MaintenanceForm';
 import { Maintenance } from '../types/maintenance';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { addMaintenance, getUserMaintenances, updateMaintenance, deleteMaintenance } from '@/services/maintenanceService';
-import { getUserVehicles } from '@/services/vehicleService';
+import { getUserVehicles, Vehicle } from '@/services/vehicleService';
 
 const serviceTypeOptions = [
   { value: 'all', label: 'Todos' },
@@ -21,6 +21,10 @@ const serviceTypeOptions = [
   { value: 'other', label: 'Outro' },
 ];
 
+const formatVehicleName = (vehicle: Vehicle) => {
+  return `${vehicle.brand} ${vehicle.model} (${vehicle.plate})`;
+};
+
 const MaintenanceHistory: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
@@ -28,10 +32,16 @@ const MaintenanceHistory: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: vehicles = [] } = useQuery({
+  const { data: rawVehicles = [] } = useQuery({
     queryKey: ['vehicles'],
     queryFn: getUserVehicles,
   });
+
+  // Transform vehicles to include name property
+  const vehicles = rawVehicles.map(vehicle => ({
+    id: vehicle.id,
+    name: formatVehicleName(vehicle)
+  }));
 
   const { data: maintenances = [] } = useQuery({
     queryKey: ['maintenances'],
