@@ -158,3 +158,6 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
       </CardContent>
     </Card>
   );
+};
+
+export default ExpenseTable;
