@@ -12,15 +12,7 @@ import { ReportChart } from '@/components/ReportChart';
 import { ReportTable } from '@/components/ReportTable';
 import { useQuery } from '@tanstack/react-query';
 import { getReportData } from '@/services/reportService';
-
-interface ProcessedReportData {
-  month: string;
-  maintenance: number;
-  fuel: number;
-  taxes: number;
-  others: number;
-  description: string;
-}
+import { ProcessedReportData, processReportData, filterReportData } from '../utils/reportDataProcessor';
 
 const CustomReports = () => {
   const [reportType, setReportType] = useState('all');
@@ -33,76 +25,9 @@ const CustomReports = () => {
     queryFn: getReportData,
   });
 
-  const processReportData = (): ProcessedReportData[] => {
-    if (!reportData) return [];
-
-    const monthlyData = new Map<string, ProcessedReportData>();
-
-    // Process maintenances
-    reportData.maintenances.forEach(maintenance => {
-      const month = maintenance.date.substring(0, 7); // Get YYYY-MM
-      if (!monthlyData.has(month)) {
-        monthlyData.set(month, {
-          month,
-          maintenance: 0,
-          fuel: 0,
-          taxes: 0,
-          others: 0,
-          description: ''
-        });
-      }
-      const data = monthlyData.get(month)!;
-      data.maintenance += maintenance.cost;
-      data.description += `Manutenção: ${maintenance.observations}. `;
-    });
-
-    // Process expenses
-    reportData.expenses.forEach(expense => {
-      const month = expense.date.substring(0, 7);
-      if (!monthlyData.has(month)) {
-        monthlyData.set(month, {
-          month,
-          maintenance: 0,
-          fuel: 0,
-          taxes: 0,
-          others: 0,
-          description: ''
-        });
-      }
-      const data = monthlyData.get(month)!;
-      
-      switch (expense.category.toLowerCase()) {
-        case 'combustível':
-          data.fuel += expense.amount;
-          data.description += `Combustível: ${expense.description}. `;
-          break;
-        case 'impostos':
-          data.taxes += expense.amount;
-          data.description += `Impostos: ${expense.description}. `;
-          break;
-        default:
-          data.others += expense.amount;
-          data.description += `Outros: ${expense.description}. `;
-      }
-    });
-
-    return Array.from(monthlyData.values())
-      .sort((a, b) => a.month.localeCompare(b.month));
-  };
-
   const getFilteredData = () => {
-    const data = processReportData();
-    if (reportType === 'all') return data;
-
-    return data.map(item => {
-      const filtered = { ...item };
-      Object.keys(filtered).forEach(key => {
-        if (key !== reportType && key !== 'month' && key !== 'description') {
-          filtered[key] = 0;
-        }
-      });
-      return filtered;
-    });
+    const processedData = processReportData(reportData);
+    return filterReportData(processedData, reportType);
   };
 
   const generateReport = () => {
