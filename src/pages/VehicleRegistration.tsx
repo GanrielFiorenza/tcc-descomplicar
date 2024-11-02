@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -6,6 +6,7 @@ import { Pencil, Trash2, Plus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { VehicleForm } from '@/components/VehicleForm';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,55 +18,90 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
-interface Vehicle {
-  id: number;
-  brand: string;
-  model: string;
-  year: string;
-  mileage: string;
-  plate: string;
-}
+import { addVehicle, getUserVehicles, updateVehicle, deleteVehicle, Vehicle } from '@/services/vehicleService';
 
 const VehicleRegistration = () => {
-  // Dados mocados de 3 veículos
-  const initialVehicles: Vehicle[] = [
-    { id: 1, brand: "Toyota", model: "Corolla", year: "2022", mileage: "15000", plate: "ABC1234" },
-    { id: 2, brand: "Honda", model: "Civic", year: "2021", mileage: "22000", plate: "DEF5678" },
-    { id: 3, brand: "Ford", model: "Focus", year: "2020", mileage: "30000", plate: "GHI9012" },
-  ];
-
-  const [vehicles, setVehicles] = useState<Vehicle[]>(initialVehicles);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const handleAddVehicle = (newVehicle: Omit<Vehicle, 'id'>) => {
-    setVehicles([...vehicles, { ...newVehicle, id: Date.now() }]);
-    setIsModalOpen(false);
-    toast({
-      title: "Veículo Adicionado",
-      description: "Um novo veículo foi adicionado com sucesso.",
-    });
+  const { data: vehicles = [], isLoading } = useQuery({
+    queryKey: ['vehicles'],
+    queryFn: getUserVehicles,
+  });
+
+  const addVehicleMutation = useMutation({
+    mutationFn: addVehicle,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['vehicles'] });
+      setIsModalOpen(false);
+      toast({
+        title: "Veículo Adicionado",
+        description: "Um novo veículo foi adicionado com sucesso.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Erro ao adicionar veículo",
+        description: error.message,
+      });
+    },
+  });
+
+  const updateVehicleMutation = useMutation({
+    mutationFn: updateVehicle,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['vehicles'] });
+      setEditingVehicle(null);
+      toast({
+        title: "Veículo Atualizado",
+        description: "O veículo foi atualizado com sucesso.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Erro ao atualizar veículo",
+        description: error.message,
+      });
+    },
+  });
+
+  const deleteVehicleMutation = useMutation({
+    mutationFn: deleteVehicle,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['vehicles'] });
+      toast({
+        title: "Veículo Removido",
+        description: "O veículo foi removido com sucesso.",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Erro ao remover veículo",
+        description: error.message,
+      });
+    },
+  });
+
+  const handleAddVehicle = (newVehicle: Omit<Vehicle, 'id' | 'userId'>) => {
+    addVehicleMutation.mutate(newVehicle);
   };
 
   const handleEditVehicle = (editedVehicle: Vehicle) => {
-    setVehicles(vehicles.map(v => v.id === editedVehicle.id ? editedVehicle : v));
-    setEditingVehicle(null);
-    toast({
-      title: "Veículo Atualizado",
-      description: "O veículo foi atualizado com sucesso.",
-    });
+    updateVehicleMutation.mutate(editedVehicle);
   };
 
-  const handleDeleteVehicle = (id: number) => {
-    setVehicles(vehicles.filter(v => v.id !== id));
-    toast({
-      title: "Veículo Removido",
-      description: "O veículo foi removido com sucesso.",
-      variant: "destructive",
-    });
+  const handleDeleteVehicle = (id: string) => {
+    deleteVehicleMutation.mutate(id);
   };
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-screen">Carregando...</div>;
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -83,7 +119,6 @@ const VehicleRegistration = () => {
               <DialogTitle>Adicionar Novo Veículo</DialogTitle>
             </DialogHeader>
             <VehicleForm
-              vehicle={{ id: 0, brand: '', model: '', year: '', mileage: '', plate: '' }}
               onSave={handleAddVehicle}
               onCancel={() => setIsModalOpen(false)}
               isNewVehicle={true}
