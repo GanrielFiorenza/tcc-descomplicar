@@ -19,6 +19,13 @@ const serviceTypeOptions = [
 ];
 
 const MaintenanceHistory: React.FC = () => {
+  // Mock de veículos para demonstração
+  const [vehicles] = useState([
+    { id: 1, name: 'Honda Civic 2020' },
+    { id: 2, name: 'Toyota Corolla 2019' },
+    { id: 3, name: 'Volkswagen Golf 2021' },
+  ]);
+
   const [maintenances, setMaintenances] = useState<Maintenance[]>([
     { id: 1, vehicleId: 1, date: '2023-01-15', serviceType: 'oil_change', cost: 50, observations: 'Regular maintenance' },
     { id: 2, vehicleId: 2, date: '2023-02-20', serviceType: 'brake_replacement', cost: 200, observations: 'Front brakes replaced' },
@@ -37,10 +44,9 @@ const MaintenanceHistory: React.FC = () => {
     (filterType === 'all' || maintenance.serviceType === filterType)
   );
 
-  const handleAddMaintenance = (newMaintenance: Omit<Maintenance, 'id' | 'vehicleId'>) => {
+  const handleAddMaintenance = (newMaintenance: Omit<Maintenance, 'id'>) => {
     setMaintenances([...maintenances, {
       id: maintenances.length + 1,
-      vehicleId: 1, // Assuming a default vehicle ID
       ...newMaintenance
     }]);
     setIsModalOpen(false);
@@ -91,7 +97,11 @@ const MaintenanceHistory: React.FC = () => {
                 <DialogHeader>
                   <DialogTitle>Adicionar Nova Manutenção</DialogTitle>
                 </DialogHeader>
-                <MaintenanceForm onSubmit={handleAddMaintenance} onCancel={() => setIsModalOpen(false)} />
+                <MaintenanceForm 
+                  onSubmit={handleAddMaintenance} 
+                  onCancel={() => setIsModalOpen(false)}
+                  vehicles={vehicles}
+                />
               </DialogContent>
             </Dialog>
           </CardTitle>
@@ -130,6 +140,7 @@ const MaintenanceHistory: React.FC = () => {
             maintenances={filteredMaintenances} 
             onDelete={handleDeleteMaintenance}
             onEdit={handleEditMaintenance}
+            vehicles={vehicles}
           />
         </CardContent>
       </Card>
