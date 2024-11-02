@@ -7,7 +7,6 @@ import { Check, X, CalendarIcon } from 'lucide-react';
 import { format } from "date-fns";
 import { Maintenance } from '../types/maintenance';
 import { useToast } from "@/hooks/use-toast";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 
@@ -64,24 +63,8 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({
   };
 
   return (
-    <div className="flex items-center w-full">
-      <div className="w-[120px] px-2">
-        <Select 
-          value={editedMaintenance.vehicleId.toString()}
-          onValueChange={(value) => setEditedMaintenance({...editedMaintenance, vehicleId: parseInt(value)})}
-        >
-          <SelectTrigger className={`w-full ${errors.vehicleId ? "border-red-500" : ""}`}>
-            <SelectValue placeholder="Veículo" />
-          </SelectTrigger>
-          <SelectContent>
-            {vehicles.map((vehicle) => (
-              <SelectItem key={vehicle.id} value={vehicle.id.toString()}>{vehicle.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="w-[120px] px-2">
+    <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+      <td className="p-4 align-middle w-[120px]">
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" className={`w-full justify-start text-left font-normal ${errors.date ? "border-red-500" : ""}`}>
@@ -98,9 +81,25 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({
             />
           </PopoverContent>
         </Popover>
-      </div>
+      </td>
 
-      <div className="w-[180px] px-2">
+      <td className="p-4 align-middle w-[120px]">
+        <Select 
+          value={editedMaintenance.vehicleId.toString()}
+          onValueChange={(value) => setEditedMaintenance({...editedMaintenance, vehicleId: parseInt(value)})}
+        >
+          <SelectTrigger className={`w-full ${errors.vehicleId ? "border-red-500" : ""}`}>
+            <SelectValue placeholder="Veículo" />
+          </SelectTrigger>
+          <SelectContent>
+            {vehicles.map((vehicle) => (
+              <SelectItem key={vehicle.id} value={vehicle.id.toString()}>{vehicle.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </td>
+
+      <td className="p-4 align-middle w-[180px]">
         <Select 
           value={editedMaintenance.serviceType}
           onValueChange={(value) => setEditedMaintenance({...editedMaintenance, serviceType: value})}
@@ -114,9 +113,9 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({
             ))}
           </SelectContent>
         </Select>
-      </div>
+      </td>
 
-      <div className="w-[100px] px-2">
+      <td className="p-4 align-middle w-[100px]">
         <Input
           type="number"
           value={editedMaintenance.cost}
@@ -124,25 +123,27 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({
           placeholder="Custo"
           className={`w-full ${errors.cost ? "border-red-500" : ""}`}
         />
-      </div>
+      </td>
 
-      <div className="w-[200px] px-2">
+      <td className="p-4 align-middle w-[200px]">
         <Textarea
           value={editedMaintenance.observations}
           onChange={(e) => setEditedMaintenance({...editedMaintenance, observations: e.target.value})}
           placeholder="Observações"
           className={`w-full ${errors.observations ? "border-red-500" : ""}`}
         />
-      </div>
+      </td>
 
-      <div className="w-[100px] flex justify-end space-x-2 px-2">
-        <Button variant="outline" size="sm" onClick={onCancel}>
-          <X className="h-4 w-4" />
-        </Button>
-        <Button size="sm" onClick={handleSave} className="bg-green-500 hover:bg-green-600">
-          <Check className="h-4 w-4" />
-        </Button>
-      </div>
-    </div>
+      <td className="p-4 align-middle w-[100px]">
+        <div className="flex justify-end space-x-2">
+          <Button variant="outline" size="sm" onClick={onCancel}>
+            <X className="h-4 w-4" />
+          </Button>
+          <Button size="sm" onClick={handleSave} className="bg-green-500 hover:bg-green-600">
+            <Check className="h-4 w-4" />
+          </Button>
+        </div>
+      </td>
+    </tr>
   );
 };
