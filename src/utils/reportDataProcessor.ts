@@ -73,11 +73,14 @@ export const filterReportData = (data: ProcessedReportData[], reportType: string
 
   return data.map(item => {
     const filtered = { ...item };
-    Object.keys(filtered).forEach(key => {
-      if (key !== reportType && key !== 'month' && key !== 'description') {
-        filtered[key as keyof ProcessedReportData] = key === 'description' ? filtered.description : 0;
+    const numericKeys = ['maintenance', 'fuel', 'taxes', 'others'] as const;
+    
+    numericKeys.forEach(key => {
+      if (key !== reportType) {
+        filtered[key] = 0;
       }
     });
+    
     return filtered;
   });
 };
