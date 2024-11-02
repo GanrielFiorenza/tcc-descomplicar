@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,21 +13,30 @@ import { ReportTable } from '@/components/ReportTable';
 import { useQuery } from '@tanstack/react-query';
 import { getReportData } from '@/services/reportService';
 
+interface ProcessedReportData {
+  month: string;
+  maintenance: number;
+  fuel: number;
+  taxes: number;
+  others: number;
+  description: string;
+}
+
 const CustomReports = () => {
   const [reportType, setReportType] = useState('all');
   const [selectedReportType, setSelectedReportType] = useState('all');
   const { toast } = useToast();
-  const chartRef = useRef(null);
+  const chartRef = useRef<HTMLDivElement>(null);
 
   const { data: reportData, isLoading } = useQuery({
     queryKey: ['reports'],
     queryFn: getReportData,
   });
 
-  const processReportData = () => {
+  const processReportData = (): ProcessedReportData[] => {
     if (!reportData) return [];
 
-    const monthlyData = new Map();
+    const monthlyData = new Map<string, ProcessedReportData>();
 
     // Process maintenances
     reportData.maintenances.forEach(maintenance => {
@@ -42,7 +51,7 @@ const CustomReports = () => {
           description: ''
         });
       }
-      const data = monthlyData.get(month);
+      const data = monthlyData.get(month)!;
       data.maintenance += maintenance.cost;
       data.description += `Manutenção: ${maintenance.observations}. `;
     });
@@ -60,7 +69,7 @@ const CustomReports = () => {
           description: ''
         });
       }
-      const data = monthlyData.get(month);
+      const data = monthlyData.get(month)!;
       
       switch (expense.category.toLowerCase()) {
         case 'combustível':
@@ -106,30 +115,27 @@ const CustomReports = () => {
 
   const exportToPDF = async () => {
     const doc = new jsPDF();
-    doc.text(`Relatório de ${getReportTitle()}`, 14, 15);
+    doc.text(`Relatório de Gastos`, 14, 15);
 
-    // Add chart to PDF
     if (chartRef.current) {
       const canvas = await html2canvas(chartRef.current);
       const imgData = canvas.toDataURL('image/png');
       doc.addImage(imgData, 'PNG', 10, 20, 190, 100);
     }
 
-    // Add table to PDF
+    const tableData = getFilteredData().map(item => [
+      item.month,
+      `R$ ${item.maintenance.toFixed(2)}`,
+      `R$ ${item.fuel.toFixed(2)}`,
+      `R$ ${item.taxes.toFixed(2)}`,
+      `R$ ${item.others.toFixed(2)}`,
+      item.description
+    ]);
+
     doc.autoTable({
-      head: [['Mês', 'Tipo de Gasto', 'Valor', 'Descrição']],
-      body: reportData.flatMap(item => {
-        if (reportType === 'general') {
-          return [
-            ['Manutenção', item.month, `R$ ${item.maintenance.toFixed(2)}`, item.description],
-            ['Combustível', item.month, `R$ ${item.fuel.toFixed(2)}`, item.description],
-            ['Impostos', item.month, `R$ ${item.taxes.toFixed(2)}`, item.description]
-          ];
-        } else {
-          return [[item.month, item.type, `R$ ${item.amount.toFixed(2)}`, item.description]];
-        }
-      }),
-      startY: 125 // Start the table below the chart
+      head: [['Mês', 'Manutenção', 'Combustível', 'Impostos', 'Outros', 'Descrição']],
+      body: tableData,
+      startY: 125
     });
 
     doc.save(`relatorio_${reportType}.pdf`);
@@ -140,24 +146,16 @@ const CustomReports = () => {
   };
 
   const exportToExcel = () => {
-    const tableData = reportData.flatMap((item) => {
-      if (reportType === 'general') {
-        return [
-          { Mês: item.month, 'Tipo de Gasto': 'Manutenção', Valor: item.maintenance, Descrição: item.description },
-          { Mês: item.month, 'Tipo de Gasto': 'Combustível', Valor: item.fuel, Descrição: item.description },
-          { Mês: item.month, 'Tipo de Gasto': 'Impostos', Valor: item.taxes, Descrição: item.description }
-        ];
-      } else {
-        return [{
-          Mês: item.month,
-          'Tipo de Gasto': item.type,
-          Valor: item.amount,
-          Descrição: item.description
-        }];
-      }
-    });
+    const data = getFilteredData().map(item => ({
+      Mês: item.month,
+      Manutenção: item.maintenance,
+      Combustível: item.fuel,
+      Impostos: item.taxes,
+      Outros: item.others,
+      Descrição: item.description
+    }));
 
-    const ws = XLSX.utils.json_to_sheet(tableData);
+    const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Relatório");
     XLSX.writeFile(wb, `relatorio_${reportType}.xlsx`);
