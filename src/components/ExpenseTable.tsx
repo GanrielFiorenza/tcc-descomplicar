@@ -18,13 +18,13 @@ import { ExpenseEditRow } from './ExpenseEditRow';
 
 interface ExpenseTableProps {
   expenses: any[];
-  vehicles: { id: number; name: string }[];
+  vehicles: { id: string; name: string }[];
   onEdit: (editedExpense: any) => void;
-  onDelete: (expenseId: number) => void;
+  onDelete: (expenseId: string) => void;
 }
 
 export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, onEdit, onDelete }) => {
-  const [editingExpense, setEditingExpense] = useState<number | null>(null);
+  const [editingExpense, setEditingExpense] = useState<string | null>(null);
   const [editedValues, setEditedValues] = useState<any>({});
 
   const categories = ['Combustível', 'Peças', 'Serviços', 'Impostos', 'Outros'];
@@ -54,8 +54,8 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
     }
   };
 
-  const getVehicleName = (vehicleId: number | string) => {
-    const vehicle = vehicles.find(v => v.id === Number(vehicleId));
+  const getVehicleName = (vehicleId: string) => {
+    const vehicle = vehicles.find(v => v.id === vehicleId);
     return vehicle ? vehicle.name : 'Veículo não encontrado';
   };
 
@@ -158,4 +158,3 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
       </CardContent>
     </Card>
   );
-};

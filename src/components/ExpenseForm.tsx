@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, DollarSign, FileText, Tag } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 
 interface ExpenseFormProps {
   onSubmit: (expense: any) => void;
   onCancel: () => void;
-  vehicles: { id: number; name: string }[];
+  vehicles: { id: string; name: string }[];
 }
 
 export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, vehicles }) => {
@@ -91,7 +90,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, onCancel, ve
           </SelectTrigger>
           <SelectContent>
             {vehicles.map(vehicle => (
-              <SelectItem key={vehicle.id} value={vehicle.id.toString()}>{vehicle.name}</SelectItem>
+              <SelectItem key={vehicle.id} value={vehicle.id}>{vehicle.name}</SelectItem>
             ))}
           </SelectContent>
         </Select>
