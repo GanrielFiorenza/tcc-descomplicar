@@ -21,7 +21,7 @@ interface MaintenanceEditFormProps {
   maintenance: Maintenance;
   onSave: (maintenance: Maintenance) => void;
   onCancel: () => void;
-  vehicles: { id: number; name: string }[];
+  vehicles: { id: string; name: string }[];
 }
 
 export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({ 
@@ -85,15 +85,15 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({
 
       <td className="p-4 align-middle" style={{ width: '20%' }}>
         <Select 
-          value={editedMaintenance.vehicleId.toString()}
-          onValueChange={(value) => setEditedMaintenance({...editedMaintenance, vehicleId: parseInt(value)})}
+          value={editedMaintenance.vehicleId}
+          onValueChange={(value) => setEditedMaintenance({...editedMaintenance, vehicleId: value})}
         >
           <SelectTrigger className={`w-full ${errors.vehicleId ? "border-red-500" : ""}`}>
             <SelectValue placeholder="Veículo" />
           </SelectTrigger>
           <SelectContent>
             {vehicles.map((vehicle) => (
-              <SelectItem key={vehicle.id} value={vehicle.id.toString()}>{vehicle.name}</SelectItem>
+              <SelectItem key={vehicle.id} value={vehicle.id}>{vehicle.name}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -144,6 +144,7 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({
           </Button>
         </div>
       </td>
+
     </tr>
   );
 };

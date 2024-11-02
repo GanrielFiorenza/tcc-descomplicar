@@ -4,6 +4,11 @@ import { Maintenance } from '../types/maintenance';
 
 export interface MaintenanceData extends Omit<Maintenance, 'id'> {
   userId: string;
+  vehicleId: string;
+  date: string;
+  serviceType: string;
+  cost: number;
+  observations: string;
 }
 
 export const addMaintenance = async (maintenance: Omit<MaintenanceData, 'userId'>) => {
@@ -22,7 +27,7 @@ export const addMaintenance = async (maintenance: Omit<MaintenanceData, 'userId'
   };
 };
 
-export const getUserMaintenances = async () => {
+export const getUserMaintenances = async (): Promise<Maintenance[]> => {
   const user = auth.currentUser;
   if (!user) throw new Error('User must be logged in to get maintenances');
 
@@ -35,10 +40,10 @@ export const getUserMaintenances = async () => {
   return querySnapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
-  })) as MaintenanceData[];
+  })) as Maintenance[];
 };
 
-export const updateMaintenance = async (maintenance: MaintenanceData & { id: string }) => {
+export const updateMaintenance = async (maintenance: Maintenance) => {
   const user = auth.currentUser;
   if (!user) throw new Error('User must be logged in to update maintenance');
   if (maintenance.userId !== user.uid) throw new Error('Unauthorized to update this maintenance');

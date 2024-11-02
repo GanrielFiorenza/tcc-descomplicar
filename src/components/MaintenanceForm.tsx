@@ -28,9 +28,9 @@ const serviceTypeOptions = [
 ];
 
 interface MaintenanceFormProps {
-  onSubmit: (maintenance: Omit<Maintenance, 'id'>) => void;
+  onSubmit: (maintenance: Omit<Maintenance, 'id' | 'userId'>) => void;
   onCancel: () => void;
-  vehicles: { id: number; name: string }[];
+  vehicles: { id: string; name: string }[];
 }
 
 export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCancel, vehicles }) => {
@@ -39,7 +39,7 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
     serviceType: '',
     cost: 0,
     observations: '',
-    vehicleId: undefined,
+    vehicleId: '',
   });
   const { toast } = useToast();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -58,7 +58,7 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
       return;
     }
 
-    onSubmit(newMaintenance as Omit<Maintenance, 'id'>);
+    onSubmit(newMaintenance as Omit<Maintenance, 'id' | 'userId'>);
     
     toast({
       title: "Manutenção adicionada",
@@ -73,15 +73,15 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
         <div className="grid grid-cols-4 items-center gap-4">
           <Car className="h-4 w-4 text-purple-500" />
           <Select 
-            value={newMaintenance.vehicleId?.toString()} 
-            onValueChange={(value) => setNewMaintenance({...newMaintenance, vehicleId: parseInt(value)})}
+            value={newMaintenance.vehicleId} 
+            onValueChange={(value) => setNewMaintenance({...newMaintenance, vehicleId: value})}
           >
             <SelectTrigger className="w-[280px]">
               <SelectValue placeholder="Selecione o veículo" />
             </SelectTrigger>
             <SelectContent>
               {vehicles.map((vehicle) => (
-                <SelectItem key={vehicle.id} value={vehicle.id.toString()}>{vehicle.name}</SelectItem>
+                <SelectItem key={vehicle.id} value={vehicle.id}>{vehicle.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>
