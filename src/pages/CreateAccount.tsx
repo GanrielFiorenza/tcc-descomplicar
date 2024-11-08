@@ -7,7 +7,7 @@ import CreateAccountForm from "@/components/CreateAccountForm";
 import { useState } from "react";
 import { Car, Shield } from "lucide-react";
 import { auth, db } from "@/config/firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, AuthError } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 
 const CreateAccount = () => {
@@ -39,6 +39,8 @@ const CreateAccount = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+    
     if (validateForm()) {
       setIsLoading(true);
       try {
@@ -67,19 +69,30 @@ const CreateAccount = () => {
         });
         
         navigate('/dashboard');
-      } catch (error: any) {
-        console.error('Error creating account:', error);
+      } catch (error) {
+        const firebaseError = error as AuthError;
         let errorMessage = "Erro ao criar conta. Tente novamente.";
         
-        if (error.code === 'auth/email-already-in-use') {
-          errorMessage = "Este e-mail já está em uso.";
+        if (firebaseError.code === 'auth/email-already-in-use') {
+          setErrors(prev => ({
+            ...prev,
+            email: "Este e-mail já está cadastrado. Por favor, utilize outro e-mail ou faça login."
+          }));
+          toast({
+            title: "E-mail já cadastrado",
+            description: "Este e-mail já está em uso. Por favor, utilize outro e-mail ou faça login.",
+            variant: "destructive",
+            duration: 5000,
+          });
+        } else {
+          toast({
+            title: "Erro ao criar conta",
+            description: errorMessage,
+            variant: "destructive",
+            duration: 3000,
+          });
         }
-        
-        toast({
-          title: "Erro ao criar conta",
-          description: errorMessage,
-          variant: "destructive",
-        });
+        console.error('Error creating account:', error);
       } finally {
         setIsLoading(false);
       }
