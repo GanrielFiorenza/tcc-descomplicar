@@ -132,14 +132,14 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
                 data={donutData}
                 cx="50%"
                 cy="50%"
-                startAngle={90}
-                endAngle={-270}
+                startAngle={-270}
+                endAngle={90}
                 innerRadius={60}
                 outerRadius={80}
                 fill="#8884d8"
                 paddingAngle={0}
                 dataKey="value"
-                animationDuration={1500} // Increased from 1000 to 1500 to make the animation slower
+                animationDuration={1500}
                 animationBegin={0}
               >
                 {donutData.map((entry, index) => (
