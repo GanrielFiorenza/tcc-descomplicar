@@ -9,6 +9,15 @@ import { Car, Shield } from "lucide-react";
 import { auth, db } from "@/config/firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, AuthError } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const CreateAccount = () => {
   const [name, setName] = useState('');
@@ -19,6 +28,7 @@ const CreateAccount = () => {
   const [gender, setGender] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [showEmailInUseDialog, setShowEmailInUseDialog] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -78,12 +88,7 @@ const CreateAccount = () => {
             ...prev,
             email: "Este e-mail já está cadastrado. Por favor, utilize outro e-mail ou faça login."
           }));
-          toast({
-            title: "E-mail já cadastrado",
-            description: "Este e-mail já está em uso. Por favor, utilize outro e-mail ou faça login.",
-            variant: "destructive",
-            duration: 5000,
-          });
+          setShowEmailInUseDialog(true);
         } else {
           toast({
             title: "Erro ao criar conta",
@@ -149,6 +154,22 @@ const CreateAccount = () => {
           </div>
         </div>
       </div>
+
+      <AlertDialog open={showEmailInUseDialog} onOpenChange={setShowEmailInUseDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>E-mail já cadastrado</AlertDialogTitle>
+            <AlertDialogDescription>
+              Este E-mail já está em uso, faça login ou cadastre um outro e-mail
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setShowEmailInUseDialog(false)}>
+              OK
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
