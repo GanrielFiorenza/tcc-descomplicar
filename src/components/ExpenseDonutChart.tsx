@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,7 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
 }) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [newLimit, setNewLimit] = React.useState(expenseLimit.toString());
+  const [animationPercentage, setAnimationPercentage] = useState(0);
   const { toast } = useToast();
 
   const handleSaveLimit = () => {
@@ -51,14 +52,20 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
   };
 
   const donutData = [
-    { name: 'Manutenção', value: expenses.filter(e => e.type === 'Manutenção').reduce((acc, curr) => acc + curr.amount, 0) },
-    { name: 'Combustível', value: expenses.filter(e => e.type === 'Combustível').reduce((acc, curr) => acc + curr.amount, 0) },
-    { name: 'Impostos', value: expenses.filter(e => e.type === 'Impostos').reduce((acc, curr) => acc + curr.amount, 0) },
-    { name: 'Outros', value: expenses.filter(e => !['Manutenção', 'Combustível', 'Impostos'].includes(e.type)).reduce((acc, curr) => acc + curr.amount, 0) },
-  ].filter(item => item.value > 0);
+    { name: 'Usado', value: expenses.reduce((acc, curr) => acc + curr.amount, 0) },
+    { name: 'Restante', value: Math.max(0, expenseLimit - expenses.reduce((acc, curr) => acc + curr.amount, 0)) }
+  ];
 
-  const totalExpenses = donutData.reduce((acc, curr) => acc + curr.value, 0);
+  const totalExpenses = expenses.reduce((acc, curr) => acc + curr.amount, 0);
   const percentageUsed = Math.round((totalExpenses / expenseLimit) * 100);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimationPercentage(percentageUsed);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [percentageUsed]);
 
   return (
     <Card>
@@ -124,21 +131,24 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
                 data={donutData}
                 cx="50%"
                 cy="50%"
+                startAngle={90}
+                endAngle={-270}
                 innerRadius={60}
                 outerRadius={80}
                 fill="#8884d8"
-                paddingAngle={5}
+                paddingAngle={0}
                 dataKey="value"
+                animationDuration={1000}
+                animationBegin={0}
               >
-                {donutData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
+                <Cell fill="#8B5CF6" />
+                <Cell fill="#E2E8F0" />
               </Pie>
               <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} />
             </PieChart>
           </ResponsiveContainer>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold">
-            {percentageUsed}%
+            {animationPercentage}%
           </div>
         </div>
         <div className="mt-4 text-center text-sm text-muted-foreground">
