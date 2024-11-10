@@ -31,6 +31,7 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [newLimit, setNewLimit] = React.useState(expenseLimit.toString());
   const [animationPercentage, setAnimationPercentage] = useState(0);
+  const [startAngle, setStartAngle] = useState(90);
   const { toast } = useToast();
 
   const handleSaveLimit = () => {
@@ -60,12 +61,32 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
   const percentageUsed = Math.round((totalExpenses / expenseLimit) * 100);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnimationPercentage(percentageUsed);
-    }, 100);
+    setAnimationPercentage(0);
+    setStartAngle(90);
 
-    return () => clearTimeout(timer);
-  }, [percentageUsed]);
+    const animationDuration = 1500; // 1.5 segundos
+    const steps = 60; // 60 frames
+    const stepDuration = animationDuration / steps;
+    let currentStep = 0;
+
+    const timer = setInterval(() => {
+      currentStep++;
+      
+      // Animação do preenchimento
+      const newPercentage = (currentStep / steps) * percentageUsed;
+      setAnimationPercentage(Math.round(newPercentage));
+
+      // Animação do ângulo (sentido anti-horário)
+      const newAngle = 90 - ((currentStep / steps) * 360);
+      setStartAngle(newAngle);
+
+      if (currentStep >= steps) {
+        clearInterval(timer);
+      }
+    }, stepDuration);
+
+    return () => clearInterval(timer);
+  }, [percentageUsed, expenses]);
 
   return (
     <Card>
@@ -131,15 +152,13 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
                 data={donutData}
                 cx="50%"
                 cy="50%"
-                startAngle={90}
-                endAngle={-270}
+                startAngle={startAngle}
+                endAngle={startAngle - 360}
                 innerRadius={60}
                 outerRadius={80}
                 fill="#8884d8"
                 paddingAngle={0}
                 dataKey="value"
-                animationDuration={1000}
-                animationBegin={0}
               >
                 <Cell fill="#8B5CF6" />
                 <Cell fill="#E2E8F0" />
