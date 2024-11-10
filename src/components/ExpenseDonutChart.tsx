@@ -18,7 +18,7 @@ interface ExpenseDonutChartProps {
   onExpenseLimitChange: (limit: number) => void;
 }
 
-const COLORS = ['#8B5CF6', '#A78BFA', '#C4B5FD', '#DDD6FE'];
+const COLORS = ['#8B5CF6', '#E2E8F0'];
 
 export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
   expenses,
@@ -51,21 +51,22 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
     }
   };
 
-  const donutData = [
-    { name: 'Usado', value: expenses.reduce((acc, curr) => acc + curr.amount, 0) },
-    { name: 'Restante', value: Math.max(0, expenseLimit - expenses.reduce((acc, curr) => acc + curr.amount, 0)) }
-  ];
-
   const totalExpenses = expenses.reduce((acc, curr) => acc + curr.amount, 0);
   const percentageUsed = Math.round((totalExpenses / expenseLimit) * 100);
 
+  const donutData = [
+    { name: 'Usado', value: totalExpenses },
+    { name: 'Restante', value: Math.max(0, expenseLimit - totalExpenses) }
+  ];
+
   useEffect(() => {
+    setAnimationPercentage(0);
     const timer = setTimeout(() => {
       setAnimationPercentage(percentageUsed);
     }, 100);
 
     return () => clearTimeout(timer);
-  }, [percentageUsed]);
+  }, [percentageUsed, selectedMonth]);
 
   return (
     <Card>
@@ -141,8 +142,9 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
                 animationDuration={1000}
                 animationBegin={0}
               >
-                <Cell fill="#8B5CF6" />
-                <Cell fill="#E2E8F0" />
+                {donutData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                ))}
               </Pie>
               <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} />
             </PieChart>
