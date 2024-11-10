@@ -19,18 +19,11 @@ const Dashboard = () => {
     { id: 2, date: '2024-03-30', description: 'Revisão anual em 15 dias' },
     { id: 3, date: '2024-04-15', description: 'Renovação do seguro em 1 mês' },
   ]);
-  const [selectedMonth, setSelectedMonth] = useState('2024-03');
   const [expenseLimit, setExpenseLimit] = useState(5000);
   const [checkedMaintenances, setCheckedMaintenances] = useState<number[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { toast } = useToast();
   const { data: monthlyExpensesData, isLoading: isLoadingExpenses } = useMonthlyExpenses();
-
-  const availableMonths = [
-    { value: '2024-01', label: 'Janeiro 2024' },
-    { value: '2024-02', label: 'Fevereiro 2024' },
-    { value: '2024-03', label: 'Março 2024' },
-  ];
 
   const handleAddMaintenance = () => {
     if (newMaintenanceDate && newMaintenanceDescription) {
@@ -67,12 +60,6 @@ const Dashboard = () => {
     });
   };
 
-  // Transform monthly expenses data to match ExpenseDonutChart's expected format
-  const donutChartData = monthlyExpensesData?.map(item => ({
-    type: item.name,
-    amount: item.gastos
-  })) || [];
-
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
@@ -98,10 +85,6 @@ const Dashboard = () => {
         </Card>
 
         <ExpenseDonutChart
-          expenses={donutChartData}
-          availableMonths={availableMonths}
-          selectedMonth={selectedMonth}
-          onMonthChange={setSelectedMonth}
           expenseLimit={expenseLimit}
           onExpenseLimitChange={setExpenseLimit}
         />
