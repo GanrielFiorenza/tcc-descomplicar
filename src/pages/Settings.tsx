@@ -18,10 +18,10 @@ const Settings = () => {
   useEffect(() => {
     // Only check required fields (excluding password) on initial load
     if (!editMode) {
-      const hasEmptyRequiredFields = !userData.username || !userData.birthDate || !userData.gender;
-      if (hasEmptyRequiredFields) {
-        setShowEmptyDataAlert(true);
-      }
+      const hasEmptyRequiredFields = !userData.username?.trim() || 
+                                   !userData.birthDate?.trim() || 
+                                   !userData.gender?.trim();
+      setShowEmptyDataAlert(hasEmptyRequiredFields);
     }
   }, [userData, editMode]);
 
