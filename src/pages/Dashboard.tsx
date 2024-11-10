@@ -9,33 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import MaintenanceList from '../components/MaintenanceList';
 import MonthlyExpenses from '../components/MonthlyExpenses';
-
-const data = [
-  { name: 'Jan', gastos: 4000 },
-  { name: 'Fev', gastos: 3000 },
-  { name: 'Mar', gastos: 2000 },
-  { name: 'Abr', gastos: 2780 },
-  { name: 'Mai', gastos: 1890 },
-  { name: 'Jun', gastos: 2390 },
-];
-
-const AnimatedBellIcon = ({ className }: { className?: string }) => {
-  const [isRinging, setIsRinging] = useState(false);
-
-  useEffect(() => {
-    setIsRinging(true);
-    const timer = setTimeout(() => setIsRinging(false), 1000); // Reduced from 2000ms to 1000ms
-    return () => clearTimeout(timer);
-  }, []);
-
-  return (
-    <Bell
-      className={`${className} ${
-        isRinging ? 'animate-[wiggle_0.5s_ease-in-out_infinite] scale-110 text-yellow-400' : ''
-      } transition-all duration-300`}
-    />
-  );
-};
+import { useMonthlyExpenses } from '@/hooks/useMonthlyExpenses';
 
 const Dashboard = () => {
   const [newMaintenanceDate, setNewMaintenanceDate] = useState('');
@@ -48,6 +22,7 @@ const Dashboard = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [checkedMaintenances, setCheckedMaintenances] = useState<number[]>([]);
   const { toast } = useToast();
+  const { data: monthlyExpensesData, isLoading: isLoadingExpenses } = useMonthlyExpenses();
 
   const handleAddMaintenance = () => {
     if (newMaintenanceDate && newMaintenanceDescription) {
@@ -91,10 +66,7 @@ const Dashboard = () => {
     { date: '2023-10-05', description: 'Troca de pneus' },
   ];
 
-  // Mock data for MonthlyExpenses
-  const totalExpenses = 2150.75;
-  const estimatedExpenses = 3000;
-
+  
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
@@ -107,7 +79,7 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={data}>
+              <BarChart data={monthlyExpensesData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
@@ -118,8 +90,6 @@ const Dashboard = () => {
             </ResponsiveContainer>
           </CardContent>
         </Card>
-
-        <MonthlyExpenses totalExpenses={totalExpenses} estimatedExpenses={estimatedExpenses} />
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
