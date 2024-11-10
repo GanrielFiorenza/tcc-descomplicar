@@ -63,7 +63,7 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
     setAnimationPercentage(0);
     const timer = setTimeout(() => {
       setAnimationPercentage(percentageUsed);
-    }, 100);
+    }, 500); // Increased from 100 to 500 to make the animation slower
 
     return () => clearTimeout(timer);
   }, [percentageUsed, selectedMonth]);
@@ -139,7 +139,7 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
                 fill="#8884d8"
                 paddingAngle={0}
                 dataKey="value"
-                animationDuration={1000}
+                animationDuration={1500} // Increased from 1000 to 1500 to make the animation slower
                 animationBegin={0}
               >
                 {donutData.map((entry, index) => (
