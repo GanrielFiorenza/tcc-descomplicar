@@ -22,6 +22,7 @@ const Dashboard = () => {
   const [selectedMonth, setSelectedMonth] = useState('2024-03');
   const [expenseLimit, setExpenseLimit] = useState(5000);
   const [checkedMaintenances, setCheckedMaintenances] = useState<number[]>([]);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { toast } = useToast();
   const { data: monthlyExpensesData, isLoading: isLoadingExpenses } = useMonthlyExpenses();
 
@@ -38,7 +39,9 @@ const Dashboard = () => {
         date: newMaintenanceDate, 
         description: newMaintenanceDescription 
       };
-      const updatedList = [...maintenanceList, newMaintenance].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      const updatedList = [...maintenanceList, newMaintenance].sort((a, b) => 
+        new Date(a.date).getTime() - new Date(b.date).getTime()
+      );
       setMaintenanceList(updatedList);
       setNewMaintenanceDate('');
       setNewMaintenanceDescription('');
@@ -64,9 +67,11 @@ const Dashboard = () => {
     });
   };
 
-  const monthExpenses = monthlyExpensesData?.filter(expense => 
-    expense.date.startsWith(selectedMonth)
-  ) || [];
+  // Transform monthly expenses data to match ExpenseDonutChart's expected format
+  const donutChartData = monthlyExpensesData?.map(item => ({
+    type: item.name,
+    amount: item.gastos
+  })) || [];
 
   return (
     <div className="container mx-auto p-4">
@@ -93,7 +98,7 @@ const Dashboard = () => {
         </Card>
 
         <ExpenseDonutChart
-          expenses={monthExpenses}
+          expenses={donutChartData}
           availableMonths={availableMonths}
           selectedMonth={selectedMonth}
           onMonthChange={setSelectedMonth}
@@ -166,7 +171,7 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
-              {lastMaintenanceList.map((maintenance, index) => (
+              {maintenanceList.map((maintenance, index) => (
                 <li key={index} className="flex items-center">
                   <Bell className="mr-2 h-4 w-4 text-green-500" />
                   <span>{maintenance.date} - {maintenance.description}</span>
