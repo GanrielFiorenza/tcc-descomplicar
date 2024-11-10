@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Bell, CirclePlus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import MaintenanceList from '../components/MaintenanceList';
 import { useMonthlyExpenses } from '@/hooks/useMonthlyExpenses';
+import { ExpenseDonutChart } from '../components/ExpenseDonutChart';
 
 const Dashboard = () => {
   const [newMaintenanceDate, setNewMaintenanceDate] = useState('');
@@ -18,20 +19,17 @@ const Dashboard = () => {
     { id: 2, date: '2024-03-30', description: 'Revisão anual em 15 dias' },
     { id: 3, date: '2024-04-15', description: 'Renovação do seguro em 1 mês' },
   ]);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState('2024-03');
+  const [expenseLimit, setExpenseLimit] = useState(5000);
   const [checkedMaintenances, setCheckedMaintenances] = useState<number[]>([]);
   const { toast } = useToast();
   const { data: monthlyExpensesData, isLoading: isLoadingExpenses } = useMonthlyExpenses();
 
-  // Dados para o gráfico de rosca
-  const donutData = [
-    { name: 'Manutenção', value: 4000 },
-    { name: 'Combustível', value: 3000 },
-    { name: 'Impostos', value: 2000 },
-    { name: 'Outros', value: 1000 },
+  const availableMonths = [
+    { value: '2024-01', label: 'Janeiro 2024' },
+    { value: '2024-02', label: 'Fevereiro 2024' },
+    { value: '2024-03', label: 'Março 2024' },
   ];
-
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   const handleAddMaintenance = () => {
     if (newMaintenanceDate && newMaintenanceDescription) {
@@ -44,7 +42,6 @@ const Dashboard = () => {
       setMaintenanceList(updatedList);
       setNewMaintenanceDate('');
       setNewMaintenanceDescription('');
-      setIsPopoverOpen(false);
       toast({
         title: "Manutenção agendada",
         description: `Nova manutenção agendada para ${newMaintenanceDate}`,
@@ -67,13 +64,9 @@ const Dashboard = () => {
     });
   };
 
-  const lastMaintenanceList = [
-    { date: '2024-02-15', description: 'Troca de óleo' },
-    { date: '2024-01-30', description: 'Alinhamento e balanceamento' },
-    { date: '2023-12-20', description: 'Troca de filtro de ar' },
-    { date: '2023-11-10', description: 'Revisão dos freios' },
-    { date: '2023-10-05', description: 'Troca de pneus' },
-  ];
+  const monthExpenses = monthlyExpensesData?.filter(expense => 
+    expense.date.startsWith(selectedMonth)
+  ) || [];
 
   return (
     <div className="container mx-auto p-4">
@@ -99,34 +92,14 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Distribuição de Gastos</CardTitle>
-            <CardDescription>Distribuição dos gastos por categoria</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={donutData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {donutData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        <ExpenseDonutChart
+          expenses={monthExpenses}
+          availableMonths={availableMonths}
+          selectedMonth={selectedMonth}
+          onMonthChange={setSelectedMonth}
+          expenseLimit={expenseLimit}
+          onExpenseLimitChange={setExpenseLimit}
+        />
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
