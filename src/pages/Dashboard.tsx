@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import MaintenanceList from '../components/MaintenanceList';
 import { useMonthlyExpenses } from '@/hooks/useMonthlyExpenses';
 import { ExpenseDonutChart } from '../components/ExpenseDonutChart';
+import { useExpenseLimit } from '@/hooks/useExpenseLimit';
 
 const Dashboard = () => {
   const [newMaintenanceDate, setNewMaintenanceDate] = useState('');
@@ -19,11 +20,11 @@ const Dashboard = () => {
     { id: 2, date: '2024-03-30', description: 'Revisão anual em 15 dias' },
     { id: 3, date: '2024-04-15', description: 'Renovação do seguro em 1 mês' },
   ]);
-  const [expenseLimit, setExpenseLimit] = useState(5000);
   const [checkedMaintenances, setCheckedMaintenances] = useState<number[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { toast } = useToast();
   const { data: monthlyExpensesData, isLoading: isLoadingExpenses } = useMonthlyExpenses();
+  const { expenseLimit, updateExpenseLimit, isLoading: isLoadingLimit } = useExpenseLimit();
 
   const handleAddMaintenance = () => {
     if (newMaintenanceDate && newMaintenanceDescription) {
@@ -60,6 +61,10 @@ const Dashboard = () => {
     });
   };
 
+  if (isLoadingLimit || isLoadingExpenses) {
+    return <div>Carregando...</div>;
+  }
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
@@ -86,7 +91,7 @@ const Dashboard = () => {
 
         <ExpenseDonutChart
           expenseLimit={expenseLimit}
-          onExpenseLimitChange={setExpenseLimit}
+          onExpenseLimitChange={updateExpenseLimit}
         />
 
         <Card>

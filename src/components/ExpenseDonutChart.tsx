@@ -5,14 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pen } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { useMonthlyTotalExpenses } from "@/hooks/useMonthlyTotalExpenses";
 
 interface ExpenseDonutChartProps {
   expenseLimit: number;
-  onExpenseLimitChange: (limit: number) => void;
+  onExpenseLimitChange: (limit: number) => Promise<boolean>;
 }
 
 const COLORS = {
@@ -24,12 +23,11 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
   expenseLimit,
   onExpenseLimitChange
 }) => {
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const [newLimit, setNewLimit] = React.useState(expenseLimit.toString());
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newLimit, setNewLimit] = useState(expenseLimit.toString());
   const [animationPercentage, setAnimationPercentage] = useState(0);
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const { toast } = useToast();
-
   const { data: monthlyTotals = [], isLoading } = useMonthlyTotalExpenses();
 
   useEffect(() => {
@@ -38,15 +36,23 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
     }
   }, [monthlyTotals]);
 
-  const handleSaveLimit = () => {
+  const handleSaveLimit = async () => {
     const limit = parseFloat(newLimit);
     if (!isNaN(limit) && limit > 0) {
-      onExpenseLimitChange(limit);
-      setIsDialogOpen(false);
-      toast({
-        title: "Limite atualizado",
-        description: `Novo limite de gastos: R$ ${limit.toFixed(2)}`,
-      });
+      const success = await onExpenseLimitChange(limit);
+      if (success) {
+        setIsDialogOpen(false);
+        toast({
+          title: "Limite atualizado",
+          description: `Novo limite de gastos: R$ ${limit.toFixed(2)}`,
+        });
+      } else {
+        toast({
+          title: "Erro",
+          description: "Não foi possível atualizar o limite de gastos.",
+          variant: "destructive",
+        });
+      }
     } else {
       toast({
         title: "Erro",
