@@ -1,12 +1,12 @@
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Pen, DollarSign } from 'lucide-react';
+import { Pen } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 interface ExpenseDonutChartProps {
@@ -135,22 +135,14 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
                 ))}
               </Pie>
               <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} />
-              <Legend />
             </PieChart>
           </ResponsiveContainer>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold">
             {percentageUsed}%
           </div>
         </div>
-        <div className="mt-4 flex justify-between items-center text-sm text-muted-foreground">
-          <div className="flex items-center">
-            <DollarSign className="h-4 w-4 mr-1" />
-            <span>Total: R$ {totalExpenses.toFixed(2)}</span>
-          </div>
-          <div className="flex items-center">
-            <DollarSign className="h-4 w-4 mr-1" />
-            <span>Limite: R$ {expenseLimit.toFixed(2)}</span>
-          </div>
+        <div className="mt-4 text-center text-sm text-muted-foreground">
+          <span>R$ {totalExpenses.toFixed(2)} / R$ {expenseLimit.toFixed(2)}</span>
         </div>
       </CardContent>
     </Card>
