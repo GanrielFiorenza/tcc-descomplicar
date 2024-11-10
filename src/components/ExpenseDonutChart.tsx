@@ -8,12 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pen } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { useMonthlyTotalExpenses } from "@/hooks/useMonthlyTotalExpenses";
 
 interface ExpenseDonutChartProps {
-  expenses: Array<{ type: string; amount: number; }>;
-  availableMonths: Array<{ value: string; label: string; }>;
-  selectedMonth: string;
-  onMonthChange: (month: string) => void;
   expenseLimit: number;
   onExpenseLimitChange: (limit: number) => void;
 }
@@ -24,17 +21,22 @@ const COLORS = {
 };
 
 export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
-  expenses,
-  availableMonths,
-  selectedMonth,
-  onMonthChange,
   expenseLimit,
   onExpenseLimitChange
 }) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [newLimit, setNewLimit] = React.useState(expenseLimit.toString());
   const [animationPercentage, setAnimationPercentage] = useState(0);
+  const [selectedMonth, setSelectedMonth] = useState<string>('');
   const { toast } = useToast();
+
+  const { data: monthlyTotals = [], isLoading } = useMonthlyTotalExpenses();
+
+  useEffect(() => {
+    if (monthlyTotals.length > 0 && !selectedMonth) {
+      setSelectedMonth(monthlyTotals[0].value);
+    }
+  }, [monthlyTotals]);
 
   const handleSaveLimit = () => {
     const limit = parseFloat(newLimit);
@@ -54,13 +56,13 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
     }
   };
 
-  const totalExpenses = expenses.reduce((acc, curr) => acc + curr.amount, 0);
-  const percentageUsed = Math.round((totalExpenses / expenseLimit) * 100);
+  const currentMonthTotal = monthlyTotals.find(month => month.value === selectedMonth)?.total || 0;
+  const percentageUsed = Math.round((currentMonthTotal / expenseLimit) * 100);
   const isExceeded = percentageUsed > 100;
 
   const donutData = [
-    { name: 'Usado', value: totalExpenses },
-    { name: 'Restante', value: Math.max(0, expenseLimit - totalExpenses) }
+    { name: 'Usado', value: currentMonthTotal },
+    { name: 'Restante', value: Math.max(0, expenseLimit - currentMonthTotal) }
   ];
 
   useEffect(() => {
@@ -72,6 +74,16 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
     return () => clearTimeout(timer);
   }, [percentageUsed, selectedMonth]);
 
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center h-[400px]">
+          <p>Carregando dados...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -80,12 +92,12 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
           <CardDescription>Distribuição dos gastos por categoria</CardDescription>
         </div>
         <div className="flex items-center gap-2">
-          <Select value={selectedMonth} onValueChange={onMonthChange}>
+          <Select value={selectedMonth} onValueChange={setSelectedMonth}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Selecione o mês" />
             </SelectTrigger>
             <SelectContent>
-              {availableMonths.map((month) => (
+              {monthlyTotals.map((month) => (
                 <SelectItem key={month.value} value={month.value}>
                   {month.label}
                 </SelectItem>
@@ -136,8 +148,8 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
                 data={donutData}
                 cx="50%"
                 cy="50%"
-                startAngle={-270}
-                endAngle={90}
+                startAngle={90}
+                endAngle={-270}
                 innerRadius={60}
                 outerRadius={80}
                 fill="#8884d8"
@@ -158,7 +170,7 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
           </div>
         </div>
         <div className="mt-4 text-center text-sm text-muted-foreground">
-          <span>R$ {totalExpenses.toFixed(2)} / R$ {expenseLimit.toFixed(2)}</span>
+          <span>R$ {currentMonthTotal.toFixed(2)} / R$ {expenseLimit.toFixed(2)}</span>
         </div>
       </CardContent>
     </Card>
