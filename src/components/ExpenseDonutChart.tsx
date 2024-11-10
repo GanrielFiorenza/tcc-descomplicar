@@ -18,7 +18,10 @@ interface ExpenseDonutChartProps {
   onExpenseLimitChange: (limit: number) => void;
 }
 
-const COLORS = ['#8B5CF6', '#E2E8F0'];
+const COLORS = {
+  normal: ['#8B5CF6', '#E2E8F0'],
+  exceeded: ['#EF4444', '#E2E8F0']
+};
 
 export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
   expenses,
@@ -53,6 +56,7 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
 
   const totalExpenses = expenses.reduce((acc, curr) => acc + curr.amount, 0);
   const percentageUsed = Math.round((totalExpenses / expenseLimit) * 100);
+  const isExceeded = percentageUsed > 100;
 
   const donutData = [
     { name: 'Usado', value: totalExpenses },
@@ -63,7 +67,7 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
     setAnimationPercentage(0);
     const timer = setTimeout(() => {
       setAnimationPercentage(percentageUsed);
-    }, 500); // Increased from 100 to 500 to make the animation slower
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [percentageUsed, selectedMonth]);
@@ -143,7 +147,7 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
                 animationBegin={0}
               >
                 {donutData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                  <Cell key={`cell-${index}`} fill={isExceeded ? COLORS.exceeded[index] : COLORS.normal[index]} />
                 ))}
               </Pie>
               <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} />
