@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Pen } from 'lucide-react';
+import { Pen, DollarSign } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 interface ExpenseDonutChartProps {
@@ -18,7 +18,7 @@ interface ExpenseDonutChartProps {
   onExpenseLimitChange: (limit: number) => void;
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = ['#8B5CF6', '#A78BFA', '#C4B5FD', '#DDD6FE'];
 
 export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
   expenses,
@@ -56,6 +56,9 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
     { name: 'Impostos', value: expenses.filter(e => e.type === 'Impostos').reduce((acc, curr) => acc + curr.amount, 0) },
     { name: 'Outros', value: expenses.filter(e => !['Manutenção', 'Combustível', 'Impostos'].includes(e.type)).reduce((acc, curr) => acc + curr.amount, 0) },
   ].filter(item => item.value > 0);
+
+  const totalExpenses = donutData.reduce((acc, curr) => acc + curr.value, 0);
+  const percentageUsed = Math.round((totalExpenses / expenseLimit) * 100);
 
   return (
     <Card>
@@ -114,26 +117,41 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={donutData}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={80}
-              fill="#8884d8"
-              paddingAngle={5}
-              dataKey="value"
-            >
-              {donutData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+        <div className="relative">
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={donutData}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={80}
+                fill="#8884d8"
+                paddingAngle={5}
+                dataKey="value"
+              >
+                {donutData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold">
+            {percentageUsed}%
+          </div>
+        </div>
+        <div className="mt-4 flex justify-between items-center text-sm text-muted-foreground">
+          <div className="flex items-center">
+            <DollarSign className="h-4 w-4 mr-1" />
+            <span>Total: R$ {totalExpenses.toFixed(2)}</span>
+          </div>
+          <div className="flex items-center">
+            <DollarSign className="h-4 w-4 mr-1" />
+            <span>Limite: R$ {expenseLimit.toFixed(2)}</span>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
