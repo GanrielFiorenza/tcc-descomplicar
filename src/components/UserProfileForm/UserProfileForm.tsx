@@ -21,13 +21,15 @@ interface UserProfileFormProps {
   setUserData: React.Dispatch<React.SetStateAction<UserData>>;
   forceEditMode?: boolean;
   onEditModeChange?: (editMode: boolean) => void;
+  onDataLoaded?: () => void;
 }
 
 const UserProfileForm: React.FC<UserProfileFormProps> = ({ 
   userData, 
   setUserData, 
   forceEditMode,
-  onEditModeChange 
+  onEditModeChange,
+  onDataLoaded 
 }) => {
   const [editMode, setEditMode] = useState(false);
   const [password, setPassword] = useState('');
@@ -70,12 +72,13 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
             birthDate: data.birthDate,
             gender: data.gender
           });
+          onDataLoaded?.();
         }
       }
     };
 
     fetchUserData();
-  }, [setUserData]);
+  }, [setUserData, onDataLoaded]);
 
   const handleInputChange = (field: keyof UserData, value: string) => {
     setUserData(prev => ({ ...prev, [field]: value }));

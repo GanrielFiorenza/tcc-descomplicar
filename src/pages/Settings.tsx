@@ -14,20 +14,26 @@ const Settings = () => {
   });
   const [showEmptyDataAlert, setShowEmptyDataAlert] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   useEffect(() => {
-    // Only check required fields (excluding password) on initial load
-    if (!editMode) {
+    // Only check required fields after data is loaded and not in edit mode
+    if (isDataLoaded && !editMode) {
       const hasEmptyRequiredFields = !userData.username?.trim() || 
                                    !userData.birthDate?.trim() || 
                                    !userData.gender?.trim();
       setShowEmptyDataAlert(hasEmptyRequiredFields);
     }
-  }, [userData, editMode]);
+  }, [userData, editMode, isDataLoaded]);
 
   const handleEmptyDataConfirm = () => {
     setShowEmptyDataAlert(false);
     setEditMode(true);
+  };
+
+  // This function will be called after data is loaded from Firebase
+  const handleDataLoaded = () => {
+    setIsDataLoaded(true);
   };
 
   return (
@@ -46,6 +52,7 @@ const Settings = () => {
             setUserData={setUserData}
             forceEditMode={editMode}
             onEditModeChange={setEditMode}
+            onDataLoaded={handleDataLoaded}
           />
         </CardContent>
       </Card>
