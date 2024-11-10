@@ -66,6 +66,7 @@ const Dashboard = () => {
     { date: '2023-10-05', description: 'Troca de pneus' },
   ];
 
+  
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
@@ -93,7 +94,7 @@ const Dashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-2xl font-bold flex items-center">
-              <Bell className="mr-2 h-6 w-6 text-blue-500" />
+              <AnimatedBellIcon className="mr-2 h-6 w-6 text-blue-500" />
               Próximas Manutenções
             </CardTitle>
             <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
@@ -149,7 +150,7 @@ const Dashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-2xl font-bold flex items-center">
-              <Bell className="mr-2 h-6 w-6 text-green-500" />
+              <AnimatedBellIcon className="mr-2 h-6 w-6 text-green-500" />
               Últimas Manutenções
             </CardTitle>
           </CardHeader>
