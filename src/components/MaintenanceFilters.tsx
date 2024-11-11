@@ -15,7 +15,7 @@ interface MaintenanceFiltersProps {
 }
 
 const serviceTypeOptions = [
-  { value: 'all', label: 'Todos' },
+  { value: 'all', label: 'Selecione o tipo' },
   { value: 'oil_change', label: 'Troca de Óleo' },
   { value: 'brake_replacement', label: 'Troca de Freios' },
   { value: 'tire_rotation', label: 'Rodízio de Pneus' },
@@ -40,7 +40,7 @@ export const MaintenanceFilters: React.FC<MaintenanceFiltersProps> = ({
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
-            placeholder="Buscar por tipo de serviço ou observações"
+            placeholder="Buscar pelas observações"
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             className="pl-10"
