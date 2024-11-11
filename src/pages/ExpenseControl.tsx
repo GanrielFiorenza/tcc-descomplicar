@@ -5,7 +5,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus } from 'lucide-react';
 import { ExpenseTable } from '@/components/ExpenseTable';
 import { ExpenseChart } from '@/components/ExpenseChart';
-import { VehicleFilter } from '@/components/VehicleFilter';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ExpenseForm } from '@/components/ExpenseForm';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -138,12 +137,6 @@ const ExpenseControl = () => {
           </DialogContent>
         </Dialog>
       </div>
-      
-      <VehicleFilter
-        vehicles={vehicles}
-        selectedVehicle={selectedVehicle}
-        onSelectVehicle={setSelectedVehicle}
-      />
       
       <ExpenseChart chartData={chartData} />
       
