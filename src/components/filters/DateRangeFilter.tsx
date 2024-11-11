@@ -36,13 +36,15 @@ export const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
 
   return (
     <div className="flex gap-2">
-      <Select defaultValue="all" value={dateFilter} onValueChange={onDateFilterChange}>
+      <Select value={dateFilter} onValueChange={onDateFilterChange}>
         <SelectTrigger>
           <SelectValue>{selectedOption.label}</SelectValue>
         </SelectTrigger>
         <SelectContent>
           {dateFilterOptions.map((option) => (
-            <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
           ))}
         </SelectContent>
       </Select>
