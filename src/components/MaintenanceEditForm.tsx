@@ -76,7 +76,12 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({
             <Calendar
               mode="single"
               selected={editedMaintenance.date ? new Date(editedMaintenance.date) : undefined}
-              onSelect={(date) => setEditedMaintenance({...editedMaintenance, date: date ? format(date, 'yyyy-MM-dd') : ''})}
+              onSelect={(date) => {
+                if (date) {
+                  const formattedDate = format(date, 'yyyy-MM-dd');
+                  setEditedMaintenance({...editedMaintenance, date: formattedDate});
+                }
+              }}
               initialFocus
             />
           </PopoverContent>

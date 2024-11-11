@@ -105,12 +105,18 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
               <Calendar
                 mode="single"
                 selected={newMaintenance.date ? new Date(newMaintenance.date) : undefined}
-                onSelect={(date) => setNewMaintenance({...newMaintenance, date: date ? format(date, 'yyyy-MM-dd') : ''})}
+                onSelect={(date) => {
+                  if (date) {
+                    const formattedDate = format(date, 'yyyy-MM-dd');
+                    setNewMaintenance({...newMaintenance, date: formattedDate});
+                  }
+                }}
                 initialFocus
               />
             </PopoverContent>
           </Popover>
         </div>
+
         <div className="grid grid-cols-4 items-center gap-4">
           <Wrench className="h-4 w-4 text-green-500" />
           <Select onValueChange={(value) => setNewMaintenance({...newMaintenance, serviceType: value})}>
