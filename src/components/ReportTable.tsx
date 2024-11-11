@@ -1,5 +1,7 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface ReportTableProps {
   reportType: string;
@@ -11,7 +13,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({ reportType, reportData
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Mês</TableHead>
+          <TableHead>Data</TableHead>
           <TableHead>Tipo de Gasto</TableHead>
           <TableHead>Valor</TableHead>
           <TableHead>Descrição</TableHead>
@@ -20,7 +22,9 @@ export const ReportTable: React.FC<ReportTableProps> = ({ reportType, reportData
       <TableBody>
         {reportData.map((item, index) => (
           <TableRow key={index}>
-            <TableCell>{item.month}</TableCell>
+            <TableCell>
+              {format(new Date(item.date), 'dd/MM/yyyy', { locale: ptBR })}
+            </TableCell>
             <TableCell>{item.type}</TableCell>
             <TableCell>R$ {item.amount?.toFixed(2) || '0.00'}</TableCell>
             <TableCell>{item.description}</TableCell>
