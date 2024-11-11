@@ -14,6 +14,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getUserMaintenances } from '../services/maintenanceService';
 import { format } from 'date-fns';
 import { serviceTypeTranslations } from '../utils/translations';
+import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts';
 
 const Dashboard = () => {
   const [newMaintenanceDate, setNewMaintenanceDate] = useState('');
