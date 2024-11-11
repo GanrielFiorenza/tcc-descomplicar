@@ -1,7 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileText, Download, Printer, ChartBar } from 'lucide-react';
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
@@ -13,22 +12,49 @@ import { ReportTable } from '@/components/ReportTable';
 import { useQuery } from '@tanstack/react-query';
 import { getReportData } from '@/services/reportService';
 import { ProcessedReportData, processReportData, filterReportData } from '../utils/reportDataProcessor';
+import { ReportFilters } from '@/components/ReportFilters';
+import { getUserVehicles } from '@/services/vehicleService';
 
 const CustomReports = () => {
   const [reportType, setReportType] = useState('all');
   const [selectedReportType, setSelectedReportType] = useState('all');
+  const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const { toast } = useToast();
-  const chartRef = useRef<HTMLDivElement>(null);
+  const chartRef = React.useRef<HTMLDivElement>(null);
 
-  const { data: reportData, isLoading, error } = useQuery({
+  const { data: reportData, isLoading: isLoadingReports } = useQuery({
     queryKey: ['reports'],
     queryFn: getReportData,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+  });
+
+  const { data: vehicles = [], isLoading: isLoadingVehicles } = useQuery({
+    queryKey: ['vehicles'],
+    queryFn: getUserVehicles,
+    staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
 
   const getFilteredData = () => {
-    const processedData = processReportData(reportData);
+    if (!reportData) return [];
+    let processedData = processReportData(reportData);
+    
+    // Apply vehicle filter
+    if (selectedVehicle) {
+      processedData = processedData.filter(item => item.vehicleId === selectedVehicle);
+    }
+
+    // Apply date filter
+    if (startDate && endDate) {
+      processedData = processedData.filter(item => {
+        const itemDate = new Date(item.date);
+        return itemDate >= startDate && itemDate <= endDate;
+      });
+    }
+
     return filterReportData(processedData, reportType);
   };
 
@@ -36,13 +62,13 @@ const CustomReports = () => {
     setSelectedReportType(reportType);
     toast({
       title: "Relatório Gerado",
-      description: `O relatório foi gerado com sucesso.`,
+      description: "O relatório foi gerado com sucesso.",
     });
   };
 
   const exportToPDF = async () => {
     const doc = new jsPDF();
-    doc.text(`Relatório de Gastos`, 14, 15);
+    doc.text("Relatório de Gastos", 14, 15);
 
     if (chartRef.current) {
       const canvas = await html2canvas(chartRef.current);
@@ -88,7 +114,7 @@ const CustomReports = () => {
     });
   };
 
-  if (isLoading) {
+  if (isLoadingReports || isLoadingVehicles) {
     return <div>Carregando...</div>;
   }
 
@@ -97,6 +123,16 @@ const CustomReports = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Relatórios Personalizados</h1>
       </div>
+
+      <ReportFilters
+        vehicles={vehicles}
+        selectedVehicle={selectedVehicle}
+        onSelectVehicle={setSelectedVehicle}
+        onDateFilterChange={(start, end) => {
+          setStartDate(start);
+          setEndDate(end);
+        }}
+      />
 
       <Card className="mb-6">
         <CardHeader>
