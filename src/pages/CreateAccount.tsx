@@ -7,7 +7,7 @@ import CreateAccountForm from "@/components/CreateAccountForm";
 import { useState } from "react";
 import { Car, Shield } from "lucide-react";
 import { auth, db } from "@/config/firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, AuthError } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import {
   AlertDialog,
@@ -29,6 +29,7 @@ const CreateAccount = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showEmailInUseDialog, setShowEmailInUseDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -72,18 +73,11 @@ const CreateAccount = () => {
         
         localStorage.setItem('isLoggedIn', 'true');
         
-        toast({
-          title: "Conta criada com sucesso!",
-          description: "Você será redirecionado para o dashboard.",
-          duration: 3000,
-        });
-        
-        navigate('/dashboard');
-      } catch (error) {
-        const firebaseError = error as AuthError;
+        setShowSuccessDialog(true);
+      } catch (error: any) {
         let errorMessage = "Erro ao criar conta. Tente novamente.";
         
-        if (firebaseError.code === 'auth/email-already-in-use') {
+        if (error.code === 'auth/email-already-in-use') {
           setErrors(prev => ({
             ...prev,
             email: "Este e-mail já está cadastrado. Por favor, utilize outro e-mail ou faça login."
@@ -102,6 +96,11 @@ const CreateAccount = () => {
         setIsLoading(false);
       }
     }
+  };
+
+  const handleSuccessConfirm = () => {
+    setShowSuccessDialog(false);
+    navigate('/dashboard');
   };
 
   return (
@@ -165,6 +164,22 @@ const CreateAccount = () => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction onClick={() => setShowEmailInUseDialog(false)}>
+              OK
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Conta criada com sucesso</AlertDialogTitle>
+            <AlertDialogDescription>
+              Sua conta foi criada com sucesso! Clique em OK para continuar.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={handleSuccessConfirm}>
               OK
             </AlertDialogAction>
           </AlertDialogFooter>
