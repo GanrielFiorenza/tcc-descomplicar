@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileText, Download, Printer, ChartBar } from 'lucide-react';
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
@@ -18,7 +17,6 @@ import { getUserVehicles, Vehicle } from '@/services/vehicleService';
 
 const CustomReports = () => {
   const [reportType, setReportType] = useState('all');
-  const [selectedReportType, setSelectedReportType] = useState('all');
   const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -48,12 +46,10 @@ const CustomReports = () => {
     if (!reportData) return [];
     let processedData = processReportData(reportData);
     
-    // Apply vehicle filter
     if (selectedVehicle) {
       processedData = processedData.filter(item => item.vehicleId === selectedVehicle);
     }
 
-    // Apply date filter
     if (startDate && endDate) {
       processedData = processedData.filter(item => {
         const itemDate = new Date(item.date);
@@ -62,14 +58,6 @@ const CustomReports = () => {
     }
 
     return filterReportData(processedData, reportType);
-  };
-
-  const generateReport = () => {
-    setSelectedReportType(reportType);
-    toast({
-      title: "Relatório Gerado",
-      description: "O relatório foi gerado com sucesso.",
-    });
   };
 
   const exportToPDF = async () => {
@@ -138,37 +126,23 @@ const CustomReports = () => {
           setStartDate(start);
           setEndDate(end);
         }}
+        reportType={reportType}
+        onReportTypeChange={setReportType}
       />
 
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center">
             <ChartBar className="mr-2" />
-            Gerar Relatório
+            Relatório
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex space-x-4 mb-4">
-            <Select value={reportType} onValueChange={setReportType}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Tipo de Relatório" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os Gastos</SelectItem>
-                <SelectItem value="maintenance">Gastos com Manutenção</SelectItem>
-                <SelectItem value="fuel">Gastos com Combustível</SelectItem>
-                <SelectItem value="taxes">Gastos com Impostos</SelectItem>
-                <SelectItem value="others">Outros Gastos</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button onClick={generateReport}>Gerar Relatório</Button>
-          </div>
-
           <div className="space-y-4">
             <div ref={chartRef}>
-              <ReportChart reportType={selectedReportType} reportData={getFilteredData()} />
+              <ReportChart reportType={reportType} reportData={getFilteredData()} />
             </div>
-            <ReportTable reportType={selectedReportType} reportData={getFilteredData()} />
+            <ReportTable reportType={reportType} reportData={getFilteredData()} />
             <div className="flex justify-end space-x-2">
               <Button onClick={exportToPDF} variant="outline">
                 <Download className="mr-2 h-4 w-4" />

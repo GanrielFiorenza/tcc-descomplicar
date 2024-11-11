@@ -9,6 +9,8 @@ interface ReportFiltersProps {
   selectedVehicle: string | null;
   onSelectVehicle: (vehicleId: string | null) => void;
   onDateFilterChange: (startDate: Date | null, endDate: Date | null) => void;
+  reportType: string;
+  onReportTypeChange: (type: string) => void;
 }
 
 export const ReportFilters: React.FC<ReportFiltersProps> = ({
@@ -16,6 +18,8 @@ export const ReportFilters: React.FC<ReportFiltersProps> = ({
   selectedVehicle,
   onSelectVehicle,
   onDateFilterChange,
+  reportType,
+  onReportTypeChange,
 }) => {
   const [dateFilter, setDateFilter] = useState('all');
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -80,7 +84,7 @@ export const ReportFilters: React.FC<ReportFiltersProps> = ({
         <CardTitle>Filtros</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <Select onValueChange={(value) => onSelectVehicle(value === 'all' ? null : value)}>
             <SelectTrigger>
               <SelectValue placeholder="Selecione o veículo" />
@@ -90,6 +94,19 @@ export const ReportFilters: React.FC<ReportFiltersProps> = ({
               {vehicles.map(vehicle => (
                 <SelectItem key={vehicle.id} value={vehicle.id}>{vehicle.name}</SelectItem>
               ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={reportType} onValueChange={onReportTypeChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Tipo de Relatório" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os Gastos</SelectItem>
+              <SelectItem value="maintenance">Gastos com Manutenção</SelectItem>
+              <SelectItem value="fuel">Gastos com Combustível</SelectItem>
+              <SelectItem value="taxes">Gastos com Impostos</SelectItem>
+              <SelectItem value="others">Outros Gastos</SelectItem>
             </SelectContent>
           </Select>
 
