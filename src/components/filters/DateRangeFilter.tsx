@@ -32,19 +32,15 @@ export const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
   onStartDateSelect,
   onEndDateSelect,
 }) => {
-  const selectedOption = dateFilterOptions.find(option => option.value === dateFilter) || dateFilterOptions[0];
-
   return (
     <div className="flex gap-2">
       <Select value={dateFilter} onValueChange={onDateFilterChange}>
         <SelectTrigger>
-          <SelectValue>{selectedOption.label}</SelectValue>
+          <SelectValue placeholder="Período" />
         </SelectTrigger>
         <SelectContent>
           {dateFilterOptions.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
+            <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
           ))}
         </SelectContent>
       </Select>
