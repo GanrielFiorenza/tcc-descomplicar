@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Bell, CirclePlus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -11,6 +10,10 @@ import MaintenanceList from '../components/MaintenanceList';
 import { useMonthlyExpenses } from '@/hooks/useMonthlyExpenses';
 import { ExpenseDonutChart } from '../components/ExpenseDonutChart';
 import { useExpenseLimit } from '@/hooks/useExpenseLimit';
+import { useQuery } from '@tanstack/react-query';
+import { getUserMaintenances } from '../services/maintenanceService';
+import { format } from 'date-fns';
+import { serviceTypeTranslations } from '../utils/translations';
 
 const Dashboard = () => {
   const [newMaintenanceDate, setNewMaintenanceDate] = useState('');
@@ -25,6 +28,21 @@ const Dashboard = () => {
   const { toast } = useToast();
   const { data: monthlyExpensesData, isLoading: isLoadingExpenses } = useMonthlyExpenses();
   const { expenseLimit, updateExpenseLimit, isLoading: isLoadingLimit } = useExpenseLimit();
+
+  // Query para buscar as últimas manutenções
+  const { data: maintenances, isLoading: isLoadingMaintenances } = useQuery({
+    queryKey: ['recent-maintenances'],
+    queryFn: async () => {
+      const allMaintenances = await getUserMaintenances();
+      return allMaintenances
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, 5);
+    },
+  });
+
+  if (isLoadingExpenses || isLoadingLimit || isLoadingMaintenances) {
+    return <div>Carregando...</div>;
+  }
 
   const handleAddMaintenance = () => {
     if (newMaintenanceDate && newMaintenanceDescription) {
@@ -61,10 +79,6 @@ const Dashboard = () => {
     });
   };
 
-  if (isLoadingLimit || isLoadingExpenses) {
-    return <div>Carregando...</div>;
-  }
-
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
@@ -97,72 +111,20 @@ const Dashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-2xl font-bold flex items-center">
-              <Bell className="mr-2 h-6 w-6 text-blue-500" />
-              Próximas Manutenções
-            </CardTitle>
-            <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <CirclePlus className="h-6 w-6 text-blue-500 hover:text-blue-600 transition-colors" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-80">
-                <div className="grid gap-4">
-                  <div className="space-y-2">
-                    <h4 className="font-medium leading-none">Agendar Manutenção</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Defina a data e descrição da próxima manutenção.
-                    </p>
-                  </div>
-                  <div className="grid gap-2">
-                    <div className="grid grid-cols-3 items-center gap-4">
-                      <Label htmlFor="date">Data</Label>
-                      <Input
-                        id="date"
-                        type="date"
-                        className="col-span-2"
-                        value={newMaintenanceDate}
-                        onChange={(e) => setNewMaintenanceDate(e.target.value)}
-                      />
-                    </div>
-                    <div className="grid grid-cols-3 items-center gap-4">
-                      <Label htmlFor="description">Descrição</Label>
-                      <Input
-                        id="description"
-                        className="col-span-2"
-                        value={newMaintenanceDescription}
-                        onChange={(e) => setNewMaintenanceDescription(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <Button onClick={handleAddMaintenance}>Agendar</Button>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </CardHeader>
-          <CardContent>
-            <MaintenanceList
-              maintenanceList={maintenanceList}
-              checkedMaintenances={checkedMaintenances}
-              onCheck={handleCheckMaintenance}
-              onConfirm={handleConfirmMaintenance}
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-2xl font-bold flex items-center">
               <Bell className="mr-2 h-6 w-6 text-green-500" />
               Últimas Manutenções
             </CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
-              {maintenanceList.map((maintenance, index) => (
+              {maintenances && maintenances.map((maintenance, index) => (
                 <li key={index} className="flex items-center">
                   <Bell className="mr-2 h-4 w-4 text-green-500" />
-                  <span>{maintenance.date} - {maintenance.description}</span>
+                  <span>
+                    {format(new Date(maintenance.date), 'dd/MM/yyyy')} - {' '}
+                    {serviceTypeTranslations[maintenance.serviceType] || maintenance.serviceType}: {' '}
+                    {maintenance.observations}
+                  </span>
                 </li>
               ))}
             </ul>
