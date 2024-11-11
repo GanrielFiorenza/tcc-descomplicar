@@ -20,6 +20,8 @@ const MaintenanceHistory: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -45,7 +47,12 @@ const MaintenanceHistory: React.FC = () => {
     const matchesType = filterType === 'all' || maintenance.serviceType === filterType;
     const matchesVehicle = !selectedVehicle || maintenance.vehicleId === selectedVehicle;
     
-    return matchesSearch && matchesType && matchesVehicle;
+    // Date filtering
+    const maintenanceDate = new Date(maintenance.date);
+    const matchesDateRange = !startDate || !endDate || 
+      (maintenanceDate >= startDate && maintenanceDate <= endDate);
+
+    return matchesSearch && matchesType && matchesVehicle && matchesDateRange;
   });
 
   const addMaintenanceMutation = useMutation({
@@ -111,10 +118,13 @@ const MaintenanceHistory: React.FC = () => {
     deleteMaintenanceMutation.mutate(id);
   };
 
-  const handleEditMaintenance = (editedMaintenance: Maintenance) => {
-    if (editedMaintenance.userId) {
-      updateMaintenanceMutation.mutate(editedMaintenance as any);
-    }
+  const handleEditMaintenance = (maintenance: Maintenance) => {
+    updateMaintenanceMutation.mutate(maintenance);
+  };
+
+  const handleDateFilterChange = (start: Date | null, end: Date | null) => {
+    setStartDate(start);
+    setEndDate(end);
   };
 
   return (
@@ -131,6 +141,7 @@ const MaintenanceHistory: React.FC = () => {
         onSearchChange={setSearchTerm}
         filterType={filterType}
         onFilterTypeChange={setFilterType}
+        onDateFilterChange={handleDateFilterChange}
       />
 
       <Card>

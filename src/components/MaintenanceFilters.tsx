@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { CalendarIcon } from "lucide-react";
+import { format, subMonths, subYears, startOfDay } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface MaintenanceFiltersProps {
   vehicles: { id: string; name: string }[];
@@ -12,6 +18,7 @@ interface MaintenanceFiltersProps {
   onSearchChange: (value: string) => void;
   filterType: string;
   onFilterTypeChange: (value: string) => void;
+  onDateFilterChange: (startDate: Date | null, endDate: Date | null) => void;
 }
 
 const serviceTypeOptions = [
@@ -22,6 +29,14 @@ const serviceTypeOptions = [
   { value: 'other', label: 'Outro' },
 ];
 
+const dateFilterOptions = [
+  { value: 'all', label: 'Todos os registros' },
+  { value: '1year', label: 'Último ano' },
+  { value: '6months', label: 'Últimos 6 meses' },
+  { value: '1month', label: 'Último mês' },
+  { value: 'custom', label: 'Personalizado' },
+];
+
 export const MaintenanceFilters: React.FC<MaintenanceFiltersProps> = ({
   vehicles,
   selectedVehicle,
@@ -30,7 +45,67 @@ export const MaintenanceFilters: React.FC<MaintenanceFiltersProps> = ({
   onSearchChange,
   filterType,
   onFilterTypeChange,
+  onDateFilterChange,
 }) => {
+  const [dateFilter, setDateFilter] = useState('all');
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
+  const handleDateFilterChange = (value: string) => {
+    setDateFilter(value);
+    let newStartDate: Date | null = null;
+    let newEndDate: Date | null = null;
+
+    const today = new Date();
+    
+    switch (value) {
+      case '1year':
+        newStartDate = subYears(today, 1);
+        newEndDate = today;
+        break;
+      case '6months':
+        newStartDate = subMonths(today, 6);
+        newEndDate = today;
+        break;
+      case '1month':
+        newStartDate = subMonths(today, 1);
+        newEndDate = today;
+        break;
+      case 'custom':
+        // Keep current custom dates if they exist
+        newStartDate = startDate;
+        newEndDate = endDate;
+        break;
+      default:
+        // 'all' case - reset dates
+        newStartDate = null;
+        newEndDate = null;
+    }
+
+    setStartDate(newStartDate);
+    setEndDate(newEndDate);
+    onDateFilterChange(newStartDate, newEndDate);
+  };
+
+  const handleStartDateSelect = (date: Date | undefined) => {
+    if (date) {
+      const newStartDate = startOfDay(date);
+      setStartDate(newStartDate);
+      if (endDate && endDate < newStartDate) {
+        setEndDate(null);
+      }
+      onDateFilterChange(newStartDate, endDate);
+    }
+  };
+
+  const handleEndDateSelect = (date: Date | undefined) => {
+    if (date) {
+      const newEndDate = startOfDay(date);
+      setEndDate(newEndDate);
+      onDateFilterChange(startDate, newEndDate);
+    }
+  };
+
   return (
     <Card className="mb-6">
       <CardHeader>
@@ -70,6 +145,69 @@ export const MaintenanceFilters: React.FC<MaintenanceFiltersProps> = ({
               ))}
             </SelectContent>
           </Select>
+
+          <Select value={dateFilter} onValueChange={handleDateFilterChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Período" />
+            </SelectTrigger>
+            <SelectContent>
+              {dateFilterOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {dateFilter === 'custom' && (
+            <div className="flex gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "justify-start text-left font-normal",
+                      !startDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {startDate ? format(startDate, "dd/MM/yyyy") : <span>Data inicial</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={handleStartDateSelect}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "justify-start text-left font-normal",
+                      !endDate && "text-muted-foreground"
+                    )}
+                    disabled={!startDate}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {endDate ? format(endDate, "dd/MM/yyyy") : <span>Data final</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={endDate}
+                    onSelect={handleEndDateSelect}
+                    disabled={(date) => date < (startDate || new Date())}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
