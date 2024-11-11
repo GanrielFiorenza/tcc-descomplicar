@@ -10,6 +10,7 @@ import { ExpenseForm } from '@/components/ExpenseForm';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { addExpense, getUserExpenses, updateExpense, deleteExpense, Expense } from '@/services/expenseService';
 import { getUserVehicles, Vehicle } from '@/services/vehicleService';
+import { ExpenseFilters } from '@/components/ExpenseFilters';
 
 const formatVehicleName = (vehicle: Vehicle) => {
   return `${vehicle.brand} ${vehicle.model} (${vehicle.plate})`;
@@ -17,6 +18,10 @@ const formatVehicleName = (vehicle: Vehicle) => {
 
 const ExpenseControl = () => {
   const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -104,9 +109,17 @@ const ExpenseControl = () => {
     deleteExpenseMutation.mutate(expenseId);
   };
 
-  const filteredExpenses = selectedVehicle
-    ? expenses.filter(expense => expense.vehicleId === selectedVehicle)
-    : expenses;
+  const filteredExpenses = expenses.filter(expense => {
+    const matchesSearch = expense.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesVehicle = !selectedVehicle || expense.vehicleId === selectedVehicle;
+    const matchesCategory = selectedCategory === 'all' || expense.category === selectedCategory;
+    
+    const expenseDate = new Date(expense.date);
+    const matchesDateRange = !startDate || !endDate || 
+      (expenseDate >= startDate && expenseDate <= endDate);
+
+    return matchesSearch && matchesVehicle && matchesCategory && matchesDateRange;
+  });
 
   const chartData = filteredExpenses.reduce((acc, expense) => {
     const existingCategory = acc.find(item => item.category === expense.category);
@@ -137,6 +150,20 @@ const ExpenseControl = () => {
           </DialogContent>
         </Dialog>
       </div>
+
+      <ExpenseFilters
+        vehicles={vehicles}
+        selectedVehicle={selectedVehicle}
+        onSelectVehicle={setSelectedVehicle}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        onDateFilterChange={(start, end) => {
+          setStartDate(start);
+          setEndDate(end);
+        }}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+      />
       
       <ExpenseChart chartData={chartData} />
       
