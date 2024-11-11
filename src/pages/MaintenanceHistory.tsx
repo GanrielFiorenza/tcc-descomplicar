@@ -12,6 +12,7 @@ import { Maintenance } from '../types/maintenance';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { addMaintenance, getUserMaintenances, updateMaintenance, deleteMaintenance } from '@/services/maintenanceService';
 import { getUserVehicles, Vehicle } from '@/services/vehicleService';
+import { VehicleFilter } from '../components/VehicleFilter';
 
 const serviceTypeOptions = [
   { value: 'all', label: 'Todos' },
@@ -28,6 +29,7 @@ const formatVehicleName = (vehicle: Vehicle) => {
 const MaintenanceHistory: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
+  const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
   const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -46,6 +48,16 @@ const MaintenanceHistory: React.FC = () => {
   const { data: maintenances = [] } = useQuery({
     queryKey: ['maintenances'],
     queryFn: getUserMaintenances,
+  });
+
+  // Filter maintenances based on selected vehicle and other filters
+  const filteredMaintenances = maintenances.filter(maintenance => {
+    const matchesSearch = maintenance.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         maintenance.observations.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = filterType === 'all' || maintenance.serviceType === filterType;
+    const matchesVehicle = !selectedVehicle || maintenance.vehicleId === selectedVehicle;
+    
+    return matchesSearch && matchesType && matchesVehicle;
   });
 
   const addMaintenanceMutation = useMutation({
@@ -103,12 +115,6 @@ const MaintenanceHistory: React.FC = () => {
     },
   });
 
-  const filteredMaintenances = maintenances.filter(maintenance =>
-    (maintenance.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     maintenance.observations.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (filterType === 'all' || maintenance.serviceType === filterType)
-  );
-
   const handleAddMaintenance = (newMaintenance: Omit<Maintenance, 'id' | 'userId'>) => {
     addMaintenanceMutation.mutate(newMaintenance);
   };
@@ -129,6 +135,12 @@ const MaintenanceHistory: React.FC = () => {
         Histórico de Manutenção
       </h1>
       
+      <VehicleFilter
+        vehicles={vehicles}
+        selectedVehicle={selectedVehicle}
+        onSelectVehicle={setSelectedVehicle}
+      />
+
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
