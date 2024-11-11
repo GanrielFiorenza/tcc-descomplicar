@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search } from 'lucide-react';
+import { MaintenancePeriodFilter } from './MaintenancePeriodFilter';
 
 interface MaintenanceFiltersProps {
   vehicles: { id: string; name: string }[];
@@ -12,6 +13,12 @@ interface MaintenanceFiltersProps {
   onSearchChange: (value: string) => void;
   filterType: string;
   onFilterTypeChange: (value: string) => void;
+  period: string;
+  onPeriodChange: (period: string) => void;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+  onStartDateChange: (date: Date | undefined) => void;
+  onEndDateChange: (date: Date | undefined) => void;
 }
 
 const serviceTypeOptions = [
@@ -30,6 +37,12 @@ export const MaintenanceFilters: React.FC<MaintenanceFiltersProps> = ({
   onSearchChange,
   filterType,
   onFilterTypeChange,
+  period,
+  onPeriodChange,
+  startDate,
+  endDate,
+  onStartDateChange,
+  onEndDateChange,
 }) => {
   return (
     <Card className="mb-6">
@@ -71,6 +84,15 @@ export const MaintenanceFilters: React.FC<MaintenanceFiltersProps> = ({
             </SelectContent>
           </Select>
         </div>
+
+        <MaintenancePeriodFilter
+          period={period}
+          onPeriodChange={onPeriodChange}
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={onStartDateChange}
+          onEndDateChange={onEndDateChange}
+        />
       </CardContent>
     </Card>
   );

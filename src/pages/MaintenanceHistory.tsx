@@ -127,15 +127,6 @@ const MaintenanceHistory: React.FC = () => {
         Histórico de Manutenção
       </h1>
       
-      <MaintenancePeriodFilter
-        period={period}
-        onPeriodChange={setPeriod}
-        startDate={startDate}
-        endDate={endDate}
-        onStartDateChange={setStartDate}
-        onEndDateChange={setEndDate}
-      />
-      
       <MaintenanceFilters
         vehicles={vehicles}
         selectedVehicle={selectedVehicle}
@@ -144,6 +135,12 @@ const MaintenanceHistory: React.FC = () => {
         onSearchChange={setSearchTerm}
         filterType={filterType}
         onFilterTypeChange={setFilterType}
+        period={period}
+        onPeriodChange={setPeriod}
+        startDate={startDate}
+        endDate={endDate}
+        onStartDateChange={setStartDate}
+        onEndDateChange={setEndDate}
       />
 
       <Card>
