@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Printer, ChartBar } from 'lucide-react';
+import { ChartBar } from 'lucide-react';
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
@@ -9,11 +9,13 @@ import html2canvas from 'html2canvas';
 import { useToast } from "@/hooks/use-toast";
 import { ReportChart } from '@/components/ReportChart';
 import { ReportTable } from '@/components/ReportTable';
+import { ReportFilters } from '@/components/filters/ReportFilters';
+import { ReportTypeSelector } from '@/components/reports/ReportTypeSelector';
+import { ReportActions } from '@/components/reports/ReportActions';
 import { useQuery } from '@tanstack/react-query';
 import { getReportData } from '@/services/reportService';
-import { ProcessedReportData, processReportData, filterReportData } from '../utils/reportDataProcessor';
-import { ReportFilters } from '@/components/filters/ReportFilters';
-import { subMonths, subYears, isWithinInterval, parseISO, startOfDay } from 'date-fns';
+import { processReportData, filterReportData } from '../utils/reportDataProcessor';
+import { subMonths, subYears, isWithinInterval, parseISO } from 'date-fns';
 
 const CustomReports = () => {
   const [reportType, setReportType] = useState('all');
@@ -25,7 +27,7 @@ const CustomReports = () => {
   const { toast } = useToast();
   const chartRef = React.useRef<HTMLDivElement>(null);
 
-  const { data: reportData, isLoading, error } = useQuery({
+  const { data: reportData, isLoading } = useQuery({
     queryKey: ['reports'],
     queryFn: getReportData,
     staleTime: 1000 * 60 * 5,
@@ -168,18 +170,10 @@ const CustomReports = () => {
               onEndDateSelect={(date) => setEndDate(date || null)}
             />
 
-            <Select value={reportType} onValueChange={setReportType}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Tipo de Relatório" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os Gastos</SelectItem>
-                <SelectItem value="maintenance">Gastos com Manutenção</SelectItem>
-                <SelectItem value="fuel">Gastos com Combustível</SelectItem>
-                <SelectItem value="taxes">Gastos com Impostos</SelectItem>
-                <SelectItem value="others">Outros Gastos</SelectItem>
-              </SelectContent>
-            </Select>
+            <ReportTypeSelector
+              reportType={reportType}
+              onReportTypeChange={setReportType}
+            />
 
             <Button onClick={generateReport}>Gerar Relatório</Button>
           </div>
@@ -189,20 +183,12 @@ const CustomReports = () => {
               <ReportChart reportType={selectedReportType} reportData={getFilteredData()} />
             </div>
             <ReportTable reportType={selectedReportType} reportData={getFilteredData()} />
-            <div className="flex justify-end space-x-2">
-              <Button onClick={exportToPDF} variant="outline">
-                <Download className="mr-2 h-4 w-4" />
-                Exportar PDF
-              </Button>
-              <Button onClick={exportToExcel} variant="outline">
-                <Download className="mr-2 h-4 w-4" />
-                Exportar Excel
-              </Button>
-              <Button onClick={() => window.print()} variant="outline">
-                <Printer className="mr-2 h-4 w-4" />
-                Imprimir
-              </Button>
-            </div>
+            <ReportActions
+              reportType={selectedReportType}
+              filteredData={getFilteredData()}
+              onExportPDF={exportToPDF}
+              onExportExcel={exportToExcel}
+            />
           </div>
         </CardContent>
       </Card>
