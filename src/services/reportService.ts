@@ -8,31 +8,58 @@ export interface ReportData {
   expenses: Expense[];
 }
 
-export const getReportData = async (): Promise<ReportData> => {
+export const getReportData = async (
+  vehicleId: string | null = null,
+  startDate: Date | null = null,
+  endDate: Date | null = null
+): Promise<ReportData> => {
   const user = auth.currentUser;
   if (!user) throw new Error('User must be logged in to get report data');
 
-  // Get maintenance data
-  const maintenancesQuery = query(
+  // Build maintenance query
+  let maintenanceQuery = query(
     collection(db, "maintenances"),
     where("userId", "==", user.uid)
   );
-  const maintenanceSnapshot = await getDocs(maintenancesQuery);
-  const maintenances = maintenanceSnapshot.docs.map(doc => ({
+
+  if (vehicleId) {
+    maintenanceQuery = query(maintenanceQuery, where("vehicleId", "==", vehicleId));
+  }
+
+  // Get maintenance data
+  const maintenanceSnapshot = await getDocs(maintenanceQuery);
+  let maintenances = maintenanceSnapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
   })) as Maintenance[];
 
-  // Get expenses data
-  const expensesQuery = query(
+  // Build expenses query
+  let expensesQuery = query(
     collection(db, "expenses"),
     where("userId", "==", user.uid)
   );
+
+  if (vehicleId) {
+    expensesQuery = query(expensesQuery, where("vehicleId", "==", vehicleId));
+  }
+
+  // Get expenses data
   const expenseSnapshot = await getDocs(expensesQuery);
-  const expenses = expenseSnapshot.docs.map(doc => ({
+  let expenses = expenseSnapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
   })) as Expense[];
+
+  // Apply date filters if provided
+  if (startDate) {
+    maintenances = maintenances.filter(m => new Date(m.date) >= startDate);
+    expenses = expenses.filter(e => new Date(e.date) >= startDate);
+  }
+
+  if (endDate) {
+    maintenances = maintenances.filter(m => new Date(m.date) <= endDate);
+    expenses = expenses.filter(e => new Date(e.date) <= endDate);
+  }
 
   return { maintenances, expenses };
 };

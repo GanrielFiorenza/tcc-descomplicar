@@ -13,16 +13,20 @@ import { ReportTable } from '@/components/ReportTable';
 import { useQuery } from '@tanstack/react-query';
 import { getReportData } from '@/services/reportService';
 import { ProcessedReportData, processReportData, filterReportData } from '../utils/reportDataProcessor';
+import { ReportFilters } from '@/components/ReportFilters';
 
 const CustomReports = () => {
   const [reportType, setReportType] = useState('all');
   const [selectedReportType, setSelectedReportType] = useState('all');
+  const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const { toast } = useToast();
   const chartRef = useRef<HTMLDivElement>(null);
 
   const { data: reportData, isLoading, error } = useQuery({
-    queryKey: ['reports'],
-    queryFn: getReportData,
+    queryKey: ['reports', selectedVehicle, startDate, endDate],
+    queryFn: () => getReportData(selectedVehicle, startDate, endDate),
     staleTime: 1000 * 60 * 5, // 5 minutes
     refetchOnWindowFocus: false,
   });
@@ -97,6 +101,15 @@ const CustomReports = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Relatórios Personalizados</h1>
       </div>
+
+      <ReportFilters
+        selectedVehicle={selectedVehicle}
+        onSelectVehicle={setSelectedVehicle}
+        onDateFilterChange={(start, end) => {
+          setStartDate(start);
+          setEndDate(end);
+        }}
+      />
 
       <Card className="mb-6">
         <CardHeader>
