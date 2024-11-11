@@ -97,7 +97,7 @@ export const ReportFilters: React.FC<ReportFiltersProps> = ({
             <SelectContent>
               <SelectItem value="all">Todos os veículos</SelectItem>
               {vehicles.map(vehicle => (
-                <SelectItem key={vehicle.id} value={vehicle.id}>{vehicle.name}</SelectItem>
+                <SelectItem key={vehicle.id} value={vehicle.id}>{`${vehicle.brand} ${vehicle.model}`}</SelectItem>
               ))}
             </SelectContent>
           </Select>
