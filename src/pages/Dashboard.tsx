@@ -115,6 +115,45 @@ const Dashboard = () => {
               <Bell className="mr-2 h-6 w-6 text-green-500" />
               Últimas Manutenções
             </CardTitle>
+            <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <CirclePlus className="h-4 w-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <div className="grid gap-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium leading-none">Adicionar Manutenção</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Agende uma nova manutenção para seu veículo
+                    </p>
+                  </div>
+                  <div className="grid gap-2">
+                    <div className="grid grid-cols-3 items-center gap-4">
+                      <Label htmlFor="date">Data</Label>
+                      <Input
+                        id="date"
+                        type="date"
+                        className="col-span-2"
+                        value={newMaintenanceDate}
+                        onChange={(e) => setNewMaintenanceDate(e.target.value)}
+                      />
+                    </div>
+                    <div className="grid grid-cols-3 items-center gap-4">
+                      <Label htmlFor="description">Descrição</Label>
+                      <Input
+                        id="description"
+                        className="col-span-2"
+                        value={newMaintenanceDescription}
+                        onChange={(e) => setNewMaintenanceDescription(e.target.value)}
+                      />
+                    </div>
+                    <Button onClick={handleAddMaintenance}>Adicionar</Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
@@ -129,6 +168,23 @@ const Dashboard = () => {
                 </li>
               ))}
             </ul>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Bell className="mr-2 h-6 w-6 text-yellow-500" />
+              Notificações
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <MaintenanceList
+              maintenances={maintenanceList}
+              checkedMaintenances={checkedMaintenances}
+              onCheck={handleCheckMaintenance}
+              onConfirm={handleConfirmMaintenance}
+            />
           </CardContent>
         </Card>
       </div>
