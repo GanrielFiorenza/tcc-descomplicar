@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { auth } from "./config/firebase";
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import LandingPage from "./pages/LandingPage";
 import Index from "./pages/Index";
 import CreateAccount from "./pages/CreateAccount";
@@ -21,39 +21,35 @@ const queryClient = new QueryClient();
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    setIsLoggedIn(loggedIn);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user);
+      setIsLoading(false);
+    });
 
-    // Add event listener for when the window is closed or refreshed
-    const handleBeforeUnload = async () => {
-      if (auth.currentUser) {
-        await signOut(auth);
-        localStorage.removeItem('isLoggedIn');
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
   }, []);
 
   const handleLogin = () => {
     setIsLoggedIn(true);
-    localStorage.setItem('isLoggedIn', 'true');
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    localStorage.removeItem('isLoggedIn');
   };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  if (isLoading) {
+    return <div className="flex h-screen items-center justify-center">
+      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>;
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -108,7 +104,6 @@ const App = () => {
       </TooltipProvider>
     </QueryClientProvider>
   );
-
 };
 
 export default App;
