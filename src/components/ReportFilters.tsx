@@ -90,7 +90,7 @@ export const ReportFilters: React.FC<ReportFiltersProps> = ({
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          <Select value={selectedVehicle || 'all'} onValueChange={(value) => onSelectVehicle(value === 'all' ? null : value)}>
+          <Select onValueChange={(value) => onSelectVehicle(value === 'all' ? null : value)}>
             <SelectTrigger>
               <SelectValue placeholder="Selecione o veículo" />
             </SelectTrigger>

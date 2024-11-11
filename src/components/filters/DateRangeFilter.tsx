@@ -4,7 +4,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
+import { format, startOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
 
 interface DateRangeFilterProps {
@@ -36,9 +36,7 @@ export const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
     <div className="flex gap-2">
       <Select value={dateFilter} onValueChange={onDateFilterChange}>
         <SelectTrigger>
-          <SelectValue placeholder="Período">
-            {dateFilterOptions.find(option => option.value === dateFilter)?.label || 'Período'}
-          </SelectValue>
+          <SelectValue placeholder="Período" />
         </SelectTrigger>
         <SelectContent>
           {dateFilterOptions.map((option) => (
@@ -65,7 +63,7 @@ export const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
             <PopoverContent className="w-auto p-0">
               <Calendar
                 mode="single"
-                selected={startDate || undefined}
+                selected={startDate}
                 onSelect={onStartDateSelect}
                 initialFocus
               />
@@ -89,7 +87,7 @@ export const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
             <PopoverContent className="w-auto p-0">
               <Calendar
                 mode="single"
-                selected={endDate || undefined}
+                selected={endDate}
                 onSelect={onEndDateSelect}
                 disabled={(date) => date < (startDate || new Date())}
                 initialFocus
