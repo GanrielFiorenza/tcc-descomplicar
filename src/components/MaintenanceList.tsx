@@ -2,30 +2,30 @@ import React, { useState } from 'react';
 import { Bell, SquareCheck } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
-interface Maintenance {
-  id: number;
+interface MaintenanceItem {
+  id: string;
   date: string;
   description: string;
 }
 
 interface MaintenanceListProps {
-  maintenanceList: Maintenance[];
-  checkedMaintenances: number[];
-  onCheck: (id: number) => void;
-  onConfirm: (id: number) => void;
+  maintenanceList: MaintenanceItem[];
+  checkedMaintenances: string[];
+  onCheck: (id: string) => void;
+  onConfirm: (id: string) => void;
 }
 
 const MaintenanceList: React.FC<MaintenanceListProps> = ({ maintenanceList, checkedMaintenances, onCheck, onConfirm }) => {
-  const [tempChecked, setTempChecked] = useState<number | null>(null);
+  const [tempChecked, setTempChecked] = useState<string | null>(null);
 
-  const handleCheck = (id: number) => {
+  const handleCheck = (id: string) => {
     setTempChecked(id);
     onCheck(id);
   };
 
   const handleCancel = () => {
     if (tempChecked !== null) {
-      onCheck(tempChecked); // Deselect the item
+      onCheck(tempChecked);
       setTempChecked(null);
     }
   };
