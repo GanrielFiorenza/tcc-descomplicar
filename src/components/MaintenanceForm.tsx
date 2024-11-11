@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CalendarIcon, DollarSign, Wrench, ClipboardIcon, AlertCircle, Car } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Maintenance } from '../types/maintenance';
 import { useToast } from "@/hooks/use-toast";
@@ -107,7 +107,8 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
                 selected={newMaintenance.date ? new Date(newMaintenance.date) : undefined}
                 onSelect={(date) => {
                   if (date) {
-                    const formattedDate = format(date, 'yyyy-MM-dd');
+                    const adjustedDate = addDays(date, 1);
+                    const formattedDate = format(adjustedDate, 'yyyy-MM-dd');
                     setNewMaintenance({...newMaintenance, date: formattedDate});
                   }
                 }}

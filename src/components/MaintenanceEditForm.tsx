@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Check, X, CalendarIcon } from 'lucide-react';
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
 import { Maintenance } from '../types/maintenance';
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -78,7 +78,8 @@ export const MaintenanceEditForm: React.FC<MaintenanceEditFormProps> = ({
               selected={editedMaintenance.date ? new Date(editedMaintenance.date) : undefined}
               onSelect={(date) => {
                 if (date) {
-                  const formattedDate = format(date, 'yyyy-MM-dd');
+                  const adjustedDate = addDays(date, 1);
+                  const formattedDate = format(adjustedDate, 'yyyy-MM-dd');
                   setEditedMaintenance({...editedMaintenance, date: formattedDate});
                 }
               }}
