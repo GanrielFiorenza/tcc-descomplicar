@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bell, CirclePlus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import MaintenanceList from './MaintenanceList';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { addNotification, getOpenNotifications, closeNotification } from "@/services/notificationService";
+import { checkAndSendNotificationEmails } from '@/services/emailService';
 
 const NotificationsCard = () => {
   const [newNotificationDate, setNewNotificationDate] = useState('');
@@ -54,6 +55,21 @@ const NotificationsCard = () => {
     }
     addNotificationMutation.mutate();
   };
+
+  useEffect(() => {
+    // Verifica notificações uma vez por dia
+    const checkNotifications = () => {
+      checkAndSendNotificationEmails();
+    };
+
+    // Executa imediatamente na primeira vez
+    checkNotifications();
+
+    // Configura para executar uma vez por dia
+    const interval = setInterval(checkNotifications, 24 * 60 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <Card>
