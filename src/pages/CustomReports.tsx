@@ -1,7 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileText, Download, Printer, ChartBar } from 'lucide-react';
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
@@ -13,23 +12,74 @@ import { ReportTable } from '@/components/ReportTable';
 import { useQuery } from '@tanstack/react-query';
 import { getReportData } from '@/services/reportService';
 import { ProcessedReportData, processReportData, filterReportData } from '../utils/reportDataProcessor';
+import { ReportFilters } from '@/components/filters/ReportFilters';
+import { subMonths, subYears, isWithinInterval, parseISO, startOfDay } from 'date-fns';
 
 const CustomReports = () => {
   const [reportType, setReportType] = useState('all');
   const [selectedReportType, setSelectedReportType] = useState('all');
+  const [selectedVehicle, setSelectedVehicle] = useState('all');
+  const [dateFilter, setDateFilter] = useState('all');
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const { toast } = useToast();
-  const chartRef = useRef<HTMLDivElement>(null);
+  const chartRef = React.useRef<HTMLDivElement>(null);
 
   const { data: reportData, isLoading, error } = useQuery({
     queryKey: ['reports'],
     queryFn: getReportData,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
 
   const getFilteredData = () => {
     const processedData = processReportData(reportData);
-    return filterReportData(processedData, reportType);
+    let filteredData = filterReportData(processedData, reportType);
+
+    // Filter by vehicle
+    if (selectedVehicle !== 'all') {
+      filteredData = filteredData.filter(item => item.vehicleId === selectedVehicle);
+    }
+
+    // Filter by date
+    const now = new Date();
+    let dateFilteredData = filteredData;
+
+    switch (dateFilter) {
+      case '1year':
+        const oneYearAgo = subYears(now, 1);
+        dateFilteredData = filteredData.filter(item => {
+          const itemDate = parseISO(item.month + '-01');
+          return itemDate >= oneYearAgo;
+        });
+        break;
+      case '6months':
+        const sixMonthsAgo = subMonths(now, 6);
+        dateFilteredData = filteredData.filter(item => {
+          const itemDate = parseISO(item.month + '-01');
+          return itemDate >= sixMonthsAgo;
+        });
+        break;
+      case '1month':
+        const oneMonthAgo = subMonths(now, 1);
+        dateFilteredData = filteredData.filter(item => {
+          const itemDate = parseISO(item.month + '-01');
+          return itemDate >= oneMonthAgo;
+        });
+        break;
+      case 'custom':
+        if (startDate && endDate) {
+          dateFilteredData = filteredData.filter(item => {
+            const itemDate = parseISO(item.month + '-01');
+            return isWithinInterval(itemDate, { start: startDate, end: endDate });
+          });
+        }
+        break;
+      default:
+        dateFilteredData = filteredData;
+    }
+
+    return dateFilteredData;
   };
 
   const generateReport = () => {
@@ -106,7 +156,18 @@ const CustomReports = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex space-x-4 mb-4">
+          <div className="space-y-4">
+            <ReportFilters
+              selectedVehicle={selectedVehicle}
+              onVehicleChange={setSelectedVehicle}
+              dateFilter={dateFilter}
+              startDate={startDate}
+              endDate={endDate}
+              onDateFilterChange={setDateFilter}
+              onStartDateSelect={(date) => setStartDate(date || null)}
+              onEndDateSelect={(date) => setEndDate(date || null)}
+            />
+
             <Select value={reportType} onValueChange={setReportType}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Tipo de Relatório" />
@@ -119,10 +180,11 @@ const CustomReports = () => {
                 <SelectItem value="others">Outros Gastos</SelectItem>
               </SelectContent>
             </Select>
+
             <Button onClick={generateReport}>Gerar Relatório</Button>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 mt-4">
             <div ref={chartRef}>
               <ReportChart reportType={selectedReportType} reportData={getFilteredData()} />
             </div>

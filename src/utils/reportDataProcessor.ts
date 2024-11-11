@@ -7,6 +7,7 @@ export interface ProcessedReportData {
   type: string;
   amount: number;
   description: string;
+  vehicleId?: string;
 }
 
 export const processReportData = (reportData: ReportData | undefined): ProcessedReportData[] => {
@@ -20,7 +21,8 @@ export const processReportData = (reportData: ReportData | undefined): Processed
       month: maintenance.date.substring(0, 7),
       type: 'Manutenção',
       amount: maintenance.cost,
-      description: maintenance.observations
+      description: maintenance.observations,
+      vehicleId: maintenance.vehicleId
     });
   });
 
@@ -30,7 +32,8 @@ export const processReportData = (reportData: ReportData | undefined): Processed
       month: expense.date.substring(0, 7),
       type: expense.category,
       amount: expense.amount,
-      description: expense.description
+      description: expense.description,
+      vehicleId: expense.vehicleId
     });
   });
 
