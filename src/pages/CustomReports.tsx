@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChartBar } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FileText, Download, Printer, ChartBar } from 'lucide-react';
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
@@ -9,79 +10,26 @@ import html2canvas from 'html2canvas';
 import { useToast } from "@/hooks/use-toast";
 import { ReportChart } from '@/components/ReportChart';
 import { ReportTable } from '@/components/ReportTable';
-import { ReportFilters } from '@/components/filters/ReportFilters';
-import { ReportTypeSelector } from '@/components/reports/ReportTypeSelector';
-import { ReportActions } from '@/components/reports/ReportActions';
 import { useQuery } from '@tanstack/react-query';
 import { getReportData } from '@/services/reportService';
-import { processReportData, filterReportData } from '../utils/reportDataProcessor';
-import { subMonths, subYears, isWithinInterval, parseISO } from 'date-fns';
+import { ProcessedReportData, processReportData, filterReportData } from '../utils/reportDataProcessor';
 
 const CustomReports = () => {
   const [reportType, setReportType] = useState('all');
   const [selectedReportType, setSelectedReportType] = useState('all');
-  const [selectedVehicle, setSelectedVehicle] = useState('all');
-  const [dateFilter, setDateFilter] = useState('all');
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
   const { toast } = useToast();
-  const chartRef = React.useRef<HTMLDivElement>(null);
+  const chartRef = useRef<HTMLDivElement>(null);
 
-  const { data: reportData, isLoading } = useQuery({
+  const { data: reportData, isLoading, error } = useQuery({
     queryKey: ['reports'],
     queryFn: getReportData,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 5, // 5 minutes
     refetchOnWindowFocus: false,
   });
 
   const getFilteredData = () => {
     const processedData = processReportData(reportData);
-    let filteredData = filterReportData(processedData, reportType);
-
-    // Filter by vehicle
-    if (selectedVehicle !== 'all') {
-      filteredData = filteredData.filter(item => item.vehicleId === selectedVehicle);
-    }
-
-    // Filter by date
-    const now = new Date();
-    let dateFilteredData = filteredData;
-
-    switch (dateFilter) {
-      case '1year':
-        const oneYearAgo = subYears(now, 1);
-        dateFilteredData = filteredData.filter(item => {
-          const itemDate = parseISO(item.month + '-01');
-          return itemDate >= oneYearAgo;
-        });
-        break;
-      case '6months':
-        const sixMonthsAgo = subMonths(now, 6);
-        dateFilteredData = filteredData.filter(item => {
-          const itemDate = parseISO(item.month + '-01');
-          return itemDate >= sixMonthsAgo;
-        });
-        break;
-      case '1month':
-        const oneMonthAgo = subMonths(now, 1);
-        dateFilteredData = filteredData.filter(item => {
-          const itemDate = parseISO(item.month + '-01');
-          return itemDate >= oneMonthAgo;
-        });
-        break;
-      case 'custom':
-        if (startDate && endDate) {
-          dateFilteredData = filteredData.filter(item => {
-            const itemDate = parseISO(item.month + '-01');
-            return isWithinInterval(itemDate, { start: startDate, end: endDate });
-          });
-        }
-        break;
-      default:
-        dateFilteredData = filteredData;
-    }
-
-    return dateFilteredData;
+    return filterReportData(processedData, reportType);
   };
 
   const generateReport = () => {
@@ -158,37 +106,41 @@ const CustomReports = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <ReportFilters
-              selectedVehicle={selectedVehicle}
-              onVehicleChange={setSelectedVehicle}
-              dateFilter={dateFilter}
-              startDate={startDate}
-              endDate={endDate}
-              onDateFilterChange={setDateFilter}
-              onStartDateSelect={(date) => setStartDate(date || null)}
-              onEndDateSelect={(date) => setEndDate(date || null)}
-            />
-
-            <ReportTypeSelector
-              reportType={reportType}
-              onReportTypeChange={setReportType}
-            />
-
+          <div className="flex space-x-4 mb-4">
+            <Select value={reportType} onValueChange={setReportType}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Tipo de Relatório" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos os Gastos</SelectItem>
+                <SelectItem value="maintenance">Gastos com Manutenção</SelectItem>
+                <SelectItem value="fuel">Gastos com Combustível</SelectItem>
+                <SelectItem value="taxes">Gastos com Impostos</SelectItem>
+                <SelectItem value="others">Outros Gastos</SelectItem>
+              </SelectContent>
+            </Select>
             <Button onClick={generateReport}>Gerar Relatório</Button>
           </div>
 
-          <div className="space-y-4 mt-4">
+          <div className="space-y-4">
             <div ref={chartRef}>
               <ReportChart reportType={selectedReportType} reportData={getFilteredData()} />
             </div>
             <ReportTable reportType={selectedReportType} reportData={getFilteredData()} />
-            <ReportActions
-              reportType={selectedReportType}
-              filteredData={getFilteredData()}
-              onExportPDF={exportToPDF}
-              onExportExcel={exportToExcel}
-            />
+            <div className="flex justify-end space-x-2">
+              <Button onClick={exportToPDF} variant="outline">
+                <Download className="mr-2 h-4 w-4" />
+                Exportar PDF
+              </Button>
+              <Button onClick={exportToExcel} variant="outline">
+                <Download className="mr-2 h-4 w-4" />
+                Exportar Excel
+              </Button>
+              <Button onClick={() => window.print()} variant="outline">
+                <Printer className="mr-2 h-4 w-4" />
+                Imprimir
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
