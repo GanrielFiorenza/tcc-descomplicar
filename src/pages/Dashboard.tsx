@@ -180,7 +180,7 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <MaintenanceList
-              maintenances={maintenanceList}
+              maintenanceList={maintenanceList}
               checkedMaintenances={checkedMaintenances}
               onCheck={handleCheckMaintenance}
               onConfirm={handleConfirmMaintenance}
