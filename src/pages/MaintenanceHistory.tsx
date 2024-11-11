@@ -6,7 +6,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import MaintenanceTable from '../components/MaintenanceTable';
 import { MaintenanceForm } from '../components/MaintenanceForm';
-import { MaintenancePeriodFilter } from '../components/MaintenancePeriodFilter';
 import { Maintenance } from '../types/maintenance';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { addMaintenance, getUserMaintenances, updateMaintenance, deleteMaintenance } from '@/services/maintenanceService';
@@ -21,9 +20,6 @@ const MaintenanceHistory: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
-  const [period, setPeriod] = useState('all');
-  const [startDate, setStartDate] = useState<Date>();
-  const [endDate, setEndDate] = useState<Date>();
   const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -39,8 +35,17 @@ const MaintenanceHistory: React.FC = () => {
   }));
 
   const { data: maintenances = [] } = useQuery({
-    queryKey: ['maintenances', period, startDate, endDate],
-    queryFn: () => getUserMaintenances(period, startDate, endDate),
+    queryKey: ['maintenances'],
+    queryFn: getUserMaintenances,
+  });
+
+  const filteredMaintenances = maintenances.filter(maintenance => {
+    const matchesSearch = maintenance.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         maintenance.observations.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = filterType === 'all' || maintenance.serviceType === filterType;
+    const matchesVehicle = !selectedVehicle || maintenance.vehicleId === selectedVehicle;
+    
+    return matchesSearch && matchesType && matchesVehicle;
   });
 
   const addMaintenanceMutation = useMutation({
@@ -112,15 +117,6 @@ const MaintenanceHistory: React.FC = () => {
     }
   };
 
-  const filteredMaintenances = maintenances.filter(maintenance => {
-    const matchesSearch = maintenance.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         maintenance.observations.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = filterType === 'all' || maintenance.serviceType === filterType;
-    const matchesVehicle = !selectedVehicle || maintenance.vehicleId === selectedVehicle;
-    
-    return matchesSearch && matchesType && matchesVehicle;
-  });
-
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">
@@ -135,12 +131,6 @@ const MaintenanceHistory: React.FC = () => {
         onSearchChange={setSearchTerm}
         filterType={filterType}
         onFilterTypeChange={setFilterType}
-        period={period}
-        onPeriodChange={setPeriod}
-        startDate={startDate}
-        endDate={endDate}
-        onStartDateChange={setStartDate}
-        onEndDateChange={setEndDate}
       />
 
       <Card>
