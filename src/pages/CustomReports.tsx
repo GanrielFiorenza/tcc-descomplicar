@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileText, Download, Printer, ChartBar } from 'lucide-react';
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable';
@@ -13,7 +14,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getReportData } from '@/services/reportService';
 import { ProcessedReportData, processReportData, filterReportData } from '../utils/reportDataProcessor';
 import { ReportFilters } from '@/components/ReportFilters';
-import { getUserVehicles } from '@/services/vehicleService';
+import { getUserVehicles, Vehicle } from '@/services/vehicleService';
 
 const CustomReports = () => {
   const [reportType, setReportType] = useState('all');
@@ -37,6 +38,11 @@ const CustomReports = () => {
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
+
+  const formattedVehicles = vehicles.map((vehicle: Vehicle) => ({
+    id: vehicle.id,
+    name: `${vehicle.brand} ${vehicle.model} (${vehicle.plate})`
+  }));
 
   const getFilteredData = () => {
     if (!reportData) return [];
@@ -125,7 +131,7 @@ const CustomReports = () => {
       </div>
 
       <ReportFilters
-        vehicles={vehicles}
+        vehicles={formattedVehicles}
         selectedVehicle={selectedVehicle}
         onSelectVehicle={setSelectedVehicle}
         onDateFilterChange={(start, end) => {
