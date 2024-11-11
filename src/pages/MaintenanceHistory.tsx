@@ -43,15 +43,6 @@ const MaintenanceHistory: React.FC = () => {
     queryFn: () => getUserMaintenances(period, startDate, endDate),
   });
 
-  const filteredMaintenances = maintenances.filter(maintenance => {
-    const matchesSearch = maintenance.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         maintenance.observations.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = filterType === 'all' || maintenance.serviceType === filterType;
-    const matchesVehicle = !selectedVehicle || maintenance.vehicleId === selectedVehicle;
-    
-    return matchesSearch && matchesType && matchesVehicle;
-  });
-
   const addMaintenanceMutation = useMutation({
     mutationFn: addMaintenance,
     onSuccess: () => {
@@ -120,6 +111,15 @@ const MaintenanceHistory: React.FC = () => {
       updateMaintenanceMutation.mutate(editedMaintenance as any);
     }
   };
+
+  const filteredMaintenances = maintenances.filter(maintenance => {
+    const matchesSearch = maintenance.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         maintenance.observations.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = filterType === 'all' || maintenance.serviceType === filterType;
+    const matchesVehicle = !selectedVehicle || maintenance.vehicleId === selectedVehicle;
+    
+    return matchesSearch && matchesType && matchesVehicle;
+  });
 
   return (
     <div className="container mx-auto p-4">

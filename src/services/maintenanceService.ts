@@ -32,37 +32,51 @@ export const getUserMaintenances = async (period?: string, startDate?: Date, end
   const user = auth.currentUser;
   if (!user) throw new Error('User must be logged in to get maintenances');
 
-  let startDateFilter: Date;
-  let endDateFilter: Date = endOfDay(new Date());
+  let queryConstraints = [
+    where("userId", "==", user.uid),
+    orderBy("date", "desc")
+  ];
 
-  switch (period) {
-    case '1year':
-      startDateFilter = startOfDay(subYears(new Date(), 1));
-      break;
-    case '6months':
-      startDateFilter = startOfDay(subMonths(new Date(), 6));
-      break;
-    case '1month':
-      startDateFilter = startOfDay(subMonths(new Date(), 1));
-      break;
-    case 'custom':
-      if (startDate && endDate) {
-        startDateFilter = startOfDay(startDate);
-        endDateFilter = endOfDay(endDate);
-      } else {
-        startDateFilter = startOfDay(subYears(new Date(), 100)); // If no date range specified, show all
-      }
-      break;
-    default:
-      startDateFilter = startOfDay(subYears(new Date(), 100)); // Show all by default
+  if (period && period !== 'all') {
+    let startDateFilter: Date;
+    let endDateFilter: Date = endOfDay(new Date());
+
+    switch (period) {
+      case '1year':
+        startDateFilter = startOfDay(subYears(new Date(), 1));
+        queryConstraints.push(
+          where("date", ">=", startDateFilter.toISOString()),
+          where("date", "<=", endDateFilter.toISOString())
+        );
+        break;
+      case '6months':
+        startDateFilter = startOfDay(subMonths(new Date(), 6));
+        queryConstraints.push(
+          where("date", ">=", startDateFilter.toISOString()),
+          where("date", "<=", endDateFilter.toISOString())
+        );
+        break;
+      case '1month':
+        startDateFilter = startOfDay(subMonths(new Date(), 1));
+        queryConstraints.push(
+          where("date", ">=", startDateFilter.toISOString()),
+          where("date", "<=", endDateFilter.toISOString())
+        );
+        break;
+      case 'custom':
+        if (startDate && endDate) {
+          queryConstraints.push(
+            where("date", ">=", startOfDay(startDate).toISOString()),
+            where("date", "<=", endOfDay(endDate).toISOString())
+          );
+        }
+        break;
+    }
   }
 
   const maintenancesQuery = query(
     collection(db, "maintenances"),
-    where("userId", "==", user.uid),
-    where("date", ">=", startDateFilter.toISOString()),
-    where("date", "<=", endDateFilter.toISOString()),
-    orderBy("date", "desc")
+    ...queryConstraints
   );
 
   const querySnapshot = await getDocs(maintenancesQuery);
