@@ -46,7 +46,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
   ];
 
   return (
-    <div className={`bg-gray-800 text-white h-screen ${isOpen ? 'w-64' : 'w-16'} transition-all duration-300 ease-in-out flex flex-col fixed top-0 left-0 overflow-y-auto z-50`}>
+    <div 
+      className={`
+        fixed top-0 left-0 h-screen bg-gray-800 text-white
+        transition-all duration-300 ease-in-out z-50
+        md:translate-x-0
+        ${isOpen ? 'w-64 translate-x-0' : 'w-16 -translate-x-full md:translate-x-0'}
+        flex flex-col
+      `}
+    >
       <div className="flex justify-between items-center p-4 sticky top-0 bg-gray-800 z-10">
         {isOpen && (
           <div className="flex items-center w-full">
@@ -57,7 +65,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
             <h2 className="text-xl font-bold">Menu</h2>
           </div>
         )}
-        <Button variant="ghost" size="icon" onClick={toggleSidebar} className={isOpen ? '' : 'mx-auto'}>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={toggleSidebar} 
+          className={`
+            ${isOpen ? '' : 'mx-auto'}
+            md:hidden fixed top-4 right-4 z-50 bg-gray-800
+            ${!isOpen ? 'translate-x-16' : ''}
+          `}
+        >
           {isOpen ? <ChevronLeft /> : <ChevronRight />}
         </Button>
       </div>
@@ -66,9 +83,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
           <Link
             key={item.path}
             to={item.path}
-            className={`flex items-center p-4 hover:bg-gray-700 transition-colors ${
-              location.pathname === item.path ? 'bg-gray-900' : ''
-            } ${isOpen ? '' : 'justify-center'}`}
+            className={`
+              flex items-center p-4 hover:bg-gray-700 transition-colors
+              ${location.pathname === item.path ? 'bg-gray-900' : ''}
+              ${isOpen ? '' : 'justify-center'}
+            `}
           >
             <item.icon className="h-5 w-5" />
             {isOpen && <span className="ml-4">{item.label}</span>}

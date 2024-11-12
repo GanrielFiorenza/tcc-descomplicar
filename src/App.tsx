@@ -29,7 +29,6 @@ const App = () => {
       setIsLoading(false);
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
@@ -65,9 +64,11 @@ const App = () => {
               />
             )}
             <main
-              className={`flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 transition-all duration-300 ease-in-out ${
-                isLoggedIn ? (isSidebarOpen ? 'ml-64' : 'ml-16') : ''
-              }`}
+              className={`
+                flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 
+                transition-all duration-300 ease-in-out
+                ${isLoggedIn ? 'md:ml-64 md:w-[calc(100%-16rem)]' : ''}
+              `}
             >
               <Routes>
                 <Route path="/" element={<LandingPage />} />
