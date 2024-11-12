@@ -63,6 +63,11 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
     return vehicle ? vehicle.name : 'Veículo não encontrado';
   };
 
+  // Ordenar as manutenções por data (mais recente primeiro)
+  const sortedMaintenances = [...maintenances].sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+
   return (
     <Table>
       <TableHeader>
@@ -76,7 +81,7 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
         </TableRow>
       </TableHeader>
       <TableBody>
-        {maintenances.map((maintenance) => (
+        {sortedMaintenances.map((maintenance) => (
           <TableRow key={maintenance.id}>
             {editingMaintenance?.id === maintenance.id ? (
               <TableCell colSpan={6}>
