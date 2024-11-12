@@ -152,9 +152,9 @@ const MaintenanceHistory: React.FC = () => {
             </div>
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-green-500 hover:bg-green-600">
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Adicionar Manutenção
+                <Button className="bg-green-500 hover:bg-green-600 text-sm sm:text-base px-2 sm:px-4 py-1 sm:py-2">
+                  <PlusCircle className="mr-1 sm:mr-2 h-4 w-4" />
+                  <span className="text-xs sm:text-sm whitespace-nowrap">Adicionar Manutenção</span>
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
