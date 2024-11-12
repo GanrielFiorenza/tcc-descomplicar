@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import LoginForm from "@/components/LoginForm";
 import GoogleLoginButton from "@/components/GoogleLoginButton";
-import { Car } from "lucide-react";
+import Header from "@/components/Header";
 
 interface IndexProps {
   onLogin: () => void;
@@ -14,39 +14,30 @@ const Index = ({ onLogin }: IndexProps) => {
   const [password, setPassword] = useState("");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
-      <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-sm sm:max-w-md space-y-8">
-          <div className="text-center">
-            <div className="flex justify-center items-center mb-4">
-              <Car className="h-8 w-8 sm:h-10 sm:w-10 text-blue-800" />
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-              Bem-vindo de volta
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <div className="flex min-h-[calc(100vh-73px)] items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md space-y-8">
+          <div>
+            <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+              Entre na sua conta
             </h2>
-            <p className="text-sm sm:text-base text-gray-600">
-              Entre com sua conta para continuar
+            <p className="mt-2 text-center text-sm text-gray-600">
+              Gerencie seus veículos de forma simples e eficiente
             </p>
           </div>
 
-          <div className="bg-white py-6 sm:py-8 px-4 sm:px-10 shadow rounded-lg space-y-6">
-            <LoginForm
-              onLogin={onLogin}
-              isLoading={isLoading}
-              setIsLoading={setIsLoading}
-              email={email}
-              setEmail={setEmail}
-              password={password}
-              setPassword={setPassword}
-            />
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-xs sm:text-sm uppercase">
-                <span className="px-2 bg-white text-gray-500">Ou continue com</span>
-              </div>
+          <div className="mt-8 space-y-6">
+            <div className="space-y-6">
+              <LoginForm
+                onLogin={onLogin}
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+                email={email}
+                setEmail={setEmail}
+                password={password}
+                setPassword={setPassword}
+              />
             </div>
 
             <GoogleLoginButton onLogin={onLogin} isLoading={isLoading} />
@@ -57,7 +48,7 @@ const Index = ({ onLogin }: IndexProps) => {
                 to="/create-account"
                 className="font-medium text-blue-600 hover:text-blue-500"
               >
-                Registre-se
+                Criar conta
               </Link>
             </p>
           </div>
