@@ -108,7 +108,7 @@ const CreateAccount = () => {
       <Header />
       
       <div className="flex flex-col items-center justify-center pt-4 sm:pt-8 pb-2 sm:pb-4 px-4 sm:px-0">
-        <h1 className="text-2xl sm:text-4xl font-bold text-blue-900 flex items-center justify-center gap-2 mb-2">
+        <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-blue-900 flex items-center justify-center gap-2 mb-2">
           <Car className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
           Bem-vindo ao DescompliCar
           <Car className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
