@@ -93,14 +93,14 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 pb-2">
         <div>
           <CardTitle>Distribuição de Gastos</CardTitle>
           <CardDescription>Distribuição dos gastos por categoria</CardDescription>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
           <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Selecione o mês" />
             </SelectTrigger>
             <SelectContent>
@@ -113,11 +113,11 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
           </Select>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" className="w-full sm:w-auto">
                 <Pen className="h-4 w-4" />
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
                 <DialogTitle>Alterar Limite de Gastos</DialogTitle>
               </DialogHeader>
@@ -148,8 +148,8 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="relative">
-          <ResponsiveContainer width="100%" height={300}>
+        <div className="relative w-full h-[300px] sm:h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={donutData}
@@ -157,8 +157,8 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
                 cy="50%"
                 startAngle={90}
                 endAngle={-270}
-                innerRadius={60}
-                outerRadius={80}
+                innerRadius="60%"
+                outerRadius="80%"
                 fill="#8884d8"
                 paddingAngle={0}
                 dataKey="value"
@@ -172,11 +172,11 @@ export const ExpenseDonutChart: React.FC<ExpenseDonutChartProps> = ({
               <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} />
             </PieChart>
           </ResponsiveContainer>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-lg sm:text-2xl font-bold">
             {animationPercentage}%
           </div>
         </div>
-        <div className="mt-4 text-center text-sm text-muted-foreground">
+        <div className="mt-4 text-center text-xs sm:text-sm text-muted-foreground">
           <span>R$ {currentMonthTotal.toFixed(2)} / R$ {expenseLimit.toFixed(2)}</span>
         </div>
       </CardContent>
