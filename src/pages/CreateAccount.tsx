@@ -107,24 +107,26 @@ const CreateAccount = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <Header />
       
-      <div className="flex flex-col items-center justify-center pt-8 pb-4">
-        <h1 className="text-4xl font-bold text-blue-900 flex items-center justify-center gap-2 mb-2">
-          <Car className="h-8 w-8 text-blue-500" />
+      <div className="flex flex-col items-center justify-center pt-4 sm:pt-8 pb-2 sm:pb-4 px-4 sm:px-0">
+        <h1 className="text-2xl sm:text-4xl font-bold text-blue-900 flex items-center justify-center gap-2 mb-2">
+          <Car className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
           Bem-vindo ao DescompliCar
-          <Car className="h-8 w-8 text-blue-500" />
+          <Car className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
         </h1>
-        <p className="text-gray-600 flex items-center gap-2">
-          <Shield className="h-5 w-5 text-green-500" />
+        <p className="text-sm sm:text-base text-gray-600 flex items-center gap-2">
+          <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
           Crie sua conta de forma segura e comece a gerenciar seu veículo
         </p>
       </div>
 
       <div className="min-h-screen flex items-center justify-center -mt-20">
-        <div className="relative p-8">
+        <div className="relative p-4 sm:p-8 w-full max-w-md">
           <div className="shadow-[0_0_40px_rgba(0,0,0,0.4)] rounded-lg">
-            <Card className="w-full max-w-md relative backdrop-blur-sm bg-white/90">
+            <Card className="w-full relative backdrop-blur-sm bg-white/90">
               <CardHeader>
-                <CardDescription className="text-center">Preencha os dados para criar sua conta</CardDescription>
+                <CardDescription className="text-center text-sm sm:text-base">
+                  Preencha os dados para criar sua conta
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <CreateAccountForm
@@ -145,7 +147,11 @@ const CreateAccount = () => {
                 />
               </CardContent>
               <CardFooter>
-                <Button variant="link" className="w-full" onClick={() => navigate('/login')}>
+                <Button 
+                  variant="link" 
+                  className="w-full text-sm sm:text-base" 
+                  onClick={() => navigate('/login')}
+                >
                   Já tem uma conta? Faça login
                 </Button>
               </CardFooter>
@@ -155,10 +161,10 @@ const CreateAccount = () => {
       </div>
 
       <AlertDialog open={showEmailInUseDialog} onOpenChange={setShowEmailInUseDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="sm:max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>E-mail já cadastrado</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-lg sm:text-xl">E-mail já cadastrado</AlertDialogTitle>
+            <AlertDialogDescription className="text-sm sm:text-base">
               Este E-mail já está em uso, faça login ou cadastre um outro e-mail
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -171,10 +177,10 @@ const CreateAccount = () => {
       </AlertDialog>
 
       <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="sm:max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>Conta criada com sucesso</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-lg sm:text-xl">Conta criada com sucesso</AlertDialogTitle>
+            <AlertDialogDescription className="text-sm sm:text-base">
               Sua conta foi criada com sucesso! Clique em OK para continuar.
             </AlertDialogDescription>
           </AlertDialogHeader>
