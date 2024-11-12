@@ -45,8 +45,11 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [observationsError, setObservationsError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = () => {
+    if (isSubmitting) return;
+    
     setObservationsError(false);
 
     if (!newMaintenance.date || !newMaintenance.serviceType || !newMaintenance.cost || !newMaintenance.vehicleId) {
@@ -68,13 +71,18 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
       return;
     }
 
-    onSubmit(newMaintenance as Omit<Maintenance, 'id' | 'userId'>);
+    setIsSubmitting(true);
     
-    toast({
-      title: "Manutenção adicionada",
-      description: "A nova manutenção foi registrada com sucesso.",
-      variant: "default",
-    });
+    try {
+      onSubmit(newMaintenance as Omit<Maintenance, 'id' | 'userId'>);
+      toast({
+        title: "Manutenção adicionada",
+        description: "A nova manutenção foi registrada com sucesso.",
+        variant: "default",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -168,9 +176,13 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
           <Button variant="outline" onClick={onCancel}>
             Cancelar
           </Button>
-          <Button onClick={handleSubmit} className="bg-green-500 hover:bg-green-600">
+          <Button 
+            onClick={handleSubmit} 
+            className="bg-green-500 hover:bg-green-600"
+            disabled={isSubmitting}
+          >
             <AlertCircle className="mr-2 h-4 w-4" />
-            Salvar
+            {isSubmitting ? 'Salvando...' : 'Salvar'}
           </Button>
         </div>
       </div>
