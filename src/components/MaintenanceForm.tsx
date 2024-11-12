@@ -88,94 +88,84 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
   return (
     <>
       <div className="grid gap-4 py-4">
-        <div className="grid grid-cols-1 items-center gap-4">
-          <div className="flex items-center">
-            <Car className="h-4 w-4 text-purple-500 mr-2" />
-            <Select 
-              value={newMaintenance.vehicleId} 
-              onValueChange={(value) => setNewMaintenance({...newMaintenance, vehicleId: value})}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Selecione o veículo" />
-              </SelectTrigger>
-              <SelectContent>
-                {vehicles.map((vehicle) => (
-                  <SelectItem key={vehicle.id} value={vehicle.id}>{vehicle.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Car className="h-4 w-4 text-purple-500" />
+          <Select 
+            value={newMaintenance.vehicleId} 
+            onValueChange={(value) => setNewMaintenance({...newMaintenance, vehicleId: value})}
+          >
+            <SelectTrigger className="w-[280px]">
+              <SelectValue placeholder="Selecione o veículo" />
+            </SelectTrigger>
+            <SelectContent>
+              {vehicles.map((vehicle) => (
+                <SelectItem key={vehicle.id} value={vehicle.id}>{vehicle.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <div className="grid grid-cols-1 items-center gap-4">
-          <div className="flex items-center">
-            <CalendarIcon className="h-4 w-4 text-blue-500 mr-2" />
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !newMaintenance.date && "text-muted-foreground"
-                  )}
-                >
-                  {newMaintenance.date ? format(new Date(newMaintenance.date), "PPP") : <span>Selecione a data</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={newMaintenance.date ? new Date(newMaintenance.date) : undefined}
-                  onSelect={(date) => {
-                    if (date) {
-                      const adjustedDate = addDays(date, 1);
-                      const formattedDate = format(adjustedDate, 'yyyy-MM-dd');
-                      setNewMaintenance({...newMaintenance, date: formattedDate});
-                    }
-                  }}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <CalendarIcon className="h-4 w-4 text-blue-500" />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-[280px] justify-start text-left font-normal",
+                  !newMaintenance.date && "text-muted-foreground"
+                )}
+              >
+                {newMaintenance.date ? format(new Date(newMaintenance.date), "PPP") : <span>Selecione a data</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={newMaintenance.date ? new Date(newMaintenance.date) : undefined}
+                onSelect={(date) => {
+                  if (date) {
+                    const adjustedDate = addDays(date, 1);
+                    const formattedDate = format(adjustedDate, 'yyyy-MM-dd');
+                    setNewMaintenance({...newMaintenance, date: formattedDate});
+                  }
+                }}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
         </div>
 
-        <div className="grid grid-cols-1 items-center gap-4">
-          <div className="flex items-center">
-            <Wrench className="h-4 w-4 text-green-500 mr-2" />
-            <Select onValueChange={(value) => setNewMaintenance({...newMaintenance, serviceType: value})}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Tipo de Serviço" />
-              </SelectTrigger>
-              <SelectContent>
-                {serviceTypeOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Wrench className="h-4 w-4 text-green-500" />
+          <Select onValueChange={(value) => setNewMaintenance({...newMaintenance, serviceType: value})}>
+            <SelectTrigger className="w-[280px]">
+              <SelectValue placeholder="Tipo de Serviço" />
+            </SelectTrigger>
+            <SelectContent>
+              {serviceTypeOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <div className="grid grid-cols-1 items-center gap-4">
-          <CostInput
-            value={newMaintenance.cost || 0}
-            onChange={(value) => setNewMaintenance({...newMaintenance, cost: value})}
+        <CostInput
+          value={newMaintenance.cost || 0}
+          onChange={(value) => setNewMaintenance({...newMaintenance, cost: value})}
+        />
+
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Clipboard className="h-4 w-4 text-purple-500" />
+          <Textarea
+            placeholder="Observações"
+            className={cn("w-[280px]", observationsError && "border-red-500")}
+            value={newMaintenance.observations}
+            onChange={(e) => {
+              setNewMaintenance({...newMaintenance, observations: e.target.value});
+              setObservationsError(false);
+            }}
           />
-        </div>
-
-        <div className="grid grid-cols-1 items-center gap-4">
-          <div className="flex items-center">
-            <Clipboard className="h-4 w-4 text-purple-500 mr-2" />
-            <Textarea
-              placeholder="Observações"
-              className={cn("w-full", observationsError && "border-red-500")}
-              value={newMaintenance.observations}
-              onChange={(e) => {
-                setNewMaintenance({...newMaintenance, observations: e.target.value});
-                setObservationsError(false);
-              }}
-            />
-          </div>
         </div>
 
         <div className="flex justify-end space-x-2">
