@@ -47,32 +47,30 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
 
   return (
     <>
-      {/* Mobile Toggle Button - Now positioned on the right */}
+      {/* Mobile Toggle Button */}
       <Button 
         id="sidebar-toggle"
         variant="ghost" 
         size="icon" 
         onClick={toggleSidebar}
-        className={`
-          fixed top-4 right-4 z-50 bg-gray-800 hover:bg-gray-700 md:hidden
-          ${isOpen ? 'bg-gray-700' : 'bg-gray-800'}
-        `}
+        className="fixed top-4 right-4 z-50 bg-gray-800 hover:bg-gray-700 md:hidden"
       >
         <Menu className="h-5 w-5 text-white" />
       </Button>
 
-      {/* Desktop Toggle Button */}
+      {/* Desktop Toggle Button - Now visible in all modes */}
       <Button 
         id="sidebar-toggle-desktop"
         variant="ghost" 
         size="icon" 
         onClick={toggleSidebar}
         className={`
-          hidden md:block absolute right-0 top-4 z-50
-          ${isOpen ? '' : 'translate-x-12'}
+          fixed left-0 top-4 z-50 bg-gray-800 hover:bg-gray-700
+          ${isOpen ? 'left-64' : 'left-16'}
+          transition-all duration-300 ease-in-out
         `}
       >
-        {isOpen ? <ChevronLeft /> : <ChevronRight />}
+        {isOpen ? <ChevronLeft className="h-5 w-5 text-white" /> : <ChevronRight className="h-5 w-5 text-white" />}
       </Button>
 
       <div 
@@ -80,9 +78,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
         className={`
           fixed top-0 h-screen bg-gray-800 text-white
           transition-all duration-300 ease-in-out z-40
-          md:left-0 md:translate-x-0
           ${isOpen ? 'w-64' : 'w-16'}
-          ${isOpen ? 'right-0 translate-x-0' : 'right-0 translate-x-full md:translate-x-0 md:left-0'}
+          left-0
           flex flex-col
         `}
       >
