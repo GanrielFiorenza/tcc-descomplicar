@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Plus } from 'lucide-react';
-import { ExpenseTable } from '@/components/ExpenseTable';
-import { ExpenseChart } from '@/components/ExpenseChart';
+import { PlusCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ExpenseForm } from '@/components/ExpenseForm';
+import { ExpenseTable } from '@/components/ExpenseTable';
+import { ExpenseChart } from '@/components/ExpenseChart';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { addExpense, getUserExpenses, updateExpense, deleteExpense, Expense } from '@/services/expenseService';
 import { getUserVehicles, Vehicle } from '@/services/vehicleService';
@@ -138,13 +138,13 @@ const ExpenseControl = () => {
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>
             <Button className="bg-blue-700 hover:bg-blue-800">
-              <Plus className="mr-2 h-4 w-4" />
-              Nova Despesa
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Despesa
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Adicionar Nova Despesa</DialogTitle>
+              <DialogTitle>Adicionar Despesa</DialogTitle>
             </DialogHeader>
             <ExpenseForm onSubmit={handleAddExpense} vehicles={vehicles} onCancel={() => setIsModalOpen(false)} />
           </DialogContent>
