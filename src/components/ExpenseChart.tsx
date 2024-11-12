@@ -6,6 +6,16 @@ interface ExpenseChartProps {
   chartData: { category: string; amount: number }[];
 }
 
+// Define colors for each expense category
+const categoryColors: { [key: string]: string } = {
+  'Manutenção': '#8884d8',
+  'Combustível': '#82ca9d',
+  'Impostos': '#ffc658',
+  'Multas': '#ff7300',
+  'Seguro': '#0088fe',
+  'Outros': '#ff8042'
+};
+
 export const ExpenseChart: React.FC<ExpenseChartProps> = ({ chartData }) => {
   return (
     <Card className="mb-6">
@@ -20,7 +30,12 @@ export const ExpenseChart: React.FC<ExpenseChartProps> = ({ chartData }) => {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="amount" fill="#8884d8" />
+            <Bar 
+              dataKey="amount" 
+              fill="#8884d8"
+              name="Valor"
+              fill={(entry) => categoryColors[entry.category] || '#8884d8'}
+            />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
