@@ -47,14 +47,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
 
   return (
     <>
-      {/* Mobile Toggle Button */}
+      {/* Mobile Toggle Button - Now positioned on the right */}
       <Button 
         id="sidebar-toggle"
         variant="ghost" 
         size="icon" 
         onClick={toggleSidebar}
         className={`
-          fixed top-4 left-4 z-50 bg-gray-800 hover:bg-gray-700 md:hidden
+          fixed top-4 right-4 z-50 bg-gray-800 hover:bg-gray-700 md:hidden
           ${isOpen ? 'bg-gray-700' : 'bg-gray-800'}
         `}
       >
@@ -78,10 +78,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
       <div 
         id="sidebar"
         className={`
-          fixed top-0 left-0 h-screen bg-gray-800 text-white
+          fixed top-0 h-screen bg-gray-800 text-white
           transition-all duration-300 ease-in-out z-40
-          md:translate-x-0
-          ${isOpen ? 'w-64 translate-x-0' : 'w-16 -translate-x-full md:translate-x-0'}
+          md:left-0 md:translate-x-0
+          ${isOpen ? 'w-64' : 'w-16'}
+          ${isOpen ? 'right-0 translate-x-0' : 'right-0 translate-x-full md:translate-x-0 md:left-0'}
           flex flex-col
         `}
       >
@@ -95,18 +96,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
               <h2 className="text-xl font-bold">Menu</h2>
             </div>
           )}
-          {/* Desktop Toggle Button */}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={toggleSidebar}
-            className={`
-              ${isOpen ? '' : 'mx-auto'}
-              hidden md:block
-            `}
-          >
-            {isOpen ? <ChevronLeft /> : <ChevronRight />}
-          </Button>
         </div>
 
         <nav className="flex-grow">
