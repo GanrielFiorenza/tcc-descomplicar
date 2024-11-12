@@ -77,7 +77,7 @@ const NotificationsCard = () => {
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center">
             <Bell className="mr-2 h-6 w-6 text-yellow-500" />
-            Notificações
+            Lembretes
           </div>
           <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
