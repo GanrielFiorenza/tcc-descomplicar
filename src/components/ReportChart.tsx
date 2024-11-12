@@ -1,6 +1,8 @@
 import React from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { ProcessedReportData } from '../utils/reportDataProcessor';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface ReportChartProps {
   reportType: string;
@@ -10,7 +12,8 @@ interface ReportChartProps {
 export const ReportChart: React.FC<ReportChartProps> = ({ reportData }) => {
   // Group and process data by month
   const groupedData = reportData.reduce((acc: any[], curr) => {
-    const month = curr.month;
+    const monthDate = new Date(curr.date);
+    const month = format(monthDate, 'MM/yyyy', { locale: ptBR });
     const existingMonth = acc.find(item => item.month === month);
 
     if (existingMonth) {
@@ -39,7 +42,13 @@ export const ReportChart: React.FC<ReportChartProps> = ({ reportData }) => {
   }, []);
 
   // Sort data by month
-  const sortedData = groupedData.sort((a: any, b: any) => a.month.localeCompare(b.month));
+  const sortedData = groupedData.sort((a: any, b: any) => {
+    const [monthA, yearA] = a.month.split('/');
+    const [monthB, yearB] = b.month.split('/');
+    const dateA = new Date(parseInt(yearA), parseInt(monthA) - 1);
+    const dateB = new Date(parseInt(yearB), parseInt(monthB) - 1);
+    return dateA.getTime() - dateB.getTime();
+  });
 
   return (
     <ResponsiveContainer width="100%" height={300}>
