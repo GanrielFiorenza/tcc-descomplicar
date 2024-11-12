@@ -16,17 +16,13 @@ const GoogleLoginButton = ({ onLogin, isLoading }: GoogleLoginButtonProps) => {
   const handleGoogleLogin = async () => {
     try {
       const provider = new GoogleAuthProvider();
-      // Força sempre mostrar a seleção de conta
       provider.setCustomParameters({
-        prompt: 'select_account',
-        access_type: 'offline',
-        include_granted_scopes: 'true'
+        prompt: 'select_account'
       });
       
       const result = await signInWithPopup(auth, provider);
       
       if (result.user) {
-        localStorage.setItem('isLoggedIn', 'true');
         onLogin();
         toast({
           title: "Login realizado com sucesso",
@@ -36,10 +32,17 @@ const GoogleLoginButton = ({ onLogin, isLoading }: GoogleLoginButtonProps) => {
       }
     } catch (error: any) {
       console.error('Erro no login:', error);
+      
+      let errorMessage = "Ocorreu um erro ao tentar fazer login com Google.";
+      
+      if (error.code === 'auth/unauthorized-domain') {
+        errorMessage = "Este domínio não está autorizado para login. Por favor, acesse através do domínio correto ou contate o administrador.";
+      }
+      
       toast({
         variant: "destructive",
         title: "Erro ao fazer login com Google",
-        description: error.message || "Ocorreu um erro ao tentar fazer login com Google.",
+        description: errorMessage,
       });
     }
   };
