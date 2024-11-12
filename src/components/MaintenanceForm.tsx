@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { CalendarIcon, Wrench, AlertCircle, Car } from 'lucide-react';
+import { CalendarIcon, Wrench, AlertCircle, Car, Clipboard } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format, addDays } from "date-fns";
@@ -156,7 +156,7 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
         />
 
         <div className="grid grid-cols-4 items-center gap-4">
-          <ClipboardIcon className="h-4 w-4 text-purple-500" />
+          <Clipboard className="h-4 w-4 text-purple-500" />
           <Textarea
             placeholder="Observações"
             className={cn("w-[280px]", observationsError && "border-red-500")}
