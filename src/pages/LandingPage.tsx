@@ -124,22 +124,22 @@ const LandingPage = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header Section */}
       <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-900 flex items-center">
-            <Car className="h-6 w-6 mr-2 text-blue-800" />
+        <div className="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <h1 className="text-xl sm:text-2xl font-bold text-blue-900 flex items-center">
+            <Car className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-blue-800" />
             DescompliCar
           </h1>
-          <div className="flex gap-4">
+          <div className="flex gap-2 sm:gap-4 w-full sm:w-auto justify-center">
             <Button 
               variant="ghost"
-              className="flex items-center gap-2 text-blue-800 hover:text-blue-900 hover:bg-blue-50"
+              className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base text-blue-800 hover:text-blue-900 hover:bg-blue-50"
               onClick={() => navigate('/login')}
             >
               <LogIn className="h-4 w-4" />
               Login
             </Button>
             <Button 
-              className="flex items-center gap-2 bg-blue-800 hover:bg-blue-900"
+              className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base bg-blue-800 hover:bg-blue-900"
               onClick={() => navigate('/create-account')}
             >
               <UserPlus className="h-4 w-4" />
@@ -149,25 +149,25 @@ const LandingPage = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold text-blue-900 mb-6">
+      <div className="container mx-auto px-4 py-8 sm:py-16">
+        <div className="text-center mb-8 sm:mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-blue-900 mb-4 sm:mb-6">
             descompliCar
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 mb-8">
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-6 sm:mb-8 px-4">
             Simplifique o gerenciamento do seu veículo e mantenha tudo sob controle
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-16">
           {features.map((feature, index) => (
             <FeatureDialog key={index} {...feature} />
           ))}
         </div>
 
-        <div className="text-center">
+        <div className="text-center px-4">
           <h2 
-            className="text-3xl font-bold text-blue-900 mb-6 cursor-pointer hover:text-blue-700 transition-colors"
+            className="text-2xl sm:text-3xl font-bold text-blue-900 mb-6 cursor-pointer hover:text-blue-700 transition-colors"
             onClick={() => navigate('/create-account')}
           >
             Comece a cuidar melhor do seu veículo hoje mesmo
