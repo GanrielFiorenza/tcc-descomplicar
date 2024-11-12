@@ -23,13 +23,23 @@ export const ExpenseChart: React.FC<ExpenseChartProps> = ({ chartData }) => {
         <CardTitle>Resumo de Despesas</CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="mb-4 flex flex-wrap gap-4">
+          {Object.entries(categoryColors).map(([category, color]) => (
+            <div key={category} className="flex items-center">
+              <div 
+                className="w-4 h-4 mr-2 rounded-sm" 
+                style={{ backgroundColor: color }}
+              />
+              <span className="text-sm">{category}</span>
+            </div>
+          ))}
+        </div>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="category" />
             <YAxis />
             <Tooltip />
-            <Legend />
             <Bar dataKey="amount" name="Valor">
               {chartData.map((entry, index) => (
                 <Cell 
