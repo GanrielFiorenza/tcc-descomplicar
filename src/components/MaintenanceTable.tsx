@@ -20,7 +20,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 interface MaintenanceTableProps {
@@ -48,6 +47,7 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
 
   const handleEdit = (maintenance: Maintenance) => {
     setEditingMaintenance({ ...maintenance });
+    setIsDialogOpen(true);
   };
 
   const handleSaveEdit = (updatedMaintenance: Maintenance) => {
@@ -94,65 +94,68 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
             </TableCell>
             <TableCell className="w-[200px]">{maintenance.observations}</TableCell>
             <TableCell className="w-[100px]">
-              <Dialog>
-                <DialogTrigger asChild className="md:hidden">
-                  <Button variant="outline" size="sm" className="mr-2">
+              <div className="flex space-x-2">
+                <Dialog open={isDialogOpen && editingMaintenance?.id === maintenance.id} onOpenChange={(open) => {
+                  if (!open) handleCancelEdit();
+                  setIsDialogOpen(open);
+                }}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEdit(maintenance)}
+                    className="flex items-center"
+                  >
                     <Edit className="h-4 w-4" />
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="w-[90vw] max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>Editar Manutenção</DialogTitle>
-                  </DialogHeader>
-                  <MaintenanceEditForm
-                    maintenance={maintenance}
-                    onSave={handleSaveEdit}
-                    onCancel={handleCancelEdit}
-                    vehicles={vehicles}
-                  />
-                </DialogContent>
-              </Dialog>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleEdit(maintenance)}
-                className="hidden md:inline-flex mr-2"
-              >
-                <Edit className="h-4 w-4" />
-              </Button>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="flex items-center text-red-500">
-                      <AlertTriangle className="mr-2 h-5 w-5" />
-                      Confirmar exclusão
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Tem certeza que deseja excluir esta manutenção? Esta ação não pode ser desfeita.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel className="bg-gray-200 text-gray-800 hover:bg-gray-300">
-                      Cancelar
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={confirmDelete}
-                      className="bg-red-500 text-white hover:bg-red-600"
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Editar Manutenção</DialogTitle>
+                    </DialogHeader>
+                    {editingMaintenance && (
+                      <MaintenanceEditForm
+                        maintenance={editingMaintenance}
+                        onSave={handleSaveEdit}
+                        onCancel={handleCancelEdit}
+                        vehicles={vehicles}
+                      />
+                    )}
+                  </DialogContent>
+                </Dialog>
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      size="sm"
                     >
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Excluir
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="flex items-center text-red-500">
+                        <AlertTriangle className="mr-2 h-5 w-5" />
+                        Confirmar exclusão
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Tem certeza que deseja excluir esta manutenção? Esta ação não pode ser desfeita.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="bg-gray-200 text-gray-800 hover:bg-gray-300">
+                        Cancelar
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={confirmDelete}
+                        className="bg-red-500 text-white hover:bg-red-600"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Excluir
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </TableCell>
           </TableRow>
         ))}
