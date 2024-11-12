@@ -15,6 +15,13 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { MaintenanceEditForm } from './MaintenanceEditForm';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface MaintenanceTableProps {
   maintenances: Maintenance[];
@@ -23,16 +30,10 @@ interface MaintenanceTableProps {
   vehicles: { id: string; name: string }[];
 }
 
-const serviceTypeTranslations: { [key: string]: string } = {
-  'oil_change': 'Troca de Óleo',
-  'brake_replacement': 'Troca de Freios',
-  'tire_rotation': 'Rodízio de Pneus',
-  'other': 'Outro',
-};
-
 const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDelete, onEdit, vehicles }) => {
   const [maintenanceToDelete, setMaintenanceToDelete] = useState<string | null>(null);
   const [editingMaintenance, setEditingMaintenance] = useState<Maintenance | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleDelete = (id: string) => {
     setMaintenanceToDelete(id);
@@ -52,21 +53,13 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
   const handleSaveEdit = (updatedMaintenance: Maintenance) => {
     onEdit(updatedMaintenance);
     setEditingMaintenance(null);
+    setIsDialogOpen(false);
   };
 
   const handleCancelEdit = () => {
     setEditingMaintenance(null);
+    setIsDialogOpen(false);
   };
-
-  const getVehicleName = (vehicleId: string) => {
-    const vehicle = vehicles.find(v => v.id === vehicleId);
-    return vehicle ? vehicle.name : 'Veículo não encontrado';
-  };
-
-  // Ordenar as manutenções por data (mais recente primeiro)
-  const sortedMaintenances = [...maintenances].sort((a, b) => {
-    return new Date(b.date).getTime() - new Date(a.date).getTime();
-  });
 
   return (
     <Table>
@@ -81,10 +74,10 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
         </TableRow>
       </TableHeader>
       <TableBody>
-        {sortedMaintenances.map((maintenance) => (
+        {maintenances.map((maintenance) => (
           <TableRow key={maintenance.id}>
             {editingMaintenance?.id === maintenance.id ? (
-              <TableCell colSpan={6}>
+              <TableCell colSpan={6} className="hidden md:table-cell">
                 <MaintenanceEditForm
                   maintenance={editingMaintenance}
                   onSave={handleSaveEdit}
@@ -100,11 +93,11 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
                 </TableCell>
                 <TableCell className="w-[120px]">
                   <Car className="inline mr-2" size={16} />
-                  {getVehicleName(maintenance.vehicleId)}
+                  {vehicles.find(v => v.id === maintenance.vehicleId)?.name || 'N/A'}
                 </TableCell>
                 <TableCell className="w-[180px]">
                   <Wrench className="inline mr-2" size={16} />
-                  {serviceTypeTranslations[maintenance.serviceType] || maintenance.serviceType}
+                  {maintenance.serviceType}
                 </TableCell>
                 <TableCell className="w-[100px]">
                   <DollarSign className="inline mr-2" size={16} />
@@ -112,13 +105,37 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
                 </TableCell>
                 <TableCell className="w-[200px]">{maintenance.observations}</TableCell>
                 <TableCell className="w-[100px]">
+                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogTrigger asChild className="md:hidden">
+                      <Button variant="outline" size="sm">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="md:hidden">
+                      <DialogHeader>
+                        <DialogTitle>Editar Manutenção</DialogTitle>
+                      </DialogHeader>
+                      <MaintenanceEditForm
+                        maintenance={maintenance}
+                        onSave={handleSaveEdit}
+                        onCancel={handleCancelEdit}
+                        vehicles={vehicles}
+                      />
+                    </DialogContent>
+                  </Dialog>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEdit(maintenance)}
+                    className="hidden md:inline-flex mr-2"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => handleDelete(maintenance.id)}
-                        className="mr-2"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -147,13 +164,6 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleEdit(maintenance)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
                 </TableCell>
               </>
             )}
