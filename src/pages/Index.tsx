@@ -49,7 +49,7 @@ const Index = ({ onLogin }: IndexProps) => {
               </div>
             </div>
 
-            <GoogleLoginButton />
+            <GoogleLoginButton onLogin={onLogin} isLoading={isLoading} />
 
             <p className="text-center text-xs sm:text-sm text-gray-600">
               Não tem uma conta?{" "}
