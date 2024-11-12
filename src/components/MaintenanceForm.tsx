@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { CalendarIcon, DollarSign, Wrench, ClipboardIcon, AlertCircle, Car } from 'lucide-react';
+import { CalendarIcon, Wrench, AlertCircle, Car } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format, addDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Maintenance } from '../types/maintenance';
 import { useToast } from "@/hooks/use-toast";
+import { CostInput } from './MaintenanceForm/CostInput';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -149,16 +149,12 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
             </SelectContent>
           </Select>
         </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <DollarSign className="h-4 w-4 text-yellow-500" />
-          <Input
-            type="number"
-            placeholder="Custo"
-            className="w-[280px]"
-            value={newMaintenance.cost}
-            onChange={(e) => setNewMaintenance({...newMaintenance, cost: parseFloat(e.target.value)})}
-          />
-        </div>
+
+        <CostInput
+          value={newMaintenance.cost || 0}
+          onChange={(value) => setNewMaintenance({...newMaintenance, cost: value})}
+        />
+
         <div className="grid grid-cols-4 items-center gap-4">
           <ClipboardIcon className="h-4 w-4 text-purple-500" />
           <Textarea
