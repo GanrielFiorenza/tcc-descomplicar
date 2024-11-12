@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ExpenseEditRow } from './ExpenseEditRow';
+import { ExpenseMobileEdit } from './ExpenseMobileEdit';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -28,6 +30,19 @@ interface ExpenseTableProps {
 export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, onEdit, onDelete }) => {
   const [editingExpense, setEditingExpense] = useState<string | null>(null);
   const [editedValues, setEditedValues] = useState<any>({});
+  const [isMobileEditOpen, setIsMobileEditOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+    
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
 
   const categories = ['Combustível', 'Peças', 'Serviços', 'Impostos', 'Outros'];
 
@@ -67,19 +82,26 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
   };
 
   const handleEditClick = (expense: any) => {
-    setEditingExpense(expense.id);
-    setEditedValues(expense);
+    if (isMobile) {
+      setEditedValues(expense);
+      setIsMobileEditOpen(true);
+    } else {
+      setEditingExpense(expense.id);
+      setEditedValues(expense);
+    }
   };
 
   const handleCancelEdit = () => {
     setEditingExpense(null);
     setEditedValues({});
+    setIsMobileEditOpen(false);
   };
 
   const handleSaveEdit = () => {
     onEdit(editedValues);
     setEditingExpense(null);
     setEditedValues({});
+    setIsMobileEditOpen(false);
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -104,7 +126,7 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedExpenses.map((expense) => (
+            {expenses.map((expense) => (
               <TableRow key={expense.id} className="h-16">
                 {editingExpense === expense.id ? (
                   <ExpenseEditRow
@@ -164,6 +186,22 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
             ))}
           </TableBody>
         </Table>
+
+        <Dialog open={isMobileEditOpen} onOpenChange={setIsMobileEditOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Editar Despesa</DialogTitle>
+            </DialogHeader>
+            <ExpenseMobileEdit
+              editedValues={editedValues}
+              handleInputChange={handleInputChange}
+              handleSaveEdit={handleSaveEdit}
+              handleCancelEdit={handleCancelEdit}
+              vehicles={vehicles}
+              categories={categories}
+            />
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );
