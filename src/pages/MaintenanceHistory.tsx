@@ -159,7 +159,7 @@ const MaintenanceHistory: React.FC = () => {
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle>Adicionar Nova Manutenção</DialogTitle>
+                  <DialogTitle>Adicionar Manutenção</DialogTitle>
                 </DialogHeader>
                 <MaintenanceForm 
                   onSubmit={handleAddMaintenance} 
