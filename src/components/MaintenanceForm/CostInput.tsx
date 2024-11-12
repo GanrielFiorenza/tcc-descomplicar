@@ -15,12 +15,12 @@ export const CostInput: React.FC<CostInputProps> = ({ value, onChange, error }) 
   };
 
   return (
-    <div className="grid grid-cols-4 items-center gap-4">
-      <DollarSign className="h-4 w-4 text-yellow-500" />
+    <div className="grid grid-cols-4 items-center gap-3 sm:gap-4">
+      <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-500" />
       <Input
         type="number"
         placeholder="Insira o valor gasto"
-        className={`w-[280px] ${error ? 'border-red-500' : ''}`}
+        className={`w-[200px] sm:w-[280px] text-xs sm:text-sm h-8 sm:h-10 ${error ? 'border-red-500' : ''}`}
         value={value === 0 ? '' : value}
         onChange={handleChange}
         min={0}

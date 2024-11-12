@@ -87,32 +87,34 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
 
   return (
     <>
-      <div className="grid gap-4 py-4">
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Car className="h-4 w-4 text-purple-500" />
+      <div className="grid gap-3 py-3 sm:gap-4 sm:py-4">
+        <div className="grid grid-cols-4 items-center gap-3 sm:gap-4">
+          <Car className="h-3 w-3 sm:h-4 sm:w-4 text-purple-500" />
           <Select 
             value={newMaintenance.vehicleId} 
             onValueChange={(value) => setNewMaintenance({...newMaintenance, vehicleId: value})}
           >
-            <SelectTrigger className="w-[280px]">
+            <SelectTrigger className="w-[200px] sm:w-[280px] text-xs sm:text-sm h-8 sm:h-10">
               <SelectValue placeholder="Selecione o veículo" />
             </SelectTrigger>
             <SelectContent>
               {vehicles.map((vehicle) => (
-                <SelectItem key={vehicle.id} value={vehicle.id}>{vehicle.name}</SelectItem>
+                <SelectItem key={vehicle.id} value={vehicle.id} className="text-xs sm:text-sm">
+                  {vehicle.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
 
-        <div className="grid grid-cols-4 items-center gap-4">
-          <CalendarIcon className="h-4 w-4 text-blue-500" />
+        <div className="grid grid-cols-4 items-center gap-3 sm:gap-4">
+          <CalendarIcon className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-[280px] justify-start text-left font-normal",
+                  "w-[200px] sm:w-[280px] justify-start text-left font-normal text-xs sm:text-sm h-8 sm:h-10",
                   !newMaintenance.date && "text-muted-foreground"
                 )}
               >
@@ -136,15 +138,17 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
           </Popover>
         </div>
 
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Wrench className="h-4 w-4 text-green-500" />
+        <div className="grid grid-cols-4 items-center gap-3 sm:gap-4">
+          <Wrench className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
           <Select onValueChange={(value) => setNewMaintenance({...newMaintenance, serviceType: value})}>
-            <SelectTrigger className="w-[280px]">
+            <SelectTrigger className="w-[200px] sm:w-[280px] text-xs sm:text-sm h-8 sm:h-10">
               <SelectValue placeholder="Tipo de Serviço" />
             </SelectTrigger>
             <SelectContent>
               {serviceTypeOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                <SelectItem key={option.value} value={option.value} className="text-xs sm:text-sm">
+                  {option.label}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -155,11 +159,14 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
           onChange={(value) => setNewMaintenance({...newMaintenance, cost: value})}
         />
 
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Clipboard className="h-4 w-4 text-purple-500" />
+        <div className="grid grid-cols-4 items-center gap-3 sm:gap-4">
+          <Clipboard className="h-3 w-3 sm:h-4 sm:w-4 text-purple-500" />
           <Textarea
             placeholder="Observações"
-            className={cn("w-[280px]", observationsError && "border-red-500")}
+            className={cn(
+              "w-[200px] sm:w-[280px] text-xs sm:text-sm min-h-[60px] sm:min-h-[80px]",
+              observationsError && "border-red-500"
+            )}
             value={newMaintenance.observations}
             onChange={(e) => {
               setNewMaintenance({...newMaintenance, observations: e.target.value});
@@ -168,29 +175,38 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
           />
         </div>
 
-        <div className="flex justify-end space-x-2">
-          <Button variant="outline" onClick={onCancel}>
+        <div className="flex justify-end space-x-2 mt-2">
+          <Button 
+            variant="outline" 
+            onClick={onCancel}
+            className="text-xs sm:text-sm h-8 sm:h-10"
+          >
             Cancelar
           </Button>
           <Button 
             onClick={handleSubmit} 
-            className="bg-green-500 hover:bg-green-600"
+            className="bg-green-500 hover:bg-green-600 text-xs sm:text-sm h-8 sm:h-10"
             disabled={isSubmitting}
           >
-            <AlertCircle className="mr-2 h-4 w-4" />
+            <AlertCircle className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
             {isSubmitting ? 'Salvando...' : 'Salvar'}
           </Button>
         </div>
       </div>
 
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="sm:max-w-[425px]">
           <AlertDialogHeader>
-            <AlertDialogTitle>Atenção</AlertDialogTitle>
-            <AlertDialogDescription>{alertMessage}</AlertDialogDescription>
+            <AlertDialogTitle className="text-sm sm:text-base">Atenção</AlertDialogTitle>
+            <AlertDialogDescription className="text-xs sm:text-sm">{alertMessage}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={() => setIsAlertOpen(false)}>OK</AlertDialogAction>
+            <AlertDialogAction 
+              onClick={() => setIsAlertOpen(false)}
+              className="text-xs sm:text-sm h-8 sm:h-10"
+            >
+              OK
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
