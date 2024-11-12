@@ -32,9 +32,8 @@ export const ExpenseChart: React.FC<ExpenseChartProps> = ({ chartData }) => {
             <Legend />
             <Bar 
               dataKey="amount" 
-              fill="#8884d8"
               name="Valor"
-              fill={(entry) => categoryColors[entry.category] || '#8884d8'}
+              fill={(entry) => categoryColors[entry.category as string] || '#8884d8'}
             />
           </BarChart>
         </ResponsiveContainer>
