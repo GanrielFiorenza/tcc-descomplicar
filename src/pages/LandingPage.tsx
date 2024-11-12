@@ -124,25 +124,25 @@ const LandingPage = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header Section */}
       <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="container mx-auto px-4 py-4 flex flex-row justify-between items-center">
           <h1 className="text-xl sm:text-2xl font-bold text-blue-900 flex items-center">
             <Car className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-blue-800" />
             DescompliCar
           </h1>
-          <div className="flex gap-2 sm:gap-4 w-full sm:w-auto justify-center">
+          <div className="flex gap-2">
             <Button 
               variant="ghost"
-              className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base text-blue-800 hover:text-blue-900 hover:bg-blue-50"
+              className="flex items-center gap-1 text-xs sm:text-base text-blue-800 hover:text-blue-900 hover:bg-blue-50 px-2 py-1 sm:px-4 sm:py-2"
               onClick={() => navigate('/login')}
             >
-              <LogIn className="h-4 w-4" />
+              <LogIn className="h-3 w-3 sm:h-4 sm:w-4" />
               Login
             </Button>
             <Button 
-              className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base bg-blue-800 hover:bg-blue-900"
+              className="flex items-center gap-1 text-xs sm:text-base bg-blue-800 hover:bg-blue-900 px-2 py-1 sm:px-4 sm:py-2"
               onClick={() => navigate('/create-account')}
             >
-              <UserPlus className="h-4 w-4" />
+              <UserPlus className="h-3 w-3 sm:h-4 sm:w-4" />
               Criar Conta
             </Button>
           </div>
