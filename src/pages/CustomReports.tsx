@@ -236,16 +236,28 @@ const CustomReports = () => {
               <ReportChart reportType={reportType} reportData={getFilteredData()} />
             </div>
             <ReportTable reportType={reportType} reportData={getFilteredData()} />
-            <div className="flex justify-end space-x-2">
-              <Button onClick={exportToPDF} variant="outline">
+            <div className="flex flex-wrap justify-end gap-2 md:space-x-2">
+              <Button 
+                onClick={exportToPDF} 
+                variant="outline"
+                className="w-full sm:w-auto text-sm md:text-base p-2 md:p-3"
+              >
                 <Download className="mr-2 h-4 w-4" />
                 Exportar PDF
               </Button>
-              <Button onClick={exportToExcel} variant="outline">
+              <Button 
+                onClick={exportToExcel} 
+                variant="outline"
+                className="w-full sm:w-auto text-sm md:text-base p-2 md:p-3"
+              >
                 <Download className="mr-2 h-4 w-4" />
                 Exportar Excel
               </Button>
-              <Button onClick={handlePrint} variant="outline">
+              <Button 
+                onClick={handlePrint} 
+                variant="outline"
+                className="w-full sm:w-auto text-sm md:text-base p-2 md:p-3"
+              >
                 <Printer className="mr-2 h-4 w-4" />
                 Imprimir
               </Button>
