@@ -44,10 +44,20 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
   const { toast } = useToast();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const [observationsError, setObservationsError] = useState(false);
 
   const handleSubmit = () => {
+    setObservationsError(false);
+
     if (!newMaintenance.date || !newMaintenance.serviceType || !newMaintenance.cost || !newMaintenance.vehicleId) {
       setAlertMessage("Por favor, preencha todos os campos obrigatórios.");
+      setIsAlertOpen(true);
+      return;
+    }
+
+    if (!newMaintenance.observations?.trim()) {
+      setObservationsError(true);
+      setAlertMessage("Por favor, adicione uma descrição para a manutenção.");
       setIsAlertOpen(true);
       return;
     }
@@ -145,9 +155,12 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
           <ClipboardIcon className="h-4 w-4 text-purple-500" />
           <Textarea
             placeholder="Observações"
-            className="w-[280px]"
+            className={cn("w-[280px]", observationsError && "border-red-500")}
             value={newMaintenance.observations}
-            onChange={(e) => setNewMaintenance({...newMaintenance, observations: e.target.value})}
+            onChange={(e) => {
+              setNewMaintenance({...newMaintenance, observations: e.target.value});
+              setObservationsError(false);
+            }}
           />
         </div>
 
