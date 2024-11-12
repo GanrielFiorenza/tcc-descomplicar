@@ -29,6 +29,11 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
 
   const categories = ['Combustível', 'Peças', 'Serviços', 'Impostos', 'Outros'];
 
+  // Sort expenses by date in descending order
+  const sortedExpenses = [...expenses].sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'Combustível':
@@ -97,7 +102,7 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
             </TableRow>
           </TableHeader>
           <TableBody>
-            {expenses.map((expense) => (
+            {sortedExpenses.map((expense) => (
               <TableRow key={expense.id} className="h-16">
                 {editingExpense === expense.id ? (
                   <ExpenseEditRow
