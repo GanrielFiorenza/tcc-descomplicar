@@ -52,9 +52,25 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
         variant="ghost" 
         size="icon" 
         onClick={toggleSidebar}
-        className="fixed top-4 right-4 z-50 bg-gray-800 md:hidden"
+        className={`
+          fixed top-4 left-4 z-50 bg-gray-800 hover:bg-gray-700 md:hidden
+          ${isOpen ? 'bg-gray-700' : 'bg-gray-800'}
+        `}
       >
         <Menu className="h-5 w-5 text-white" />
+      </Button>
+
+      {/* Desktop Toggle Button */}
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        onClick={toggleSidebar}
+        className={`
+          hidden md:block absolute right-0 top-4 z-50
+          ${isOpen ? '' : 'translate-x-12'}
+        `}
+      >
+        {isOpen ? <ChevronLeft /> : <ChevronRight />}
       </Button>
 
       <div 
