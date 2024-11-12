@@ -38,6 +38,13 @@ export const VehicleTable: React.FC<VehicleTableProps> = ({
   handleEditVehicle,
   handleDeleteVehicle,
 }) => {
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+
+  const handleCancel = () => {
+    setEditingVehicle(null);
+    setIsDialogOpen(false);
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -58,7 +65,7 @@ export const VehicleTable: React.FC<VehicleTableProps> = ({
                 <VehicleForm
                   vehicle={editingVehicle}
                   onSave={handleEditVehicle}
-                  onCancel={() => setEditingVehicle(null)}
+                  onCancel={handleCancel}
                   isNewVehicle={false}
                 />
               </TableCell>
@@ -70,7 +77,7 @@ export const VehicleTable: React.FC<VehicleTableProps> = ({
                 <TableCell>{vehicle.mileage}</TableCell>
                 <TableCell>{vehicle.plate}</TableCell>
                 <TableCell className="space-x-2">
-                  <Dialog>
+                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild className="md:hidden">
                       <Button variant="outline" size="sm">
                         <Pencil className="h-4 w-4" />
@@ -83,7 +90,7 @@ export const VehicleTable: React.FC<VehicleTableProps> = ({
                       <VehicleForm
                         vehicle={vehicle}
                         onSave={handleEditVehicle}
-                        onCancel={() => setEditingVehicle(null)}
+                        onCancel={handleCancel}
                         isNewVehicle={false}
                       />
                     </DialogContent>
