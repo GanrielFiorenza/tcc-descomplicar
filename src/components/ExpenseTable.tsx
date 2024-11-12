@@ -15,6 +15,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ExpenseEditRow } from './ExpenseEditRow';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface ExpenseTableProps {
   expenses: any[];
@@ -115,7 +117,9 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({ expenses, vehicles, 
                   />
                 ) : (
                   <>
-                    <TableCell className="p-2 h-16">{expense.date}</TableCell>
+                    <TableCell className="p-2 h-16">
+                      {format(new Date(expense.date), 'dd/MM/yyyy', { locale: ptBR })}
+                    </TableCell>
                     <TableCell className="p-2 h-16">{getVehicleName(expense.vehicleId)}</TableCell>
                     <TableCell className="p-2 h-16 flex items-center">
                       {getCategoryIcon(expense.category)}
