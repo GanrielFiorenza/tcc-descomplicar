@@ -71,8 +71,12 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
           onClick={toggleSidebar} 
           className={`
             ${isOpen ? '' : 'mx-auto'}
-            md:hidden fixed top-4 right-4 z-50 bg-gray-800
-            ${!isOpen ? 'translate-x-16' : ''}
+            md:static md:translate-x-0
+            md:bg-transparent
+            ${!isOpen ? '' : ''}
+            block md:inline-block
+            fixed top-4 right-4 z-50 bg-gray-800
+            md:top-auto md:right-auto
           `}
         >
           {isOpen ? <ChevronLeft /> : <ChevronRight />}
