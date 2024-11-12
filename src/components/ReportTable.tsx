@@ -9,6 +9,13 @@ interface ReportTableProps {
 }
 
 export const ReportTable: React.FC<ReportTableProps> = ({ reportType, reportData }) => {
+  // Sort data by date in descending order (newest first)
+  const sortedData = [...reportData].sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateB.getTime() - dateA.getTime();
+  });
+
   return (
     <Table>
       <TableHeader>
@@ -20,7 +27,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({ reportType, reportData
         </TableRow>
       </TableHeader>
       <TableBody>
-        {reportData.map((item, index) => (
+        {sortedData.map((item, index) => (
           <TableRow key={index}>
             <TableCell>
               {format(new Date(item.date), 'dd/MM/yyyy', { locale: ptBR })}
