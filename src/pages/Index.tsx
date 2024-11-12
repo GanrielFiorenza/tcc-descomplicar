@@ -1,92 +1,65 @@
-import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/components/ui/card"
-import { UserPlus, Info, Car } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import Header from "@/components/Header";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import LoginForm from "@/components/LoginForm";
 import GoogleLoginButton from "@/components/GoogleLoginButton";
+import { Car } from "lucide-react";
 
 interface IndexProps {
   onLogin: () => void;
 }
 
-const Index: React.FC<IndexProps> = ({ onLogin }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Index = ({ onLogin }: IndexProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Ensure event and event.key exist and event.key is a string
-      if (!event?.key || typeof event.key !== 'string') {
-        return;
-      }
-
-      const key = event.key.toLowerCase();
-      if (key === 'enter') {
-        const activeElement = document.activeElement;
-        if (!activeElement || activeElement === document.body) {
-          const loginButton = document.querySelector('button[type="submit"]');
-          if (loginButton instanceof HTMLButtonElement && !loginButton.disabled) {
-            loginButton.click();
-          }
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <Header />
-      <div className="min-h-screen flex flex-col items-center pt-16">
-        <div className="text-center mb-8 space-y-2">
-          <h1 className="text-4xl font-bold text-blue-900 flex items-center justify-center gap-2">
-            <Car className="h-8 w-8 text-blue-500" />
-            Bem-vindo ao DescompliCar
-            <Car className="h-8 w-8 text-blue-500" />
-          </h1>
-          <p className="text-gray-600 flex items-center justify-center gap-2">
-            <Info className="h-5 w-5 text-blue-500" />
-            Faça login para gerenciar seu veículo de forma simples e eficiente
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-sm sm:max-w-md space-y-8">
+          <div className="text-center">
+            <div className="flex justify-center items-center mb-4">
+              <Car className="h-8 w-8 sm:h-10 sm:w-10 text-blue-800" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+              Bem-vindo de volta
+            </h2>
+            <p className="text-sm sm:text-base text-gray-600">
+              Entre com sua conta para continuar
+            </p>
+          </div>
 
-        <div className="relative p-8">
-          <div className="shadow-[0_0_40px_rgba(0,0,0,0.4)] rounded-lg">
-            <Card className="w-full max-w-md relative backdrop-blur-sm bg-white/90">
-              <CardHeader>
-                <CardDescription className="text-center">
-                  Acesse sua conta para acompanhar seus gastos e revisões
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <LoginForm 
-                  onLogin={onLogin}
-                  isLoading={isLoading}
-                  setIsLoading={setIsLoading}
-                  email={email}
-                  setEmail={setEmail}
-                  password={password}
-                  setPassword={setPassword}
-                />
-              </CardContent>
-              <CardFooter className="flex flex-col space-y-4">
-                <GoogleLoginButton onLogin={onLogin} isLoading={isLoading} />
-                <Button 
-                  variant="link" 
-                  className="w-full" 
-                  onClick={() => navigate('/create-account')}
-                  disabled={isLoading}
-                >
-                  <UserPlus className="mr-2 h-4 w-4" /> Criar uma conta
-                </Button>
-              </CardFooter>
-            </Card>
+          <div className="bg-white py-6 sm:py-8 px-4 sm:px-10 shadow rounded-lg space-y-6">
+            <LoginForm
+              onLogin={onLogin}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+              email={email}
+              setEmail={setEmail}
+              password={password}
+              setPassword={setPassword}
+            />
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-xs sm:text-sm uppercase">
+                <span className="px-2 bg-white text-gray-500">Ou continue com</span>
+              </div>
+            </div>
+
+            <GoogleLoginButton />
+
+            <p className="text-center text-xs sm:text-sm text-gray-600">
+              Não tem uma conta?{" "}
+              <Link
+                to="/create-account"
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
+                Registre-se
+              </Link>
+            </p>
           </div>
         </div>
       </div>
