@@ -1,18 +1,17 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 interface ExpenseChartProps {
   chartData: { category: string; amount: number }[];
 }
 
-// Define colors for each expense category
+// Define colors for each expense category to match the available options in the form
 const categoryColors: { [key: string]: string } = {
-  'Manutenção': '#8884d8',
   'Combustível': '#82ca9d',
-  'Impostos': '#ffc658',
-  'Multas': '#ff7300',
-  'Seguro': '#0088fe',
+  'Peças': '#8884d8',
+  'Serviços': '#ffc658',
+  'Impostos': '#ff7300',
   'Outros': '#ff8042'
 };
 
