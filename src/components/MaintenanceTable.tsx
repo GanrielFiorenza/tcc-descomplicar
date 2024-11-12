@@ -101,7 +101,7 @@ const MaintenanceTable: React.FC<MaintenanceTableProps> = ({ maintenances, onDel
                   <Wrench className="inline mr-2" size={16} />
                   {serviceTypeTranslations[maintenance.serviceType] || maintenance.serviceType}
                 </TableCell>
-                <TableCell className={`w-[100px] ${maintenance.cost > 100 ? "text-red-500" : "text-green-500"}`}>
+                <TableCell className="w-[100px]">
                   <DollarSign className="inline mr-2" size={16} />
                   R$ {maintenance.cost.toFixed(2)}
                 </TableCell>
