@@ -44,6 +44,26 @@ const App = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const handleClickOutside = (e: MouseEvent) => {
+    const sidebar = document.getElementById('sidebar');
+    const toggleButton = document.getElementById('sidebar-toggle');
+    if (
+      sidebar && 
+      !sidebar.contains(e.target as Node) && 
+      toggleButton && 
+      !toggleButton.contains(e.target as Node)
+    ) {
+      setIsSidebarOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   if (isLoading) {
     return <div className="flex h-screen items-center justify-center">
       <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>

@@ -49,6 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
     <>
       {/* Mobile Toggle Button */}
       <Button 
+        id="sidebar-toggle"
         variant="ghost" 
         size="icon" 
         onClick={toggleSidebar}
@@ -62,6 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
 
       {/* Desktop Toggle Button */}
       <Button 
+        id="sidebar-toggle-desktop"
         variant="ghost" 
         size="icon" 
         onClick={toggleSidebar}
@@ -74,6 +76,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
       </Button>
 
       <div 
+        id="sidebar"
         className={`
           fixed top-0 left-0 h-screen bg-gray-800 text-white
           transition-all duration-300 ease-in-out z-40
