@@ -88,13 +88,13 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
   return (
     <>
       <div className="grid gap-4 py-4">
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Car className="h-4 w-4 text-purple-500" />
+        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+          <Car className="h-4 w-4 text-purple-500 hidden md:block" />
           <Select 
             value={newMaintenance.vehicleId} 
             onValueChange={(value) => setNewMaintenance({...newMaintenance, vehicleId: value})}
           >
-            <SelectTrigger className="w-[280px]">
+            <SelectTrigger className="w-full md:w-[280px]">
               <SelectValue placeholder="Selecione o veículo" />
             </SelectTrigger>
             <SelectContent>
@@ -105,14 +105,14 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
           </Select>
         </div>
 
-        <div className="grid grid-cols-4 items-center gap-4">
-          <CalendarIcon className="h-4 w-4 text-blue-500" />
+        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+          <CalendarIcon className="h-4 w-4 text-blue-500 hidden md:block" />
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-[280px] justify-start text-left font-normal",
+                  "w-full md:w-[280px] justify-start text-left font-normal",
                   !newMaintenance.date && "text-muted-foreground"
                 )}
               >
@@ -136,10 +136,10 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
           </Popover>
         </div>
 
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Wrench className="h-4 w-4 text-green-500" />
+        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+          <Wrench className="h-4 w-4 text-green-500 hidden md:block" />
           <Select onValueChange={(value) => setNewMaintenance({...newMaintenance, serviceType: value})}>
-            <SelectTrigger className="w-[280px]">
+            <SelectTrigger className="w-full md:w-[280px]">
               <SelectValue placeholder="Tipo de Serviço" />
             </SelectTrigger>
             <SelectContent>
@@ -155,11 +155,11 @@ export const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit, onCa
           onChange={(value) => setNewMaintenance({...newMaintenance, cost: value})}
         />
 
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Clipboard className="h-4 w-4 text-purple-500" />
+        <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+          <Clipboard className="h-4 w-4 text-purple-500 hidden md:block" />
           <Textarea
             placeholder="Observações"
-            className={cn("w-[280px]", observationsError && "border-red-500")}
+            className={cn("w-full md:w-[280px]", observationsError && "border-red-500")}
             value={newMaintenance.observations}
             onChange={(e) => {
               setNewMaintenance({...newMaintenance, observations: e.target.value});
