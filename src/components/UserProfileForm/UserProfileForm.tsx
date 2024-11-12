@@ -90,8 +90,13 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Perfil do Usuário</h2>
         {!editMode && (
-          <Button onClick={() => setEditMode(true)} variant="outline" className="bg-blue-800 text-white hover:bg-blue-900">
-            <Edit className="mr-2 h-4 w-4" /> Editar Perfil
+          <Button 
+            onClick={() => setEditMode(true)} 
+            variant="outline" 
+            className="bg-blue-800 text-white hover:bg-blue-900 text-sm md:text-base p-2 md:p-3"
+          >
+            <Edit className="mr-2 h-4 w-4" /> 
+            <span className="whitespace-nowrap">Editar Perfil</span>
           </Button>
         )}
       </div>

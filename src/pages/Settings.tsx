@@ -17,7 +17,6 @@ const Settings = () => {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   useEffect(() => {
-    // Only check required fields after data is loaded and not in edit mode
     if (isDataLoaded && !editMode) {
       const hasEmptyRequiredFields = !userData.username?.trim() || 
                                    !userData.birthDate?.trim() || 
@@ -31,7 +30,6 @@ const Settings = () => {
     setEditMode(true);
   };
 
-  // This function will be called after data is loaded from Firebase
   const handleDataLoaded = () => {
     setIsDataLoaded(true);
   };
