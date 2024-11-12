@@ -47,32 +47,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
 
   return (
     <>
-      {/* Mobile Toggle Button - Now positioned on the right */}
+      {/* Mobile Toggle Button */}
       <Button 
         id="sidebar-toggle"
         variant="ghost" 
         size="icon" 
         onClick={toggleSidebar}
-        className={`
-          fixed top-4 right-4 z-50 bg-gray-800 hover:bg-gray-700 md:hidden
-          ${isOpen ? 'bg-gray-700' : 'bg-gray-800'}
-        `}
+        className="fixed top-4 right-4 z-50 bg-gray-800 hover:bg-gray-700 md:hidden"
       >
         <Menu className="h-5 w-5 text-white" />
-      </Button>
-
-      {/* Desktop Toggle Button */}
-      <Button 
-        id="sidebar-toggle-desktop"
-        variant="ghost" 
-        size="icon" 
-        onClick={toggleSidebar}
-        className={`
-          hidden md:block absolute right-0 top-4 z-50
-          ${isOpen ? '' : 'translate-x-12'}
-        `}
-      >
-        {isOpen ? <ChevronLeft /> : <ChevronRight />}
       </Button>
 
       <div 
@@ -87,13 +70,36 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout, isOpen, toggleSidebar }) =>
         `}
       >
         <div className="flex justify-between items-center p-4 sticky top-0 bg-gray-800 z-10">
-          {isOpen && (
+          {isOpen ? (
             <div className="flex items-center w-full">
               <Avatar className="h-10 w-10 mr-3">
                 <AvatarImage src="/fotos/Captura de tela de 2024-10-17 14-01-55.png" alt="User profile" />
                 <AvatarFallback>U</AvatarFallback>
               </Avatar>
               <h2 className="text-xl font-bold">Menu</h2>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={toggleSidebar}
+                className="ml-auto"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between w-full">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src="/fotos/Captura de tela de 2024-10-17 14-01-55.png" alt="User profile" />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={toggleSidebar}
+                className="ml-auto"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </Button>
             </div>
           )}
         </div>
