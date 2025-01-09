@@ -1,0 +1,9 @@
+Nome: Gabriel Leme Scolari Fiorenza
+
+Título: DescompliCar: Estudo e Desenvolvimento de Software para auxílio no controle de gastos com manutenção de veículos
+
+Resumo: Este trabalho apresenta o desenvolvimento de um software denominado DescompliCar, projetado para auxiliar proprietários de veículos na gestão financeira e manutenção preventiva. O sistema oferece funcionalidades como registro e monitoramento de custos, categorização de despesas, notificações automáticas, geração de relatórios e visualização do histórico de manutenções. O desenvolvimento seguiu o método empírico e a metodologia ágil Scrum, priorizando usabilidade e acessibilidade. Para o front-end, foram aplicadas tecnologias como React e Tailwind CSS, proporcionando uma interface responsiva e intuitiva. No back-end, o Firebase foi utilizado devido à sua escalabilidade, segurança e sincronização em tempo real, garantindo estabilidade e proteção aos dados dos usuários. A aplicação foi testada com usuários finais para identificar melhorias na interface e corrigir eventuais falhas, assegurando que o software atendesse às necessidades práticas e emocionais dos usuários. Com isso, o DescompliCar se destaca como uma solução eficaz para facilitar o planejamento financeiro e a organização de manutenções, contribuindo para a redução de custos e promovendo maior segurança no uso de veículos.
+
+Orientador: Prof. Me. Everton Josué Meyer da Silva.
+
+Mês/Ano: Janeiro de 2025
